@@ -1,25 +1,17 @@
 const express = require("express");
-const path = require("path");
-const cors = require("cors");
-require("dotenv").config();
-require("./database/connect");
+const dotenv = require("dotenv");
+const connectDB = require("./config/connect");
 
-const authRoutes = require("./routes/authRoutes");
-const miningRoutes = require("./routes/miningRoutes");
+dotenv.config();
+connectDB();
 
 const app = express();
-app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-app.use(express.static(path.join(__dirname, "public")));
-
-app.use("/api/auth", authRoutes);
-app.use("/api/mining", miningRoutes);
-
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/index.html"));
-});
+// Rotas
+app.use("/auth", require("./routes/authRoutes"));
+app.use("/paypal", require("./routes/paypalRoutes"));
+app.use("/crypto", require("./routes/cryptoRoutes"));
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
