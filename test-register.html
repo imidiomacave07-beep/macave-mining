@@ -2,38 +2,19 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Teste Registro</title>
+  <title>Registro - Macave Mining</title>
+  <link rel="stylesheet" href="style.css"> <!-- CSS geral -->
 </head>
 <body>
-  <h1>Registro de Usuário</h1>
+  <h1>Registro</h1>
   <form id="registerForm">
-    <input type="text" id="name" placeholder="Nome" required><br>
-    <input type="email" id="email" placeholder="Email" required><br>
-    <input type="password" id="password" placeholder="Senha" required><br>
+    <input type="text" name="name" placeholder="Nome" required>
+    <input type="email" name="email" placeholder="Email" required>
+    <input type="password" name="password" placeholder="Senha" required>
     <button type="submit">Registrar</button>
   </form>
 
-  <pre id="result"></pre>
-
-  <script>
-    const form = document.getElementById("registerForm");
-    const result = document.getElementById("result");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password })
-      });
-
-      const data = await response.json();
-      result.textContent = JSON.stringify(data, null, 2);
-    });
-  </script>
+  <script src="dashboard.js"></script> <!-- JS da plataforma -->
+  <script src="auth.js"></script>      <!-- JS da autenticação -->
 </body>
 </html>
