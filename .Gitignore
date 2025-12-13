@@ -1,0 +1,17 @@
+# Node modules
+node_modules/
+
+# Variáveis de ambiente
+.env
+
+# Logs
+*.log
+
+# Pastas de build ou dist
+dist/
+build/
+
+# IDE e sistema operacional
+.vscode/
+.DS_Store
+Thumbs.db
