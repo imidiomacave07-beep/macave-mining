@@ -1,17 +1,19 @@
 const express = require("express");
-const dotenv = require("dotenv");
-const connectDB = require("./config/connect");
+require("dotenv").config();
+require("./config/connect"); // conecta ao MongoDB
 
-dotenv.config();
-connectDB();
+const authRoutes = require("./routes/authRoutes");
+const miningRoutes = require("./routes/miningRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
 
 const app = express();
 app.use(express.json());
+app.use(express.static("public"));
 
 // Rotas
-app.use("/auth", require("./routes/authRoutes"));
-app.use("/paypal", require("./routes/paypalRoutes"));
-app.use("/crypto", require("./routes/cryptoRoutes"));
+app.use("/api/auth", authRoutes);
+app.use("/api/mining", miningRoutes);
+app.use("/api/payment", paymentRoutes);
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
