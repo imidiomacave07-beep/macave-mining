@@ -1,19 +1,14 @@
 const express = require("express");
-require("dotenv").config();
-require("./config/connect"); // conecta ao MongoDB
-
-const authRoutes = require("./routes/authRoutes");
-const miningRoutes = require("./routes/miningRoutes");
-const paymentRoutes = require("./routes/paymentRoutes");
-
+const path = require("path");
 const app = express();
-app.use(express.json());
-app.use(express.static("public"));
-
-// Rotas
-app.use("/api/auth", authRoutes);
-app.use("/api/mining", miningRoutes);
-app.use("/api/payment", paymentRoutes);
-
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+
+// Servir arquivos estáticos da pasta "public"
+app.use(express.static(path.join(__dirname, "public")));
+
+// Rota raiz (opcional, se quiser abrir test-register.html direto)
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "test-register.html"));
+});
+
+app.listen(PORT, () => console.log(`Servidor ativo na porta ${PORT}`));
