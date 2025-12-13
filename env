@@ -1,0 +1,18 @@
+# MongoDB
+MONGO_URI=mongodb+srv://usuario:senha@cluster.mongodb.net/nomeDoBanco?retryWrites=true&w=majority
+
+# JWT
+JWT_SECRET=sua_chave_super_secreta
+
+# PayPal
+PAYPAL_CLIENT_ID=seu_client_id_paypal
+PAYPAL_CLIENT_SECRET=seu_client_secret_paypal
+PAYPAL_MODE=sandbox  # ou live
+
+# Criptomoedas
+CRYPTO_API_KEY=sua_chave_da_api_de_pagamento_crypto
+CRYPTO_WALLET_ENDERECO=seu_endereco_wallet
+CRYPTO_CALLBACK_URL=https://seudominio.com/crypto/callback
+
+# Porta do servidor
+PORT=10000
