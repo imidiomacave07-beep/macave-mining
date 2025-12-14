@@ -1,12 +1,25 @@
-const mongoose = require("mongoose");
+// User.js
+const mongoose = require('mongoose');
 
-const UserSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  balance: { type: Number, default: 0 },
-  miningActive: { type: Boolean, default: false },
-  miningStart: { type: Date, default: null }
+// Define o schema do usuário
+const userSchema = new mongoose.Schema({
+  username: {
+    type: String,
+    required: true,
+    unique: true, // Garante que não haja usuários duplicados
+    trim: true
+  },
+  password: {
+    type: String,
+    required: true
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now
+  }
 });
 
-module.exports = mongoose.model("User", UserSchema);
+// Cria o modelo de usuário
+const User = mongoose.model('User', userSchema);
+
+module.exports = User;
