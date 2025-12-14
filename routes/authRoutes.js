@@ -1,7 +1,7 @@
 // routes/authRoutes.js
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcryptjs'); // ✅ usar bcryptjs
 const User = require('../User'); // modelo de usuário
 
 // Registro de usuário
