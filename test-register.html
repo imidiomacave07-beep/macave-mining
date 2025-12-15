@@ -1,20 +1,38 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <title>Registro - Macave Mining</title>
-  <link rel="stylesheet" href="style.css"> <!-- CSS geral -->
+  <meta charset="UTF-8" />
+  <title>Registrar</title>
 </head>
 <body>
-  <h1>Registro</h1>
-  <form id="registerForm">
-    <input type="text" name="name" placeholder="Nome" required>
-    <input type="email" name="email" placeholder="Email" required>
-    <input type="password" name="password" placeholder="Senha" required>
-    <button type="submit">Registrar</button>
-  </form>
 
-  <script src="dashboard.js"></script> <!-- JS da plataforma -->
-  <script src="auth.js"></script>      <!-- JS da autenticação -->
+  <h2>Registro</h2>
+
+  <input type="text" id="username" placeholder="Usuário" />
+  <br /><br />
+  <input type="password" id="password" placeholder="Senha" />
+  <br /><br />
+  <button onclick="register()">Registrar</button>
+
+  <p id="msg"></p>
+
+  <script>
+    async function register() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      const res = await fetch('/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+      document.getElementById('msg').innerText = data.message;
+    }
+  </script>
+
 </body>
 </html>
