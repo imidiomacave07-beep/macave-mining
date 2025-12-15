@@ -2,21 +2,23 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Login</title>
+  <title>Login de Usuário</title>
 </head>
 <body>
-  <h2>Login de Usuário</h2>
-
+  <h1>Login</h1>
   <form id="loginForm">
-    <input type="text" id="username" placeholder="Usuário" required /><br><br>
-    <input type="password" id="password" placeholder="Senha" required /><br><br>
+    <label>Username:</label>
+    <input type="text" id="username" required><br><br>
+    <label>Senha:</label>
+    <input type="password" id="password" required><br><br>
     <button type="submit">Login</button>
   </form>
 
-  <p id="msg"></p>
+  <p id="message"></p>
 
   <script>
     const form = document.getElementById('loginForm');
+    const message = document.getElementById('message');
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -24,18 +26,21 @@
       const username = document.getElementById('username').value;
       const password = document.getElementById('password').value;
 
-      const res = await fetch('/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
-      });
+      try {
+        const res = await fetch('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+        message.textContent = data.message;
 
-      const data = await res.json();
-
-      document.getElementById('msg').innerText = data.message;
-
-      if (res.ok) {
-        window.location.href = '/dashboard.html';
+        if (res.ok) {
+          // redirecionar para o dashboard
+          window.location.href = '/dashboard.html';
+        }
+      } catch (err) {
+        message.textContent = 'Erro ao fazer login';
       }
     });
   </script>
