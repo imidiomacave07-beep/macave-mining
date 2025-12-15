@@ -13,9 +13,8 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/test-register.html'));
 });
 
-const authRoutes = require('./routes/authRoutes');
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', require('./routes/authRoutes'));
 
 app.listen(PORT, () => {
-  console.log(`Servidor ativo na porta ${PORT}`);
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
