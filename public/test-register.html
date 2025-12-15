@@ -2,37 +2,41 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Teste Registro</title>
+  <title>Registro de Usuário</title>
 </head>
 <body>
-  <h1>Registro de Usuário</h1>
+  <h1>Registrar Usuário</h1>
   <form id="registerForm">
-    <input type="text" id="name" placeholder="Nome" required><br>
-    <input type="email" id="email" placeholder="Email" required><br>
-    <input type="password" id="password" placeholder="Senha" required><br>
+    <label>Username:</label>
+    <input type="text" id="username" required><br><br>
+    <label>Senha:</label>
+    <input type="password" id="password" required><br><br>
     <button type="submit">Registrar</button>
   </form>
 
-  <pre id="result"></pre>
+  <p id="message"></p>
 
   <script>
-    const form = document.getElementById("registerForm");
-    const result = document.getElementById("result");
+    const form = document.getElementById('registerForm');
+    const message = document.getElementById('message');
 
-    form.addEventListener("submit", async (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const name = document.getElementById("name").value;
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
 
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password })
-      });
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
 
-      const data = await response.json();
-      result.textContent = JSON.stringify(data, null, 2);
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ username, password })
+        });
+        const data = await res.json();
+        message.textContent = data.message;
+      } catch (err) {
+        message.textContent = 'Erro ao registrar usuário';
+      }
     });
   </script>
 </body>
