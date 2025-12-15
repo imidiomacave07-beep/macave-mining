@@ -1,25 +1,18 @@
-const express = require("express");
-const path = require("path");
-require("dotenv").config();
+const express = require('express');
+const path = require('path');
+require('dotenv').config();
 
 const app = express();
-const PORT = process.env.PORT || 10000;
 
-// Middleware
 app.use(express.json());
 
-// Servir arquivos estáticos
-app.use(express.static(path.join(__dirname, "public")));
+// SERVIR ARQUIVOS HTML
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Rota raiz
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "test-register.html"));
-});
+// ROTAS API
+app.use('/api/auth', require('./routes/authRoutes'));
 
-// Rotas API
-const authRoutes = require("./routes/authRoutes");
-app.use("/api/auth", authRoutes);
-
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-  console.log(`Servidor ativo na porta ${PORT}`);
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
