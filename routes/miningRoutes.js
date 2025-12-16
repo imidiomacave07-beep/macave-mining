@@ -1,9 +1,8 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-// Rota de teste para a mineração
-router.get('/', (req, res) => {
-  res.json({ message: 'Mining route OK' });
+router.get("/status", (req, res) => {
+  res.json({ mining: "simulada", status: "ativa" });
 });
 
 module.exports = router;
