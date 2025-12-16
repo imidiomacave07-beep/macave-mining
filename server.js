@@ -1,23 +1,23 @@
-const express = require("express");
-const path = require("path");
-require("dotenv").config();
-require("./connect");
-
+const express = require('express');
+const path = require('path');
 const app = express();
-const PORT = process.env.PORT || 10000;
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true }));
 
-// Página inicial
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/index.html"));
+// servir arquivos estáticos
+app.use(express.static(path.join(__dirname, 'public')));
+
+// rotas API
+const authRoutes = require('./routes/authRoutes');
+app.use('/api/auth', authRoutes);
+
+// rota raiz
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
 
-// Rotas
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/mining", require("./routes/miningRoutes"));
-
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
