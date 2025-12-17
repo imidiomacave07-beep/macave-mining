@@ -1,32 +1,38 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8">
-<title>Registro</title>
+  <meta charset="UTF-8" />
+  <title>Registro</title>
 </head>
 <body>
-<h1>Registrar Usuário</h1>
-<form id="registerForm">
-  <input type="text" id="username" placeholder="Usuário" required><br>
-  <input type="password" id="password" placeholder="Senha" required><br>
-  <button type="submit">Registrar</button>
-</form>
+  <h2>Registro de Usuário</h2>
 
-<script>
-document.getElementById("registerForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const res = await fetch("/api/auth/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username: document.getElementById("username").value,
-      password: document.getElementById("password").value
-    })
-  });
-  const data = await res.json();
-  alert(data.message);
-  if (res.ok) window.location.href = "/login.html";
-});
-</script>
+  <form id="registerForm">
+    <input type="text" id="username" placeholder="Usuário" required />
+    <br><br>
+    <input type="password" id="password" placeholder="Senha" required />
+    <br><br>
+    <button type="submit">Registrar</button>
+  </form>
+
+  <p id="msg"></p>
+
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const username = document.getElementById("username").value;
+      const password = document.getElementById("password").value;
+
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await res.json();
+      document.getElementById("msg").innerText = data.message;
+    });
+  </script>
 </body>
 </html>
