@@ -1,39 +1,32 @@
-// server.js
 const express = require('express');
-const cors = require('cors'); // 🔹 Importa o CORS
-const bodyParser = require('body-parser');
+const cors = require('cors');
 const dotenv = require('dotenv');
-const connectDB = require('./config/connect'); // Conexão com MongoDB
-const routes = require('./routes'); // Suas rotas
+
+const connectDB = require('./connect');
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 10000;
 
-// 🔹 Configuração CORS
-app.use(cors({
-    origin: '*', // Permite acesso de qualquer domínio (desenvolvimento)
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization']
-}));
+// Middlewares
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Body parser
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-// Rotas
-app.use('/api', routes);
-
-// Conecta ao MongoDB
+// Conectar MongoDB
 connectDB();
 
-// Rota padrão para testar se o servidor está ativo
+// Rotas
+const authRoutes = require('./routes/authRoutes');
+app.use('/api/auth', authRoutes);
+
+// Rota teste
 app.get('/', (req, res) => {
-    res.send('Servidor Macave Mining rodando!');
+  res.send('Macave Mining API está rodando');
 });
 
-// Inicia o servidor
+// Porta
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-    console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
