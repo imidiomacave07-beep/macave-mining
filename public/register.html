@@ -1,38 +1,35 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8" />
-  <title>Registro</title>
+<meta charset="UTF-8">
+<title>Register - Macave Mining</title>
 </head>
 <body>
-  <h2>Registro de Usuário</h2>
+<h2>Cadastro</h2>
+<form id="registerForm">
+  <input type="text" name="username" placeholder="Nome de usuário" required><br>
+  <input type="email" name="email" placeholder="Email" required><br>
+  <input type="password" name="password" placeholder="Senha" required><br>
+  <button type="submit">Registrar</button>
+</form>
 
-  <form id="registerForm">
-    <input type="text" id="username" placeholder="Usuário" required />
-    <br><br>
-    <input type="password" id="password" placeholder="Senha" required />
-    <br><br>
-    <button type="submit">Registrar</button>
-  </form>
+<p id="message"></p>
 
-  <p id="msg"></p>
+<script>
+document.getElementById('registerForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const data = Object.fromEntries(formData.entries());
 
-  <script>
-    document.getElementById("registerForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+  const res = await fetch('/api/users/register', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
 
-      const username = document.getElementById("username").value;
-      const password = document.getElementById("password").value;
-
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password })
-      });
-
-      const data = await res.json();
-      document.getElementById("msg").innerText = data.message;
-    });
-  </script>
+  const result = await res.json();
+  document.getElementById('message').textContent = result.message;
+});
+</script>
 </body>
 </html>
