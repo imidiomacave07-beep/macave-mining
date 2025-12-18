@@ -1,38 +1,38 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <title>Login | Macave Mining</title>
+<meta charset="UTF-8">
+<title>Login - Macave Mining</title>
 </head>
 <body>
-  <h2>Login</h2>
+<h2>Login</h2>
+<form id="loginForm">
+  <input type="email" name="email" placeholder="Email" required><br>
+  <input type="password" name="password" placeholder="Senha" required><br>
+  <button type="submit">Entrar</button>
+</form>
 
-  <form id="loginForm">
-    <input type="text" id="username" placeholder="Usuário" required><br><br>
-    <input type="password" id="password" placeholder="Senha" required><br><br>
-    <button type="submit">Entrar</button>
-  </form>
+<p id="message"></p>
 
-  <p id="msg"></p>
+<script>
+document.getElementById('loginForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const formData = new FormData(e.target);
+  const data = Object.fromEntries(formData.entries());
 
-  <script>
-    document.getElementById("loginForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
+  const res = await fetch('/api/users/login', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
 
-      const res = await fetch("/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: username.value,
-          password: password.value
-        })
-      });
+  const result = await res.json();
+  document.getElementById('message').textContent = result.message;
 
-      const data = await res.json();
-      document.getElementById("msg").innerText = data.message;
-
-      if (res.ok) window.location.href = "/dashboard.html";
-    });
-  </script>
+  if(res.status === 200) {
+    window.location.href = '/dashboard.html';
+  }
+});
+</script>
 </body>
 </html>
