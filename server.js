@@ -1,21 +1,30 @@
-const express = require("express");
-const mongoose = require("mongoose");
-const dotenv = require("dotenv");
+const express = require('express');
+const dotenv = require('dotenv');
+const connectDB = require('./config/connect');
+const userRoutes = require('./routes/userRoutes');
+const cors = require('cors');
 
 dotenv.config();
-const app = express();
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static("public")); // SERVE OS ARQUIVOS HTML
-
-// Conectar ao MongoDB
-const connectDB = require("./connect");
 connectDB();
 
-// Rotas
-const authRoutes = require("./routes/authRoutes");
-app.use("/api/auth", authRoutes);
+const app = express();
 
-// Rodar servidor
+// Middlewares
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public')); // Para servir arquivos frontend
+
+// Rotas
+app.use('/api/users', userRoutes);
+
+// Página inicial
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/public/index.html');
+});
+
+// Porta
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
