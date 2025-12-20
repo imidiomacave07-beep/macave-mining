@@ -1,25 +1,32 @@
+// server.js
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./config/connect');
-
-const authRoutes = require('./routes/authRoutes');
-const miningRoutes = require('./routes/miningRoutes');
+const bodyParser = require('body-parser');
+const connectDB = require('./config/connect'); // conecta ao MongoDB
+const authRoutes = require('./routes/authRoutes'); // registro/login
+const mineRoutes = require('./routes/mineRoutes'); // mineração
+require('dotenv').config();
 
 const app = express();
+const PORT = process.env.PORT || 10000;
 
+// Middleware
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 
+// Conexão com MongoDB
 connectDB();
 
-app.get('/', (req, res) => {
+// Rota de teste para verificar se API está rodando
+app.get('/test', (req, res) => {
   res.json({ status: 'Macave Mining API está rodando 🚀' });
 });
 
+// Rotas
 app.use('/api/auth', authRoutes);
-app.use('/api', miningRoutes);
+app.use('/api/mine', mineRoutes);
 
-const PORT = process.env.PORT || 10000;
+// Inicia servidor
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
