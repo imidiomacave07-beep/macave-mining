@@ -1,79 +1,28 @@
 <!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <title>Macave Mining - Dashboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #fff;
-      text-align: center;
-      padding: 40px;
-    }
-    .box {
-      background: #020617;
-      padding: 20px;
-      border-radius: 10px;
-      max-width: 400px;
-      margin: auto;
-    }
-    button {
-      padding: 10px 20px;
-      margin-top: 15px;
-      border: none;
-      border-radius: 5px;
-      background: #22c55e;
-      color: #000;
-      font-size: 16px;
-      cursor: pointer;
-    }
-    button:disabled {
-      background: #555;
-      cursor: not-allowed;
-    }
-  </style>
-</head>
+<html>
 <body>
+<h2>Dashboard</h2>
 
-  <div class="box">
-    <h1>⛏️ Macave Mining</h1>
-    <p>Mineração Educacional (Simulada)</p>
+<button onclick="mine()">⛏️ Minerar</button>
+<p id="result"></p>
 
-    <h2>Saldo</h2>
-    <p><strong id="balance">0.0000</strong> MCV</p>
+<script>
+async function mine() {
+  const token = localStorage.getItem('token');
 
-    <button id="mineBtn">Iniciar Mineração</button>
+  const res = await fetch('/api/mining/mine', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + token
+    }
+  });
 
-    <p id="status"></p>
-  </div>
-
-  <script>
-    let balance = 0;
-    let mining = false;
-
-    const balanceEl = document.getElementById('balance');
-    const statusEl = document.getElementById('status');
-    const mineBtn = document.getElementById('mineBtn');
-
-    mineBtn.addEventListener('click', () => {
-      if (mining) return;
-
-      mining = true;
-      mineBtn.disabled = true;
-      statusEl.textContent = '⏳ Minerando...';
-
-      setTimeout(() => {
-        const reward = (Math.random() * 0.05 + 0.01).toFixed(4);
-        balance += parseFloat(reward);
-        balanceEl.textContent = balance.toFixed(4);
-
-        statusEl.textContent = `✅ Você ganhou ${reward} MCV`;
-        mineBtn.disabled = false;
-        mining = false;
-      }, 3000);
-    });
-  </script>
-
+  const data = await res.json();
+  result.innerText = 
+    data.message + 
+    ' | Ganho: ' + data.earned + 
+    ' | Saldo: ' + data.balance;
+}
+</script>
 </body>
 </html>
