@@ -2,21 +2,14 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-exports.registerUser = async (req, res) => {
+exports.register = async (req, res) => {
   const { username, password } = req.body;
-
   try {
-    const exists = await User.findOne({ username });
-    if (exists)
-      return res.status(400).json({ message: 'Usuário já existe' });
+    let user = await User.findOne({ username });
+    if (user) return res.status(400).json({ message: 'Usuário já existe' });
 
-    const hashed = await bcrypt.hash(password, 10);
-
-    await User.create({
-      username,
-      password: hashed,
-      balance: 0
-    });
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user = await User.create({ username, password: hashedPassword, balance: 0 });
 
     res.json({ message: 'Usuário registrado com sucesso' });
   } catch (err) {
@@ -24,25 +17,29 @@ exports.registerUser = async (req, res) => {
   }
 };
 
-exports.loginUser = async (req, res) => {
+exports.login = async (req, res) => {
   const { username, password } = req.body;
-
   try {
     const user = await User.findOne({ username });
-    if (!user)
-      return res.status(404).json({ message: 'Usuário não encontrado' });
+    if (!user) return res.status(400).json({ message: 'Usuário não encontrado' });
 
-    const ok = await bcrypt.compare(password, user.password);
-    if (!ok)
-      return res.status(401).json({ message: 'Senha incorreta' });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ message: 'Senha incorreta' });
 
-    const token = jwt.sign(
-      { id: user._id },
-      process.env.JWT_SECRET,
-      { expiresIn: '1d' }
-    );
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
+    res.json({ token, username: user.username, balance: user.balance });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
-    res.json({ token });
+exports.mine = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    const earned = Math.floor(Math.random() * 10);
+    user.balance += earned;
+    await user.save();
+    res.json({ message: 'Mineração concluída', earned, balance: user.balance });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
