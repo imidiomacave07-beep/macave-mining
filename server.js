@@ -1,27 +1,26 @@
+// server.js
+
+// Importa dependências
 const express = require('express');
 const cors = require('cors');
-const connectDB = require('./src/config/connect');
-const userRoutes = require('./src/routes/userRoutes');
+const bodyParser = require('body-parser');
+const connectDB = require('./src/config/connect'); // <- Import corrigido
 
-require('dotenv').config();
-
+// Inicializa app
 const app = express();
 
-// Middlewares
+// Middleware
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
 
-// Conectar ao MongoDB
+// Conecta ao MongoDB
 connectDB();
 
-// Rotas
-app.use('/api/users', userRoutes);
-
-// Rota raiz
+// Rotas (exemplo)
 app.get('/', (req, res) => {
   res.json({ status: 'Macave Mining API está rodando 🚀' });
 });
 
-// Porta
+// Inicia servidor
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
