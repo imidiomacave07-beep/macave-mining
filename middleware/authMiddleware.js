@@ -1,12 +1,8 @@
 const jwt = require('jsonwebtoken');
 
-module.exports = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader)
-    return res.status(401).json({ message: 'Token não fornecido' });
-
-  const token = authHeader.split(' ')[1];
+const authMiddleware = (req, res, next) => {
+  const token = req.header('Authorization')?.replace('Bearer ', '');
+  if (!token) return res.status(401).json({ message: 'Acesso negado' });
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -16,3 +12,5 @@ module.exports = (req, res, next) => {
     res.status(401).json({ message: 'Token inválido' });
   }
 };
+
+module.exports = authMiddleware;
