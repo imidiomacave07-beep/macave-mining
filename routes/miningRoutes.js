@@ -1,8 +1,8 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
+const auth = require('../middleware/authMiddleware');
+const { mine } = require('../controllers/miningController');
 
-router.get("/status", (req, res) => {
-  res.json({ mining: "simulada", status: "ativa" });
-});
+router.post('/mine', auth, mine);
 
 module.exports = router;
