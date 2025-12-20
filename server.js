@@ -1,16 +1,27 @@
 const express = require('express');
 const cors = require('cors');
-const bodyParser = require('body-parser');
-require('dotenv').config();
 const connectDB = require('./config/connect');
-const userRoutes = require('./routes/userRoutes');
-
-connectDB();
+require('dotenv').config();
 
 const app = express();
-app.use(cors());
-app.use(bodyParser.json());
-app.use('/api/users', userRoutes);
 
+// Conectar MongoDB
+connectDB();
+
+// Middlewares
+app.use(cors());
+app.use(express.json());
+
+// Rota raiz (IMPORTANTE)
+app.get('/', (req, res) => {
+  res.send('🚀 Macave Mining API está rodando');
+});
+
+// Rotas
+app.use('/api/users', require('./routes/userRoutes'));
+
+// Porta
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
