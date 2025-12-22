@@ -6,8 +6,8 @@ exports.registerUser = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const exists = await User.findOne({ username });
-    if (exists) {
+    const userExists = await User.findOne({ username });
+    if (userExists) {
       return res.status(400).json({ message: 'Usuário já existe' });
     }
 
@@ -19,8 +19,8 @@ exports.registerUser = async (req, res) => {
     });
 
     res.status(201).json({ message: 'Usuário registrado com sucesso' });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
 
@@ -33,27 +33,37 @@ exports.loginUser = async (req, res) => {
       return res.status(404).json({ message: 'Usuário não encontrado' });
     }
 
-    const validPassword = await bcrypt.compare(password, user.password);
-    if (!validPassword) {
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
       return res.status(401).json({ message: 'Senha inválida' });
     }
 
     const token = jwt.sign(
       { id: user._id },
-      process.env.JWT_SECRET || 'segredo123',
+      process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
 
+    res.json({ token });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+exports.mine = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+
+    const earned = Math.floor(Math.random() * 10) + 1;
+    user.balance += earned;
+    await user.save();
+
     res.json({
-      message: 'Login bem-sucedido',
-      token,
-      user: {
-        id: user._id,
-        username: user.username,
-        balance: user.balance
-      }
+      message: 'Mineração concluída',
+      earned,
+      balance: user.balance
     });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
