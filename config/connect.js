@@ -1,23 +1,13 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const connectDB = require('./config/connect');
+const mongoose = require('mongoose');
 
-dotenv.config();
-connectDB();
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log('✅ MongoDB conectado com sucesso');
+  } catch (error) {
+    console.error('❌ Erro ao conectar MongoDB:', error.message);
+    process.exit(1);
+  }
+};
 
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-
-app.get('/', (req, res) => {
-  res.json({ status: 'Macave Mining API está rodando 🚀' });
-});
-
-app.use('/api/users', require('./routes/userRoutes'));
-
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
-});
+module.exports = connectDB;
