@@ -1,22 +1,20 @@
 const express = require('express');
 const path = require('path');
-const connectDB = require('./config/connect');
+const cors = require('cors');
 
 const app = express();
-connectDB();
 
+// Middlewares
+app.use(cors());
 app.use(express.json());
 
-// 👉 SERVIR FRONTEND
+// 🔥 SERVIR FRONTEND (ISTO RESOLVE O "Cannot GET")
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 👉 ROTA RAIZ
+// Rota de teste
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.json({ status: 'Macave Mining API está rodando 🚀' });
 });
-
-// 👉 ROTAS API
-app.use('/api', require('./routes'));
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
