@@ -1,18 +1,14 @@
 const express = require('express');
 const path = require('path');
-const cors = require('cors');
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
-
-// 🔥 ISSO É O MAIS IMPORTANTE
+// 🔴 ESTA LINHA É O QUE ESTÁ FALTANDO
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Página inicial
+// rota de teste
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  res.json({ status: 'Macave Mining API está rodando 🚀' });
 });
 
 const PORT = process.env.PORT || 10000;
