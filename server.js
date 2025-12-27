@@ -7,12 +7,12 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 🔴 ISTO É O QUE RESOLVE O "Cannot GET"
+// 🔴 SERVIR ARQUIVOS HTML
 app.use(express.static(path.join(__dirname, 'public')));
 
-// rota raiz
+// 🔴 ROTA RAIZ → abre index.html
 app.get('/', (req, res) => {
-  res.json({ status: 'Macave Mining API está rodando 🚀' });
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 const PORT = process.env.PORT || 10000;
