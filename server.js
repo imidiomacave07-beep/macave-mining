@@ -4,14 +4,13 @@ const cors = require('cors');
 
 const app = express();
 
-// Middlewares
 app.use(cors());
 app.use(express.json());
 
-// 🔥 SERVIR FRONTEND (ISTO RESOLVE O "Cannot GET")
+// 🔴 ISTO É O QUE RESOLVE O "Cannot GET"
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Rota de teste
+// rota raiz
 app.get('/', (req, res) => {
   res.json({ status: 'Macave Mining API está rodando 🚀' });
 });
