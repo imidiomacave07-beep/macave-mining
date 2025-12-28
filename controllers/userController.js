@@ -2,12 +2,12 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-exports.registerUser = async (req, res) => {
+exports.register = async (req, res) => {
   try {
     const { username, password } = req.body;
 
-    const userExists = await User.findOne({ username });
-    if (userExists) {
+    const exists = await User.findOne({ username });
+    if (exists) {
       return res.status(400).json({ message: 'Usuário já existe' });
     }
 
@@ -18,13 +18,13 @@ exports.registerUser = async (req, res) => {
       password: hashedPassword
     });
 
-    res.status(201).json({ message: 'Usuário registrado com sucesso' });
+    res.status(201).json({ message: 'Usuário criado com sucesso' });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-exports.loginUser = async (req, res) => {
+exports.login = async (req, res) => {
   try {
     const { username, password } = req.body;
 
@@ -45,24 +45,6 @@ exports.loginUser = async (req, res) => {
     );
 
     res.json({ token });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-exports.mine = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
-
-    const earned = Math.floor(Math.random() * 10) + 1;
-    user.balance += earned;
-    await user.save();
-
-    res.json({
-      message: 'Mineração concluída',
-      earned,
-      balance: user.balance
-    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
