@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const path = require("path");
 
 const app = express();
 
@@ -12,50 +13,38 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /* =========================
-   ROTAS ESTÁTICAS (HTML)
+   SERVIR FRONTEND (HTML)
 ========================= */
-app.use(express.static("public"));
-
-app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/public/index.html");
-});
-
-app.get("/login", (req, res) => {
-  res.sendFile(__dirname + "/public/login.html");
-});
-
-app.get("/register", (req, res) => {
-  res.sendFile(__dirname + "/public/register.html");
-});
-
-app.get("/dashboard", (req, res) => {
-  res.sendFile(__dirname + "/public/dashboard.html");
-});
+app.use(express.static(path.join(__dirname, "public")));
 
 /* =========================
-   API STATUS
+   ROTAS API
 ========================= */
 app.get("/api/status", (req, res) => {
   res.json({ status: "Macave Mining API está rodando 🚀" });
 });
 
 /* =========================
-   MONGODB
+   FALLBACK (SPA / LINKS)
 ========================= */
-const MONGO_URI =
-  process.env.MONGO_URI ||
-  "mongodb://127.0.0.1:27017/macave_mining";
-
-mongoose
-  .connect(MONGO_URI)
-  .then(() => console.log("✅ MongoDB conectado com sucesso"))
-  .catch((err) => console.error("❌ Erro ao conectar MongoDB:", err));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
 /* =========================
-   SERVER
+   CONEXÃO DB + SERVER
 ========================= */
 const PORT = process.env.PORT || 10000;
 
-app.listen(PORT, () => {
-  console.log(`🚀 Servidor rodando na porta ${PORT}`);
-});
+mongoose
+  .connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/macave", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
+  .then(() => {
+    console.log("✅ MongoDB conectado com sucesso");
+    app.listen(PORT, () =>
+      console.log(`🚀 Servidor rodando na porta ${PORT}`)
+    );
+  })
+  .catch((err) => console.error("❌ Erro MongoDB:", err));
