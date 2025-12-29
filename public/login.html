@@ -1,37 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Macave Mining - Login</title>
-</head>
-<body>
-  <h2>Login</h2>
+<script>
+const form = document.getElementById("loginForm");
 
-  <input id="email" placeholder="Email"><br><br>
-  <input id="password" type="password" placeholder="Senha"><br><br>
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-  <button onclick="login()">Entrar</button>
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  <script>
-    async function login() {
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
+  const res = await fetch("/api/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
 
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password })
-      });
+  const data = await res.json();
 
-      const data = await res.json();
-
-      if (data.token) {
-        localStorage.setItem('token', data.token);
-        alert('Login feito!');
-        window.location.href = '/dashboard.html';
-      } else {
-        alert(data.msg || 'Erro');
-      }
-    }
-  </script>
-</body>
-</html>
+  if (res.ok) {
+    localStorage.setItem("token", data.token);
+    window.location.href = "/dashboard.html";
+  } else {
+    alert(data.message || "Erro no login");
+  }
+});
+</script>
