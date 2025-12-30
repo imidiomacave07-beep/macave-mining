@@ -1,100 +1,11 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Registro | Macave Mining</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    form {
-      background: #020617;
-      padding: 20px;
-      border-radius: 10px;
-      width: 100%;
-      max-width: 350px;
-    }
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 12px;
-      border-radius: 6px;
-      border: none;
-    }
-    input {
-      background: #1e293b;
-      color: white;
-    }
-    button {
-      background: #22c55e;
-      font-weight: bold;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #16a34a;
-    }
-    #msg {
-      text-align: center;
-      margin-top: 10px;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <title>Registo - Macave Mining</title>
 </head>
 <body>
-
-  <form id="registerForm">
-    <h2>Registro</h2>
-
-    <input type="text" id="name" placeholder="Nome" required />
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Senha" required />
-
-    <button type="submit">Registrar</button>
-
-    <div id="msg"></div>
-  </form>
-
-  <script>
-    const form = document.getElementById("registerForm");
-    const msg = document.getElementById("msg");
-
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      msg.innerText = "Enviando...";
-
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          name: name.value,
-          email: email.value,
-          password: password.value
-        })
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        msg.style.color = "lightgreen";
-        msg.innerText = "Registro feito com sucesso ✅";
-        form.reset();
-      } else {
-        msg.style.color = "red";
-        msg.innerText = data.message || "Erro ao registrar";
-      }
-    });
-  </script>
-
+  <h1>Registo Macave Mining</h1>
+  <p>Página pública de registo</p>
 </body>
 </html>
