@@ -1,6 +1,7 @@
 {
   "name": "macave-mining",
   "version": "1.0.0",
+  "description": "Plataforma Macave Mining",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -11,6 +12,6 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "bcryptjs": "^2.4.3",
-    "jsonwebtoken": "^9.1.1"
+    "jsonwebtoken": "^9.0.2"
   }
 }
