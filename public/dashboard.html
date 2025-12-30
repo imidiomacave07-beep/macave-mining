@@ -1,22 +1,60 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <title>Dashboard</title>
+  <meta charset="UTF-8" />
+  <title>Macave Mining – Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f172a;
+      color: #fff;
+      text-align: center;
+      padding-top: 60px;
+    }
+    .box {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 10px;
+      width: 320px;
+      margin: auto;
+    }
+    button {
+      padding: 10px;
+      width: 100%;
+      border: none;
+      border-radius: 6px;
+      background: #22c55e;
+      color: #000;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Dashboard</h1>
-  <p id="info"></p>
+
+  <div class="box">
+    <h2>🚀 Dashboard</h2>
+    <p>Bem-vindo à plataforma Macave Mining</p>
+
+    <p id="status">A verificar servidor...</p>
+
+    <button onclick="logout()">Sair</button>
+  </div>
 
   <script>
-    const user = JSON.parse(localStorage.getItem("user"));
+    fetch("/api/status")
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("status").innerText = data.status;
+      })
+      .catch(() => {
+        document.getElementById("status").innerText = "Servidor offline ❌";
+      });
 
-    if (!user) {
+    function logout() {
       window.location.href = "/login.html";
-    } else {
-      document.getElementById("info").innerText =
-        `Bem-vindo ${user.username} | Saldo: ${user.balance}`;
     }
   </script>
+
 </body>
 </html>
