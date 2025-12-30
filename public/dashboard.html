@@ -1,28 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard</title>
+</head>
 <body>
-<h2>Dashboard</h2>
+  <h1>Dashboard</h1>
+  <p id="info"></p>
 
-<button onclick="mine()">⛏️ Minerar</button>
-<p id="result"></p>
+  <script>
+    const user = JSON.parse(localStorage.getItem("user"));
 
-<script>
-async function mine() {
-  const token = localStorage.getItem('token');
-
-  const res = await fetch('/api/mining/mine', {
-    method: 'POST',
-    headers: {
-      'Authorization': 'Bearer ' + token
+    if (!user) {
+      window.location.href = "/login.html";
+    } else {
+      document.getElementById("info").innerText =
+        `Bem-vindo ${user.username} | Saldo: ${user.balance}`;
     }
-  });
-
-  const data = await res.json();
-  result.innerText = 
-    data.message + 
-    ' | Ganho: ' + data.earned + 
-    ' | Saldo: ' + data.balance;
-}
-</script>
+  </script>
 </body>
 </html>
