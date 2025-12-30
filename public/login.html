@@ -1,25 +1,38 @@
-<script>
-const form = document.getElementById("loginForm");
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Login</title>
+</head>
+<body>
+  <h2>Entrar</h2>
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
+  <input id="email" placeholder="Email"><br>
+  <input id="password" type="password" placeholder="Senha"><br>
+  <button onclick="login()">Entrar</button>
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  <p id="msg"></p>
 
-  const res = await fetch("/api/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
+  <script>
+    async function login() {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
 
-  const data = await res.json();
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      });
 
-  if (res.ok) {
-    localStorage.setItem("token", data.token);
-    window.location.href = "/dashboard.html";
-  } else {
-    alert(data.message || "Erro no login");
-  }
-});
-</script>
+      const data = await res.json();
+
+      if (res.ok) {
+        localStorage.setItem("user", JSON.stringify(data));
+        window.location.href = "/dashboard.html";
+      } else {
+        document.getElementById("msg").innerText = data.message;
+      }
+    }
+  </script>
+</body>
+</html>
