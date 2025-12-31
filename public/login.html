@@ -1,33 +1,49 @@
-<form id="loginForm">
-  <input type="email" id="email" placeholder="Email" required />
-  <input type="password" id="password" placeholder="Senha" required />
-  <button type="submit">Entrar</button>
-</form>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Macave Mining</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; }
+    input, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc; }
+    button { background: #4CAF50; color: white; border: none; cursor: pointer; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Senha" required>
+    <button id="loginBtn">Entrar</button>
+    <p>Não tem conta? <a href="register.html">Registrar</a></p>
+  </div>
 
-<script>
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
-  e.preventDefault();
+  <script>
+    document.getElementById('loginBtn').addEventListener('click', () => {
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-
-  try {
-    const res = await fetch('/api/auth/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password })
+      fetch('/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.token) {
+          localStorage.setItem('token', data.token);
+          window.location.href = '/dashboard.html';
+        } else {
+          alert(data.message || 'Erro ao logar!');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Erro de conexão com o servidor!');
+      });
     });
-
-    const data = await res.json();
-    if (res.ok) {
-      localStorage.setItem('token', data.token); // Salva token
-      alert('Login bem-sucedido!');
-      window.location.href = '/dashboard.html'; // Redireciona
-    } else {
-      alert(data.message);
-    }
-  } catch (err) {
-    alert('Erro de conexão ao servidor');
-  }
-});
-</script>
+  </script>
+</body>
+</html>
