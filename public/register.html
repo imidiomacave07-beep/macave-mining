@@ -1,52 +1,28 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cadastro - Macave Mining</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
-    .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; }
-    input, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc; }
-    button { background: #4CAF50; color: white; border: none; cursor: pointer; }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h2>Criar Conta</h2>
-    <input type="text" id="name" placeholder="Nome" required>
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="password" id="password" placeholder="Senha" required>
-    <button id="registerBtn">Registrar</button>
-    <p>Já tem conta? <a href="login.html">Login</a></p>
-  </div>
+<form id="registerForm">
+  <input type="text" name="name" placeholder="Nome" required>
+  <input type="email" name="email" placeholder="Email" required>
+  <input type="password" name="password" placeholder="Senha" required>
+  <button type="submit">Registrar</button>
+</form>
 
-  <script>
-    document.getElementById('registerBtn').addEventListener('click', () => {
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-      const password = document.getElementById('password').value;
-
-      fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if(data.token) {
-          localStorage.setItem('token', data.token);
-          alert('Conta criada com sucesso!');
-          window.location.href = '/dashboard.html';
-        } else {
-          alert(data.message || 'Erro ao registrar!');
-        }
-      })
-      .catch(err => {
-        console.error(err);
-        alert('Erro de conexão com o servidor!');
-      });
-    });
-  </script>
-</body>
-</html>
+<script>
+document.getElementById("registerForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  const form = e.target;
+  const data = {
+    name: form.name.value,
+    email: form.email.value,
+    password: form.password.value
+  };
+  const res = await fetch("/api/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data)
+  });
+  const json = await res.json();
+  if (res.ok) {
+    localStorage.setItem("token", json.token);
+    window.location.href = "/dashboard.html";
+  } else alert(json.message);
+});
+</script>
