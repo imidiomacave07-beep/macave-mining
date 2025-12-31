@@ -1,7 +1,17 @@
-server.js'
-node:internal/modules/cjs/loader:1404
-  throw err;
-  ^
-Error: Cannot find module '../middlewares/authMiddleware'
-Require stack:
-- /opt/render/project/src/routes/authRoutes.js
+const jwt = require("jsonwebtoken");
+
+module.exports = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) {
+    return res.status(401).json({ error: "Token não fornecido" });
+  }
+
+  const token = authHeader.split(" ")[1];
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.userId = decoded.id;
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: "Token inválido" });
+  }
+};
