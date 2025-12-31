@@ -2,47 +2,51 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Registo | Macave Mining</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cadastro - Macave Mining</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 300px; }
+    input, button { width: 100%; padding: 10px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc; }
+    button { background: #4CAF50; color: white; border: none; cursor: pointer; }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <h2>Criar Conta</h2>
+    <input type="text" id="name" placeholder="Nome" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <input type="password" id="password" placeholder="Senha" required>
+    <button id="registerBtn">Registrar</button>
+    <p>Já tem conta? <a href="login.html">Login</a></p>
+  </div>
 
-<h2>Criar Conta</h2>
+  <script>
+    document.getElementById('registerBtn').addEventListener('click', () => {
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
 
-<form id="registerForm">
-  <input type="text" id="name" placeholder="Nome" required><br><br>
-  <input type="email" id="email" placeholder="Email" required><br><br>
-  <input type="password" id="password" placeholder="Senha" required><br><br>
-  <button type="submit">Criar Conta</button>
-</form>
-
-<script>
-document.getElementById("registerForm").addEventListener("submit", async function(e) {
-  e.preventDefault();
-
-  const name = document.getElementById("name").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  try {
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name, email, password })
+      fetch('/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if(data.token) {
+          localStorage.setItem('token', data.token);
+          alert('Conta criada com sucesso!');
+          window.location.href = '/dashboard.html';
+        } else {
+          alert(data.message || 'Erro ao registrar!');
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        alert('Erro de conexão com o servidor!');
+      });
     });
-
-    const data = await res.json();
-
-    if (res.ok) {
-      alert("Conta criada com sucesso");
-      window.location.href = "/dashboard.html";
-    } else {
-      alert(data.message || "Erro no registo");
-    }
-  } catch (err) {
-    alert("Erro de ligação ao servidor");
-  }
-});
-</script>
-
+  </script>
 </body>
 </html>
