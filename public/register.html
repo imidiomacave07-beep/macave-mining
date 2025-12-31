@@ -1,28 +1,48 @@
-<script>
-const form = document.getElementById("registerForm");
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Registo | Macave Mining</title>
+</head>
+<body>
 
-form.addEventListener("submit", async (e) => {
+<h2>Criar Conta</h2>
+
+<form id="registerForm">
+  <input type="text" id="name" placeholder="Nome" required><br><br>
+  <input type="email" id="email" placeholder="Email" required><br><br>
+  <input type="password" id="password" placeholder="Senha" required><br><br>
+  <button type="submit">Criar Conta</button>
+</form>
+
+<script>
+document.getElementById("registerForm").addEventListener("submit", async function(e) {
   e.preventDefault();
 
   const name = document.getElementById("name").value;
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  const res = await fetch("/api/auth/register", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ name, email, password })
-  });
+  try {
+    const res = await fetch("/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, email, password })
+    });
 
-  const data = await res.json();
+    const data = await res.json();
 
-  if (res.ok) {
-    alert("Conta criada com sucesso!");
-    window.location.href = "/dashboard.html";
-  } else {
-    alert(data.message || "Erro ao criar conta");
+    if (res.ok) {
+      alert("Conta criada com sucesso");
+      window.location.href = "/dashboard.html";
+    } else {
+      alert(data.message || "Erro no registo");
+    }
+  } catch (err) {
+    alert("Erro de ligação ao servidor");
   }
 });
 </script>
+
+</body>
+</html>
