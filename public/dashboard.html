@@ -1,28 +1,35 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Macave Mining Dashboard</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
-  <header>
-    <h1>Bem-vindo à Macave Mining!</h1>
-    <div id="user-info">
-      <p>Nome: <span id="user-name">...</span></p>
-      <p>Email: <span id="user-email">...</span></p>
-      <p>Saldo: <span id="user-balance">0 M-Coin</span></p>
-    </div>
-  </header>
+<script>
+async function carregarPlanos() {
+  try {
+    const res = await fetch('/data/plans.json');
+    const planos = await res.json();
 
-  <section>
-    <h2>Planos Disponíveis</h2>
-    <div id="plans-container">
-      <p>Carregando planos...</p>
-    </div>
-  </section>
+    const container = document.getElementById('plans');
+    container.innerHTML = '';
 
-  <script src="dashboard.js"></script>
-</body>
-</html>
+    planos.forEach(plano => {
+      const card = document.createElement('div');
+      card.className = 'plan-card';
+
+      card.innerHTML = `
+        <h3>${plano.name}</h3>
+        <p><strong>Preço:</strong> ${plano.price} M-Coin</p>
+        <p><strong>Duração:</strong> ${plano.duration}</p>
+        <ul>
+          ${plano.benefits.map(b => `<li>${b}</li>`).join('')}
+        </ul>
+        <button onclick="alert('Plano selecionado: ${plano.name}')">
+          Ativar Plano
+        </button>
+      `;
+
+      container.appendChild(card);
+    });
+
+  } catch (err) {
+    alert('Erro ao carregar planos');
+  }
+}
+
+carregarPlanos();
+</script>
