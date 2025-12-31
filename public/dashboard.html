@@ -1,35 +1,31 @@
 <script>
-async function carregarPlanos() {
-  try {
-    const res = await fetch('/data/plans.json');
-    const planos = await res.json();
+fetch("/data/plans.json")
+  .then(res => {
+    if (!res.ok) throw new Error("Erro ao carregar planos");
+    return res.json();
+  })
+  .then(plans => {
+    const container = document.getElementById("plans");
+    container.innerHTML = "";
 
-    const container = document.getElementById('plans');
-    container.innerHTML = '';
+    plans.forEach(plan => {
+      const div = document.createElement("div");
+      div.className = "plan";
 
-    planos.forEach(plano => {
-      const card = document.createElement('div');
-      card.className = 'plan-card';
-
-      card.innerHTML = `
-        <h3>${plano.name}</h3>
-        <p><strong>Preço:</strong> ${plano.price} M-Coin</p>
-        <p><strong>Duração:</strong> ${plano.duration}</p>
+      div.innerHTML = `
+        <h3>${plan.name}</h3>
+        <p><strong>Preço:</strong> ${plan.price} M-Coin</p>
+        <p><strong>Duração:</strong> ${plan.duration}</p>
         <ul>
-          ${plano.benefits.map(b => `<li>${b}</li>`).join('')}
+          ${plan.benefits.map(b => `<li>${b}</li>`).join("")}
         </ul>
-        <button onclick="alert('Plano selecionado: ${plano.name}')">
-          Ativar Plano
-        </button>
       `;
 
-      container.appendChild(card);
+      container.appendChild(div);
     });
-
-  } catch (err) {
-    alert('Erro ao carregar planos');
-  }
-}
-
-carregarPlanos();
+  })
+  .catch(err => {
+    document.getElementById("plans").innerHTML =
+      "<p>Erro ao carregar planos.</p>";
+  });
 </script>
