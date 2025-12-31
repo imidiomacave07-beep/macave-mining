@@ -1,41 +1,73 @@
-<style>
-body {
-  font-family: Arial, sans-serif;
-  background: #0f172a;
-  color: #fff;
-}
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Macave Mining Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f4f4; }
+    header { background: #1e1e2f; color: white; padding: 1rem; text-align: center; }
+    main { padding: 1rem; }
+    .user-info { margin-bottom: 2rem; }
+    .plans { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+    @media(min-width: 600px) { .plans { grid-template-columns: repeat(2, 1fr); } }
+    .plan { background: white; padding: 1rem; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.2); }
+    .plan h3 { margin-top: 0; }
+    .plan ul { padding-left: 1.2rem; }
+    .plan button { margin-top: 1rem; padding: 0.5rem 1rem; border: none; border-radius: 5px; background: #1e1e2f; color: white; cursor: pointer; }
+    .plan button:hover { background: #3a3a5a; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Bem-vindo à Macave Mining!</h1>
+  </header>
+  <main>
+    <div class="user-info">
+      <p><strong>Nome:</strong> <span id="userName">undefined</span></p>
+      <p><strong>Email:</strong> <span id="userEmail">undefined</span></p>
+      <p><strong>Saldo:</strong> <span id="userBalance">0 M-Coin</span></p>
+    </div>
 
-#plans {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 20px;
-}
+    <h2>Planos de Mineração</h2>
+    <div class="plans" id="plansContainer"></div>
+  </main>
 
-.plan {
-  background: #1e293b;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.4);
-}
+  <script>
+    // Simula dados do usuário
+    const user = {
+      name: "Imídio Macave",
+      email: "imidiomacave07@gmail.com",
+      balance: 0
+    };
 
-.plan h3 {
-  color: #38bdf8;
-}
+    document.getElementById("userName").innerText = user.name;
+    document.getElementById("userEmail").innerText = user.email;
+    document.getElementById("userBalance").innerText = user.balance + " M-Coin";
 
-.plan .highlight {
-  color: #facc15;
-  font-weight: bold;
-}
-
-.plan button {
-  margin-top: 10px;
-  width: 100%;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background: #22c55e;
-  color: #000;
-  font-weight: bold;
-  cursor: pointer;
-}
-</style>
+    // Carrega planos do JSON
+    fetch('/data/plans.json')
+      .then(res => res.json())
+      .then(plans => {
+        const container = document.getElementById("plansContainer");
+        plans.forEach(plan => {
+          const div = document.createElement("div");
+          div.className = "plan";
+          div.innerHTML = `
+            <h3>${plan.name} - $${plan.price}</h3>
+            <p><strong>Duração:</strong> ${plan.duration}</p>
+            <ul>
+              ${plan.benefits.map(b => `<li>${b}</li>`).join('')}
+            </ul>
+            <button>Adquirir</button>
+          `;
+          container.appendChild(div);
+        });
+      })
+      .catch(err => {
+        console.error("Erro ao carregar planos:", err);
+        document.getElementById("plansContainer").innerHTML = "<p>Erro ao carregar planos.</p>";
+      });
+  </script>
+</body>
+</html>
