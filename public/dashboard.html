@@ -3,25 +3,26 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Macave Mining</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
-    .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    h1 { color: #333; text-align: center; }
-    p { font-size: 18px; }
-    .logout-btn { background: #ff4d4f; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 20px; }
-  </style>
+  <title>Macave Mining Dashboard</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div class="container">
+  <header>
     <h1>Bem-vindo à Macave Mining!</h1>
-    <p><strong>Nome:</strong> <span id="userName">Carregando...</span></p>
-    <p><strong>Email:</strong> <span id="userEmail">Carregando...</span></p>
-    <p><strong>Saldo:</strong> <span id="userBalance">0 M-Coin</span></p>
-    <button class="logout-btn" id="logoutBtn">Sair</button>
-  </div>
+    <div id="user-info">
+      <p>Nome: <span id="user-name">...</span></p>
+      <p>Email: <span id="user-email">...</span></p>
+      <p>Saldo: <span id="user-balance">0 M-Coin</span></p>
+    </div>
+  </header>
 
-  <!-- Dashboard JS -->
+  <section>
+    <h2>Planos Disponíveis</h2>
+    <div id="plans-container">
+      <p>Carregando planos...</p>
+    </div>
+  </section>
+
   <script src="dashboard.js"></script>
 </body>
 </html>
