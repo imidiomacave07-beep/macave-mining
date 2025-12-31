@@ -3,18 +3,32 @@
     "name": "Plano Inicial 🚀",
     "price": 50,
     "duration": "30 dias",
-    "benefits": ["Mineração básica 24/7", "Suporte via chat", "Relatórios semanais"]
+    "benefits": [
+      "Mineração básica 24/7",
+      "Suporte via chat",
+      "Relatórios semanais"
+    ]
   },
   {
     "name": "Plano Profissional 💎",
     "price": 150,
     "duration": "30 dias",
-    "benefits": ["Mineração avançada 24/7", "Suporte prioritário", "Relatórios diários", "Acesso a bônus secretos"]
+    "benefits": [
+      "Mineração avançada 24/7",
+      "Suporte prioritário",
+      "Relatórios diários",
+      "Acesso a bônus secretos"
+    ]
   },
   {
     "name": "Plano VIP 🔥",
     "price": 500,
     "duration": "30 dias",
-    "benefits": ["Mineração máxima 24/7", "Suporte dedicado 24h", "Relatórios detalhados em tempo real", "Acesso exclusivo a promoções e eventos"]
+    "benefits": [
+      "Mineração máxima 24/7",
+      "Suporte dedicado 24h",
+      "Relatórios detalhados em tempo real",
+      "Acesso exclusivo a promoções e eventos"
+    ]
   }
 ]
