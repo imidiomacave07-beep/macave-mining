@@ -1,60 +1,53 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8" />
-  <title>Macave Mining – Dashboard</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f172a;
-      color: #fff;
-      text-align: center;
-      padding-top: 60px;
-    }
-    .box {
-      background: #1e293b;
-      padding: 30px;
-      border-radius: 10px;
-      width: 320px;
-      margin: auto;
-    }
-    button {
-      padding: 10px;
-      width: 100%;
-      border: none;
-      border-radius: 6px;
-      background: #22c55e;
-      color: #000;
-      cursor: pointer;
-      margin-top: 15px;
-    }
-  </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Macave Mining Dashboard</title>
 </head>
 <body>
-
-  <div class="box">
-    <h2>🚀 Dashboard</h2>
-    <p>Bem-vindo à plataforma Macave Mining</p>
-
-    <p id="status">A verificar servidor...</p>
-
-    <button onclick="logout()">Sair</button>
-  </div>
+  <h1>Bem-vindo à Macave Mining!</h1>
+  <div id="userInfo"></div>
+  <button id="logoutBtn">Sair</button>
 
   <script>
-    fetch("/api/status")
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("status").innerText = data.status;
-      })
-      .catch(() => {
-        document.getElementById("status").innerText = "Servidor offline ❌";
-      });
+    // Pega o token do localStorage
+    const token = localStorage.getItem('token');
 
-    function logout() {
-      window.location.href = "/login.html";
+    if (!token) {
+      alert('Você precisa fazer login!');
+      window.location.href = '/login.html';
     }
-  </script>
 
+    // Função para pegar informações do usuário
+    async function loadDashboard() {
+      try {
+        const res = await fetch('/api/auth/me', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (!res.ok) throw new Error('Token inválido ou expirado');
+
+        const data = await res.json();
+        document.getElementById('userInfo').innerHTML = `
+          <p>Nome: ${data.name}</p>
+          <p>Email: ${data.email}</p>
+          <p>Saldo: ${data.balance || 0} M-Coin</p>
+        `;
+      } catch (err) {
+        alert(err.message);
+        localStorage.removeItem('token');
+        window.location.href = '/login.html';
+      }
+    }
+
+    loadDashboard();
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+      localStorage.removeItem('token');
+      window.location.href = '/login.html';
+    });
+  </script>
 </body>
 </html>
