@@ -1,31 +1,41 @@
-<script>
-fetch("/data/plans.json")
-  .then(res => {
-    if (!res.ok) throw new Error("Erro ao carregar planos");
-    return res.json();
-  })
-  .then(plans => {
-    const container = document.getElementById("plans");
-    container.innerHTML = "";
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #fff;
+}
 
-    plans.forEach(plan => {
-      const div = document.createElement("div");
-      div.className = "plan";
+#plans {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
 
-      div.innerHTML = `
-        <h3>${plan.name}</h3>
-        <p><strong>Preço:</strong> ${plan.price} M-Coin</p>
-        <p><strong>Duração:</strong> ${plan.duration}</p>
-        <ul>
-          ${plan.benefits.map(b => `<li>${b}</li>`).join("")}
-        </ul>
-      `;
+.plan {
+  background: #1e293b;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.4);
+}
 
-      container.appendChild(div);
-    });
-  })
-  .catch(err => {
-    document.getElementById("plans").innerHTML =
-      "<p>Erro ao carregar planos.</p>";
-  });
-</script>
+.plan h3 {
+  color: #38bdf8;
+}
+
+.plan .highlight {
+  color: #facc15;
+  font-weight: bold;
+}
+
+.plan button {
+  margin-top: 10px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #22c55e;
+  color: #000;
+  font-weight: bold;
+  cursor: pointer;
+}
+</style>
