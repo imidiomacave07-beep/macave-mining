@@ -1,0 +1,35 @@
+// dashboard.js
+document.addEventListener('DOMContentLoaded', () => {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    alert('Usuário não logado!');
+    window.location.href = '/login.html';
+    return;
+  }
+
+  // Buscar dados do usuário
+  fetch('/api/auth/me', {
+    headers: {
+      'Authorization': `Bearer ${token}`
+    }
+  })
+    .then(res => {
+      if (!res.ok) throw new Error('Falha ao obter dados do usuário');
+      return res.json();
+    })
+    .then(data => {
+      document.getElementById('userName').textContent = data.name || data.nome || 'Usuário';
+      document.getElementById('userEmail').textContent = data.email;
+      document.getElementById('userBalance').textContent = data.balance || '0 M-Coin';
+    })
+    .catch(err => {
+      console.error(err);
+      alert('Erro de conexão com o servidor!');
+    });
+
+  // Logout
+  document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('token');
+    window.location.href = '/login.html';
+  });
+});
