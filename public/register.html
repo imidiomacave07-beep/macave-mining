@@ -1,11 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <title>Registo - Macave Mining</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro</title>
 </head>
 <body>
-  <h1>Registo Macave Mining</h1>
-  <p>Página pública de registo</p>
+
+  <h2>Criar Conta</h2>
+
+  <form id="registerForm">
+    <input type="text" id="name" placeholder="Nome completo" required /><br><br>
+    <input type="email" id="email" placeholder="Email" required /><br><br>
+    <input type="password" id="password" placeholder="Senha" required /><br><br>
+    <button type="submit">Registrar</button>
+  </form>
+
+  <p id="msg"></p>
+
+  <script>
+    document.getElementById("registerForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.value,
+          email: email.value,
+          password: password.value
+        })
+      });
+
+      const data = await res.json();
+      document.getElementById("msg").innerText = data.message || data.error;
+    });
+  </script>
+
 </body>
 </html>
