@@ -3,51 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Macave Mining Dashboard</title>
+  <title>Dashboard Macave Mining</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; margin: 0; padding: 20px; }
+    .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    h1 { color: #333; text-align: center; }
+    p { font-size: 18px; }
+    .logout-btn { background: #ff4d4f; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+  </style>
 </head>
 <body>
-  <h1>Bem-vindo à Macave Mining!</h1>
-  <div id="userInfo"></div>
-  <button id="logoutBtn">Sair</button>
+  <div class="container">
+    <h1>Bem-vindo à Macave Mining!</h1>
+    <p><strong>Nome:</strong> <span id="userName">Carregando...</span></p>
+    <p><strong>Email:</strong> <span id="userEmail">Carregando...</span></p>
+    <p><strong>Saldo:</strong> <span id="userBalance">0 M-Coin</span></p>
+    <button class="logout-btn" id="logoutBtn">Sair</button>
+  </div>
 
-  <script>
-    // Pega o token do localStorage
-    const token = localStorage.getItem('token');
-
-    if (!token) {
-      alert('Você precisa fazer login!');
-      window.location.href = '/login.html';
-    }
-
-    // Função para pegar informações do usuário
-    async function loadDashboard() {
-      try {
-        const res = await fetch('/api/auth/me', {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (!res.ok) throw new Error('Token inválido ou expirado');
-
-        const data = await res.json();
-        document.getElementById('userInfo').innerHTML = `
-          <p>Nome: ${data.name}</p>
-          <p>Email: ${data.email}</p>
-          <p>Saldo: ${data.balance || 0} M-Coin</p>
-        `;
-      } catch (err) {
-        alert(err.message);
-        localStorage.removeItem('token');
-        window.location.href = '/login.html';
-      }
-    }
-
-    loadDashboard();
-
-    // Logout
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-      localStorage.removeItem('token');
-      window.location.href = '/login.html';
-    });
-  </script>
+  <!-- Dashboard JS -->
+  <script src="dashboard.js"></script>
 </body>
 </html>
