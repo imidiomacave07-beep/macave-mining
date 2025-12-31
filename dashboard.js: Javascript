@@ -1,35 +1,48 @@
-// dashboard.js
-document.addEventListener('DOMContentLoaded', () => {
-  const token = localStorage.getItem('token');
-  if (!token) {
-    alert('Usuário não logado!');
-    window.location.href = '/login.html';
-    return;
-  }
+// Simula usuário logado
+const user = {
+  name: "Imídio Macave",
+  email: "imidiomacave07@gmail.com",
+  balance: 0
+};
 
-  // Buscar dados do usuário
-  fetch('/api/auth/me', {
-    headers: {
-      'Authorization': `Bearer ${token}`
+// Preenche informações do usuário
+document.getElementById("user-name").innerText = user.name;
+document.getElementById("user-email").innerText = user.email;
+document.getElementById("user-balance").innerText = user.balance + " M-Coin";
+
+// Função para carregar planos da API
+async function loadPlans() {
+  const plansContainer = document.getElementById("plans-container");
+  plansContainer.innerHTML = "<p>Carregando planos...</p>";
+
+  try {
+    // Substitua pela URL da sua API de planos
+    const response = await fetch("https://macave-mining-1.onrender.com/api/plans");
+    const plans = await response.json();
+
+    if (!plans.length) {
+      plansContainer.innerHTML = "<p>Nenhum plano disponível no momento.</p>";
+      return;
     }
-  })
-    .then(res => {
-      if (!res.ok) throw new Error('Falha ao obter dados do usuário');
-      return res.json();
-    })
-    .then(data => {
-      document.getElementById('userName').textContent = data.name || data.nome || 'Usuário';
-      document.getElementById('userEmail').textContent = data.email;
-      document.getElementById('userBalance').textContent = data.balance || '0 M-Coin';
-    })
-    .catch(err => {
-      console.error(err);
-      alert('Erro de conexão com o servidor!');
+
+    plansContainer.innerHTML = "";
+    plans.forEach(plan => {
+      const planDiv = document.createElement("div");
+      planDiv.classList.add("plan");
+      planDiv.innerHTML = `
+        <h3>${plan.name}</h3>
+        <p>Preço: ${plan.price} M-Coin</p>
+        <p>Duração: ${plan.duration}</p>
+        <p>Benefícios: ${plan.benefits.join(", ")}</p>
+      `;
+      plansContainer.appendChild(planDiv);
     });
 
-  // Logout
-  document.getElementById('logoutBtn').addEventListener('click', () => {
-    localStorage.removeItem('token');
-    window.location.href = '/login.html';
-  });
-});
+  } catch (error) {
+    plansContainer.innerHTML = "<p>Erro ao carregar planos. Tente novamente mais tarde.</p>";
+    console.error("Erro ao buscar planos:", error);
+  }
+}
+
+// Carrega planos ao abrir o dashboard
+loadPlans();
