@@ -1,10 +1,10 @@
 [
-  { "name": "Plano Inicial 🚀", "price": 20, "duration": "30 dias", "benefits": ["Mineração básica 24/7", "Suporte via chat"] },
-  { "name": "Plano Básico 💎", "price": 30, "duration": "30 dias", "benefits": ["Mineração leve 24/7", "Relatórios semanais"] },
-  { "name": "Plano Intermediário 💰", "price": 50, "duration": "30 dias", "benefits": ["Mineração ativa 24/7", "Suporte prioritário"] },
-  { "name": "Plano Avançado 🔥", "price": 100, "duration": "30 dias", "benefits": ["Mineração avançada 24/7", "Relatórios diários"] },
-  { "name": "Plano Profissional ⚡", "price": 200, "duration": "30 dias", "benefits": ["Mineração intensiva 24/7", "Suporte dedicado"] },
-  { "name": "Plano VIP 💎", "price": 500, "duration": "30 dias", "benefits": ["Mineração máxima 24/7", "Acesso exclusivo a promoções"] },
-  { "name": "Plano Ultra 💰", "price": 1000, "duration": "30 dias", "benefits": ["Mineração full-time", "Relatórios detalhados em tempo real"] },
-  { "name": "Plano Mega 🔥", "price": 5000, "duration": "30 dias", "benefits": ["Mineração máxima + bônus secretos", "Suporte 24/7"] }
+  { "name": "Plano Básico 🚀", "price": 20, "duration": "30 dias", "benefits": ["Mineração 24/7", "Suporte básico"] },
+  { "name": "Plano Bronze 🥉", "price": 30, "duration": "30 dias", "benefits": ["Mineração 24/7", "Suporte via chat"] },
+  { "name": "Plano Prata 🥈", "price": 50, "duration": "30 dias", "benefits": ["Mineração 24/7", "Relatórios semanais"] },
+  { "name": "Plano Ouro 🥇", "price": 100, "duration": "30 dias", "benefits": ["Mineração avançada", "Suporte prioritário"] },
+  { "name": "Plano Platina 💎", "price": 200, "duration": "30 dias", "benefits": ["Mineração máxima", "Acesso a bônus secretos"] },
+  { "name": "Plano Diamante 🔥", "price": 500, "duration": "30 dias", "benefits": ["Mineração máxima", "Relatórios detalhados", "Suporte dedicado"] },
+  { "name": "Plano Elite ⚡", "price": 1000, "duration": "30 dias", "benefits": ["Mineração elite", "Suporte 24h", "Promoções exclusivas"] },
+  { "name": "Plano VIP ✨", "price": 5000, "duration": "30 dias", "benefits": ["Mineração máxima + bônus", "Suporte VIP", "Eventos exclusivos"] }
 ]
