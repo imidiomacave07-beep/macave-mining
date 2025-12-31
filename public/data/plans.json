@@ -1,98 +1,10 @@
 [
-  {
-    "name": "Starter $20 🚀",
-    "price": 20,
-    "duration": "30 dias",
-    "highlight": "Entrada acessível",
-    "benefits": [
-      "Mineração automática 24/7",
-      "Lucro diário básico",
-      "Painel simples",
-      "Suporte padrão"
-    ]
-  },
-  {
-    "name": "Bronze $30 🔥",
-    "price": 30,
-    "duration": "30 dias",
-    "highlight": "Bom para começar",
-    "benefits": [
-      "Mineração estável 24/7",
-      "Lucro diário garantido",
-      "Relatórios semanais",
-      "Suporte via chat"
-    ]
-  },
-  {
-    "name": "Silver $50 💎",
-    "price": 50,
-    "duration": "30 dias",
-    "highlight": "Mais escolhido ⭐",
-    "benefits": [
-      "Mineração acelerada 24/7",
-      "Lucro diário médio",
-      "Bônus semanais",
-      "Relatórios detalhados"
-    ]
-  },
-  {
-    "name": "Gold $100 🥇",
-    "price": 100,
-    "duration": "30 dias",
-    "highlight": "Lucro sólido",
-    "benefits": [
-      "Mineração avançada 24/7",
-      "Lucro diário elevado",
-      "Bônus quinzenais",
-      "Suporte prioritário"
-    ]
-  },
-  {
-    "name": "Platinum $200 👑",
-    "price": 200,
-    "duration": "30 dias",
-    "highlight": "Alta performance",
-    "benefits": [
-      "Mineração premium 24/7",
-      "Lucro diário premium",
-      "Relatórios em tempo real",
-      "Suporte VIP"
-    ]
-  },
-  {
-    "name": "Diamond $500 💠",
-    "price": 500,
-    "duration": "30 dias",
-    "highlight": "Investidores sérios",
-    "benefits": [
-      "Mineração máxima 24/7",
-      "Lucro diário máximo",
-      "Gestor dedicado",
-      "Bônus exclusivos"
-    ]
-  },
-  {
-    "name": "Elite $1000 🔥",
-    "price": 1000,
-    "duration": "30 dias",
-    "highlight": "Elite financeira",
-    "benefits": [
-      "Mineração institucional",
-      "Lucro diário muito elevado",
-      "Prioridade total",
-      "Convites exclusivos"
-    ]
-  },
-  {
-    "name": "Whale $5000 🐋",
-    "price": 5000,
-    "duration": "30 dias",
-    "highlight": "Lucro extremo",
-    "benefits": [
-      "Mineração corporativa 24/7",
-      "Lucro diário extremo",
-      "Gestão personalizada",
-      "Acesso vitalício a novidades"
-    ]
-  }
+  { "name": "Plano Inicial 🚀", "price": 20, "duration": "30 dias", "benefits": ["Mineração básica 24/7", "Suporte via chat"] },
+  { "name": "Plano Básico 💎", "price": 30, "duration": "30 dias", "benefits": ["Mineração leve 24/7", "Relatórios semanais"] },
+  { "name": "Plano Intermediário 💰", "price": 50, "duration": "30 dias", "benefits": ["Mineração ativa 24/7", "Suporte prioritário"] },
+  { "name": "Plano Avançado 🔥", "price": 100, "duration": "30 dias", "benefits": ["Mineração avançada 24/7", "Relatórios diários"] },
+  { "name": "Plano Profissional ⚡", "price": 200, "duration": "30 dias", "benefits": ["Mineração intensiva 24/7", "Suporte dedicado"] },
+  { "name": "Plano VIP 💎", "price": 500, "duration": "30 dias", "benefits": ["Mineração máxima 24/7", "Acesso exclusivo a promoções"] },
+  { "name": "Plano Ultra 💰", "price": 1000, "duration": "30 dias", "benefits": ["Mineração full-time", "Relatórios detalhados em tempo real"] },
+  { "name": "Plano Mega 🔥", "price": 5000, "duration": "30 dias", "benefits": ["Mineração máxima + bônus secretos", "Suporte 24/7"] }
 ]
