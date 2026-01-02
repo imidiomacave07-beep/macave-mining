@@ -1,31 +1,40 @@
-<script>
-async function carregarUsuario() {
+// Planos
+const planos = [
+  { name: "Plano $20", price: 20, duration: "30 dias", benefits: ["Mineração 24/7", "Suporte básico"] },
+  { name: "Plano $30", price: 30, duration: "30 dias", benefits: ["Mineração 24/7", "Suporte via chat"] },
+  { name: "Plano $50", price: 50, duration: "30 dias", benefits: ["Mineração 24/7", "Relatórios semanais"] },
+  { name: "Plano $100", price: 100, duration: "30 dias", benefits: ["Mineração avançada", "Suporte prioritário"] },
+  { name: "Plano $200", price: 200, duration: "30 dias", benefits: ["Mineração máxima", "Bônus secretos"] },
+  { name: "Plano $500", price: 500, duration: "30 dias", benefits: ["Mineração máxima", "Relatórios detalhados", "Suporte dedicado"] },
+  { name: "Plano $1000", price: 1000, duration: "30 dias", benefits: ["Mineração elite", "Suporte 24h", "Promoções exclusivas"] },
+  { name: "Plano $5000", price: 5000, duration: "30 dias", benefits: ["Mineração máxima + bônus", "Suporte VIP", "Eventos exclusivos"] }
+];
+
+const container = document.getElementById("plansContainer");
+planos.forEach(plan => {
+  const div = document.createElement("div");
+  div.innerHTML = `
+    <h3>${plan.name}</h3>
+    <p>Preço: $${plan.price}</p>
+    <p>Duração: ${plan.duration}</p>
+    <ul>${plan.benefits.map(b => `<li>${b}</li>`).join("")}</ul>
+    <button onclick="alert('Compra do plano ${plan.name} ainda não implementada')">Comprar</button>
+  `;
+  container.appendChild(div);
+});
+
+// Carregar usuário
+async function loadUser() {
   const token = localStorage.getItem("token");
-
-  if (!token) {
-    alert("Sessão expirada. Faça login.");
-    window.location.href = "/login.html";
-    return;
+  if (!token) return;
+  try {
+    const res = await fetch("/api/auth/me", { headers: { Authorization: "Bearer " + token } });
+    const user = await res.json();
+    document.getElementById("userName").innerText = user.name;
+    document.getElementById("userEmail").innerText = user.email;
+    document.getElementById("userBalance").innerText = user.balance + " M-Coin";
+  } catch (err) {
+    console.error(err);
   }
-
-  const res = await fetch("/api/auth/me", {
-    headers: {
-      Authorization: "Bearer " + token
-    }
-  });
-
-  if (!res.ok) {
-    alert("Erro de conexão com servidor");
-    return;
-  }
-
-  const user = await res.json();
-
-  document.getElementById("userName").innerText = user.name;
-  document.getElementById("userEmail").innerText = user.email;
-  document.getElementById("userBalance").innerText =
-    user.balance + " M-Coin";
 }
-
-carregarUsuario();
-</script>
+loadUser();
