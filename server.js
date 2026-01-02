@@ -1,60 +1,41 @@
+// server.js
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const dotenv = require("dotenv");
 const path = require("path");
-
-dotenv.config();
 
 const app = express();
 
-/* =======================
-   MIDDLEWARES GLOBAIS
-======================= */
+// Middlewares
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
-/* =======================
-   FICHEIROS PÚBLICOS
-======================= */
-app.use(express.static(path.join(__dirname, "public")));
+// Conexão com MongoDB
+mongoose.connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/macave", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("✅ MongoDB conectado com sucesso"))
+.catch(err => console.error("❌ Erro ao conectar MongoDB:", err));
 
-/* =======================
-   ROTAS
-======================= */
+// Rotas
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
-/* =======================
-   DASHBOARD
-======================= */
+// Servir arquivos públicos
+app.use(express.static(path.join(__dirname, "public")));
+
+// Rota do dashboard
 app.get("/dashboard", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
 
-/* =======================
-   ROTA RAIZ
-======================= */
+// Rota raiz
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-/* =======================
-   CONEXÃO MONGODB
-======================= */
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => {
-    console.log("✅ MongoDB conectado");
-  })
-  .catch((err) => {
-    console.error("❌ Erro MongoDB:", err);
-  });
-
-/* =======================
-   START SERVER
-======================= */
+// Iniciar servidor
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor rodando na porta ${PORT}`);
