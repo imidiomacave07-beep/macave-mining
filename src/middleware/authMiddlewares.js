@@ -1,20 +1,30 @@
-module.exports = function (req, res, next) {
+const jwt = require("jsonwebtoken");
+
+module.exports = (req, res, next) => {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
-    return res.status(401).json({ message: "Token não fornecido" });
+    return res.status(401).json({ error: "Token não fornecido" });
   }
 
-  const token = authHeader.split(" ")[1];
+  const parts = authHeader.split(" ");
 
-  try {
-    const decoded = require("jsonwebtoken").verify(
-      token,
-      process.env.JWT_SECRET
-    );
-    req.user = decoded;
-    next();
-  } catch (err) {
-    return res.status(401).json({ message: "Token inválido" });
+  if (parts.length !== 2) {
+    return res.status(401).json({ error: "Token malformado" });
   }
+
+  const [scheme, token] = parts;
+
+  if (!/^Bearer$/i.test(scheme)) {
+    return res.status(401).json({ error: "Token malformado" });
+  }
+
+  jwt.verify(token, process.env.JWT_SECRET || "macave_secret", (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Token inválido" });
+    }
+
+    req.userId = decoded.id;
+    return next();
+  });
 };
