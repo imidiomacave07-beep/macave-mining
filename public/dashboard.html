@@ -1,91 +1,31 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Macave Mining Dashboard</title>
-  <style>
-    body { font-family: Arial, sans-serif; background: #f4f4f4; margin: 0; padding: 0; }
-    header { background: #1a73e8; color: white; padding: 20px; text-align: center; }
-    main { padding: 20px; max-width: 800px; margin: auto; }
-    .user-info { margin-bottom: 30px; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-    .user-info p { margin: 5px 0; font-size: 16px; }
-    .plans { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 20px; }
-    .plan { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
-    .plan h3 { margin-top: 0; }
-    .plan ul { list-style: none; padding-left: 0; }
-    .plan ul li { margin-bottom: 5px; }
-    .plan button { background: #1a73e8; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer; width: 100%; font-size: 16px; }
-    .plan button:hover { background: #155ab6; }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Bem-vindo à Macave Mining!</h1>
-  </header>
+<script>
+async function carregarUsuario() {
+  const token = localStorage.getItem("token");
 
-  <main>
-    <div class="user-info">
-      <h2 id="userName">Carregando...</h2>
-      <p id="userEmail"></p>
-      <p>Saldo: <span id="userBalance"></span></p>
-    </div>
+  if (!token) {
+    alert("Sessão expirada. Faça login.");
+    window.location.href = "/login.html";
+    return;
+  }
 
-    <h2>Escolha um Plano</h2>
-    <div class="plans" id="plansContainer"></div>
-  </main>
-
-  <script>
-    // Lista de planos
-    const planos = [
-      { name: "Plano Básico 🚀", price: 20, duration: "30 dias", benefits: ["Mineração 24/7", "Suporte básico"] },
-      { name: "Plano Bronze 🥉", price: 30, duration: "30 dias", benefits: ["Mineração 24/7", "Suporte via chat"] },
-      { name: "Plano Prata 🥈", price: 50, duration: "30 dias", benefits: ["Mineração 24/7", "Relatórios semanais"] },
-      { name: "Plano Ouro 🥇", price: 100, duration: "30 dias", benefits: ["Mineração avançada", "Suporte prioritário"] },
-      { name: "Plano Platina 💎", price: 200, duration: "30 dias", benefits: ["Mineração máxima", "Acesso a bônus secretos"] },
-      { name: "Plano Diamante 🔥", price: 500, duration: "30 dias", benefits: ["Mineração máxima", "Relatórios detalhados", "Suporte dedicado"] },
-      { name: "Plano Elite ⚡", price: 1000, duration: "30 dias", benefits: ["Mineração elite", "Suporte 24h", "Promoções exclusivas"] },
-      { name: "Plano VIP ✨", price: 5000, duration: "30 dias", benefits: ["Mineração máxima + bônus", "Suporte VIP", "Eventos exclusivos"] },
-    ];
-
-    // Função para carregar dados do usuário
-    async function loadUser() {
-      const token = localStorage.getItem("token");
-      if (!token) return window.location.href = "/login.html"; // redireciona se não logado
-
-      try {
-        const resUser = await fetch("/api/auth/me", { headers: { Authorization: "Bearer " + token } });
-        if (!resUser.ok) throw new Error("Falha ao carregar dados do usuário");
-
-        const user = await resUser.json();
-        document.getElementById("userName").innerText = user.name;
-        document.getElementById("userEmail").innerText = user.email;
-        document.getElementById("userBalance").innerText = user.balance + " M-Coin";
-      } catch (err) {
-        alert(err.message);
-      }
+  const res = await fetch("/api/auth/me", {
+    headers: {
+      Authorization: "Bearer " + token
     }
+  });
 
-    // Função para exibir planos
-    function loadPlans() {
-      const container = document.getElementById("plansContainer");
-      planos.forEach(plan => {
-        const div = document.createElement("div");
-        div.className = "plan";
-        div.innerHTML = `
-          <h3>${plan.name}</h3>
-          <p>Preço: $${plan.price}</p>
-          <p>Duração: ${plan.duration}</p>
-          <ul>${plan.benefits.map(b => `<li>${b}</li>`).join("")}</ul>
-          <button>Assinar</button>
-        `;
-        container.appendChild(div);
-      });
-    }
+  if (!res.ok) {
+    alert("Erro de conexão com servidor");
+    return;
+  }
 
-    // Inicializa a dashboard
-    loadUser();
-    loadPlans();
-  </script>
-</body>
-</html>
+  const user = await res.json();
+
+  document.getElementById("userName").innerText = user.name;
+  document.getElementById("userEmail").innerText = user.email;
+  document.getElementById("userBalance").innerText =
+    user.balance + " M-Coin";
+}
+
+carregarUsuario();
+</script>
