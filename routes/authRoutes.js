@@ -3,10 +3,12 @@ const router = express.Router();
 
 const authMiddleware = require("../middlewares/authMiddleware");
 
-router.get("/me", authMiddleware, async (req, res) => {
+// rota de teste
+router.get("/me", authMiddleware, (req, res) => {
   res.json({
-    name: "Imídio",
-    email: "imidiomacave07@gmail.com",
+    id: req.userId,
+    name: "Usuário Macave",
+    email: "teste@macave.com",
     balance: 0
   });
 });
