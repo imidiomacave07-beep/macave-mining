@@ -1,6 +1,4 @@
-const jwt = require("jsonwebtoken");
-
-module.exports = (req, res, next) => {
+module.exports = function (req, res, next) {
   const authHeader = req.headers.authorization;
 
   if (!authHeader) {
@@ -10,9 +8,9 @@ module.exports = (req, res, next) => {
   const token = authHeader.split(" ")[1];
 
   try {
-    const decoded = jwt.verify(
+    const decoded = require("jsonwebtoken").verify(
       token,
-      process.env.JWT_SECRET || "segredo123"
+      process.env.JWT_SECRET
     );
     req.user = decoded;
     next();
