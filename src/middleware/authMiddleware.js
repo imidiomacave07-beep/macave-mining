@@ -7,17 +7,7 @@ module.exports = (req, res, next) => {
     return res.status(401).json({ error: "Token não fornecido" });
   }
 
-  const parts = authHeader.split(" ");
-
-  if (parts.length !== 2) {
-    return res.status(401).json({ error: "Token malformado" });
-  }
-
-  const [scheme, token] = parts;
-
-  if (!/^Bearer$/i.test(scheme)) {
-    return res.status(401).json({ error: "Token malformado" });
-  }
+  const [, token] = authHeader.split(" ");
 
   jwt.verify(token, process.env.JWT_SECRET || "macave_secret", (err, decoded) => {
     if (err) {
@@ -25,6 +15,6 @@ module.exports = (req, res, next) => {
     }
 
     req.userId = decoded.id;
-    return next();
+    next();
   });
 };
