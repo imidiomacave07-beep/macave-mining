@@ -1,15 +1,15 @@
 const express = require("express");
 const router = express.Router();
 
-// Corrigido: pasta singular "middleware"
+// ✅ caminho CORRETO (middleware, singular)
 const authMiddleware = require("../middleware/authMiddleware");
 
-// Rota de teste do usuário
+// rota protegida
 router.get("/me", authMiddleware, (req, res) => {
   res.json({
     id: req.userId,
     name: "Usuário Macave",
-    email: "teste@macave.com",
+    email: "imidiomacave07@gmail.com",
     balance: 0
   });
 });
