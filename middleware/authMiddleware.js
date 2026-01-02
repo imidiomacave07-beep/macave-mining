@@ -14,7 +14,6 @@ module.exports = (req, res, next) => {
       token,
       process.env.JWT_SECRET || "macave_secret"
     );
-
     req.userId = decoded.id;
     next();
   } catch (err) {
