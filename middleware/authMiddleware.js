@@ -1,22 +1,61 @@
-const jwt = require("jsonwebtoken");
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const path = require("path");
 
-module.exports = (req, res, next) => {
-  const authHeader = req.headers.authorization;
+dotenv.config();
 
-  if (!authHeader) {
-    return res.status(401).json({ message: "Token não fornecido" });
-  }
+const app = express();
 
-  const token = authHeader.split(" ")[1];
+/* =======================
+   MIDDLEWARES GLOBAIS
+======================= */
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-  try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || "macave_secret"
-    );
-    req.userId = decoded.id;
-    next();
-  } catch (err) {
-    return res.status(401).json({ message: "Token inválido" });
-  }
-};
+/* =======================
+   FICHEIROS PÚBLICOS
+======================= */
+app.use(express.static(path.join(__dirname, "public")));
+
+/* =======================
+   ROTAS
+======================= */
+const authRoutes = require("./routes/authRoutes");
+app.use("/api/auth", authRoutes);
+
+/* =======================
+   DASHBOARD
+======================= */
+app.get("/dashboard", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "dashboard.html"));
+});
+
+/* =======================
+   ROTA RAIZ
+======================= */
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+/* =======================
+   CONEXÃO MONGODB
+======================= */
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("✅ MongoDB conectado");
+  })
+  .catch((err) => {
+    console.error("❌ Erro MongoDB:", err);
+  });
+
+/* =======================
+   START SERVER
+======================= */
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => {
+  console.log(`🚀 Servidor rodando na porta ${PORT}`);
+});
