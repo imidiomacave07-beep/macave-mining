@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 
-const authMiddleware = require("../middlewares/authMiddleware");
+// Corrigido: pasta singular "middleware"
+const authMiddleware = require("../middleware/authMiddleware");
 
-// rota de teste
+// Rota de teste do usuário
 router.get("/me", authMiddleware, (req, res) => {
   res.json({
     id: req.userId,
