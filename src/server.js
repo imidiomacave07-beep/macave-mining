@@ -1,28 +1,26 @@
 const express = require("express");
 const path = require("path");
-const mongoose = require("mongoose");
 require("dotenv").config();
 
+const connectDB = require("./config/db");
+
 const app = express();
+connectDB();
+
 app.use(express.json());
 
-// Conectar MongoDB
-mongoose.connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/macave-mining")
-  .then(() => console.log("✅ MongoDB conectado"))
-  .catch(err => console.log("❌ Erro MongoDB:", err));
+// ficheiros públicos
+app.use(express.static(path.join(__dirname, "public")));
 
-// Rotas
-const authRoutes = require("./routes/authRoutes");
-app.use("/api/auth", authRoutes);
+// rotas
+app.use("/api/auth", require("./routes/authRoutes"));
 
-// Servir arquivos públicos
-app.use(express.static(path.join(__dirname, "../public")));
-
-// Rota dashboard
+// dashboard
 app.get("/dashboard", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/dashboard.html"));
+  res.sendFile(path.join(__dirname, "public", "dashboard.html"));
 });
 
-// Porta
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`🚀 Servidor rodando na porta ${PORT}`));
+app.listen(PORT, () =>
+  console.log("🚀 Servidor rodando na porta", PORT)
+);
