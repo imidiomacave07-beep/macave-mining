@@ -1,23 +1,17 @@
-// src/server.js
 const express = require("express");
-const path = require("path");
-const app = express();
+const dotenv = require("dotenv");
+const connectDB = require("./src/config/db");
 
-// JSON middleware
+dotenv.config();
+connectDB();
+
+const app = express();
 app.use(express.json());
 
-// Rotas
-const authRoutes = require("./routes/authRoutes");
-app.use("/api/auth", authRoutes);
+app.use("/api/auth", require("./src/routes/authRoutes"));
+app.use("/api/plans", require("./src/routes/planRoutes"));
 
-// Servir ficheiros públicos
-app.use(express.static(path.join(__dirname, "../public")));
-
-// Dashboard
-app.get("/dashboard", (req, res) => {
-  res.sendFile(path.join(__dirname, "../public/dashboard.html"));
-});
-
-// Porta
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Servidor a correr na porta ${PORT}`));
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () =>
+  console.log("Servidor rodando na porta " + PORT)
+);
