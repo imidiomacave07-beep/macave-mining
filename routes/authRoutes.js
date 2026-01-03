@@ -1,19 +1,11 @@
+// src/routes/authRoutes.js
 const express = require("express");
 const router = express.Router();
+
+// caminho relativo correto para o middleware
 const authMiddleware = require("../middleware/authMiddleware");
 
-// login simulado
-router.post("/login", (req, res) => {
-  // gera token de teste
-  const token = require("jsonwebtoken").sign(
-    { id: "12345" },
-    process.env.JWT_SECRET || "macave_secret",
-    { expiresIn: "1h" }
-  );
-  res.json({ token });
-});
-
-// rota para obter dados do usuário
+// rota de teste do usuário
 router.get("/me", authMiddleware, (req, res) => {
   res.json({
     id: req.userId,
