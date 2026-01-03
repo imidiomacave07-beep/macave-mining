@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <title>Login - Macave Mining</title>
+  <meta charset="UTF-8" />
+  <title>Login | Macave Mining</title>
 </head>
 <body>
-  <h1>Login</h1>
-  <form id="loginForm">
-    <input type="email" placeholder="Email" name="email" required><br>
-    <input type="password" placeholder="Senha" name="password" required><br>
-    <button type="submit">Entrar</button>
-  </form>
-  <script src="auth.js"></script>
+  <h2>Login</h2>
+
+  <input type="email" id="email" placeholder="Email" />
+  <br /><br />
+  <input type="password" id="password" placeholder="Senha" />
+  <br /><br />
+  <button onclick="login()">Entrar</button>
+
+  <p id="msg"></p>
+
+  <script src="login.js"></script>
 </body>
 </html>
