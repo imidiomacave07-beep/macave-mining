@@ -10,7 +10,9 @@ module.exports = (req, res, next) => {
   const [, token] = authHeader.split(" ");
 
   jwt.verify(token, process.env.JWT_SECRET || "macave_secret", (err, decoded) => {
-    if (err) return res.status(401).json({ error: "Token inválido" });
+    if (err) {
+      return res.status(401).json({ error: "Token inválido" });
+    }
 
     req.userId = decoded.id;
     next();
