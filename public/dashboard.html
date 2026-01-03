@@ -1,40 +1,21 @@
-// Planos
-const planos = [
-  { name: "Plano $20", price: 20, duration: "30 dias", benefits: ["Mineração 24/7", "Suporte básico"] },
-  { name: "Plano $30", price: 30, duration: "30 dias", benefits: ["Mineração 24/7", "Suporte via chat"] },
-  { name: "Plano $50", price: 50, duration: "30 dias", benefits: ["Mineração 24/7", "Relatórios semanais"] },
-  { name: "Plano $100", price: 100, duration: "30 dias", benefits: ["Mineração avançada", "Suporte prioritário"] },
-  { name: "Plano $200", price: 200, duration: "30 dias", benefits: ["Mineração máxima", "Bônus secretos"] },
-  { name: "Plano $500", price: 500, duration: "30 dias", benefits: ["Mineração máxima", "Relatórios detalhados", "Suporte dedicado"] },
-  { name: "Plano $1000", price: 1000, duration: "30 dias", benefits: ["Mineração elite", "Suporte 24h", "Promoções exclusivas"] },
-  { name: "Plano $5000", price: 5000, duration: "30 dias", benefits: ["Mineração máxima + bônus", "Suporte VIP", "Eventos exclusivos"] }
-];
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Macave Mining - Dashboard</title>
+  <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+  <h1>Bem-vindo à Macave Mining!</h1>
+  <div>
+    Nome: <span id="userName">Carregando...</span><br>
+    Email: <span id="userEmail">Carregando...</span><br>
+    Saldo: <span id="userBalance">0 M-Coin</span>
+  </div>
 
-const container = document.getElementById("plansContainer");
-planos.forEach(plan => {
-  const div = document.createElement("div");
-  div.innerHTML = `
-    <h3>${plan.name}</h3>
-    <p>Preço: $${plan.price}</p>
-    <p>Duração: ${plan.duration}</p>
-    <ul>${plan.benefits.map(b => `<li>${b}</li>`).join("")}</ul>
-    <button onclick="alert('Compra do plano ${plan.name} ainda não implementada')">Comprar</button>
-  `;
-  container.appendChild(div);
-});
+  <h2>Escolha um Plano</h2>
+  <div id="planos"></div>
 
-// Carregar usuário
-async function loadUser() {
-  const token = localStorage.getItem("token");
-  if (!token) return;
-  try {
-    const res = await fetch("/api/auth/me", { headers: { Authorization: "Bearer " + token } });
-    const user = await res.json();
-    document.getElementById("userName").innerText = user.name;
-    document.getElementById("userEmail").innerText = user.email;
-    document.getElementById("userBalance").innerText = user.balance + " M-Coin";
-  } catch (err) {
-    console.error(err);
-  }
-}
-loadUser();
+  <script src="dashboard.js"></script>
+</body>
+</html>
