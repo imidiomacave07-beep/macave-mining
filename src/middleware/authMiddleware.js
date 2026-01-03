@@ -1,26 +1,20 @@
-const express = require("express");
-const router = express.Router();
-const authMiddleware = require("../middleware/authMiddleware");
+const jwt = require("jsonwebtoken");
 
-// login simulado
-router.post("/login", (req, res) => {
-  // gera token de teste
-  const token = require("jsonwebtoken").sign(
-    { id: "12345" },
-    process.env.JWT_SECRET || "macave_secret",
-    { expiresIn: "1h" }
-  );
-  res.json({ token });
-});
+module.exports = (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
-// rota para obter dados do usuário
-router.get("/me", authMiddleware, (req, res) => {
-  res.json({
-    id: req.userId,
-    name: "Usuário Macave",
-    email: "teste@macave.com",
-    balance: 0
+  if (!authHeader) {
+    return res.status(401).json({ error: "Token não fornecido" });
+  }
+
+  const [, token] = authHeader.split(" ");
+
+  jwt.verify(token, process.env.JWT_SECRET || "macave_secret", (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Token inválido" });
+    }
+
+    req.userId = decoded.id;
+    next();
   });
-});
-
-module.exports = router;
+};
