@@ -2,10 +2,10 @@
 const express = require("express");
 const router = express.Router();
 
-// caminho relativo correto para o middleware
+// Caminho correto
 const authMiddleware = require("../middleware/authMiddleware");
 
-// rota de teste do usuário
+// Rota de teste
 router.get("/me", authMiddleware, (req, res) => {
   res.json({
     id: req.userId,
