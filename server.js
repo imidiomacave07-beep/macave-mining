@@ -6,17 +6,13 @@ const PORT = process.env.PORT || 10000;
 
 app.use(express.json());
 
-// servir ficheiros públicos
+// servir pasta public
 app.use(express.static(path.join(__dirname, "public")));
 
-// rota principal
+// rota raiz (IMPORTANTE)
 app.get("/", (req, res) => {
-  res.send("Servidor Macave Mining está online 🚀");
+  res.send("Macave Mining está online 🚀");
 });
-
-// rotas da API
-const authRoutes = require("./routes/authRoutes");
-app.use("/api/auth", authRoutes);
 
 app.listen(PORT, () => {
   console.log("Servidor rodando na porta " + PORT);
