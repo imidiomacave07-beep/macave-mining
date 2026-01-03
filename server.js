@@ -1,24 +1,25 @@
 const express = require("express");
 const path = require("path");
+const authRoutes = require("./routes/authRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
+const cors = require("cors");
+require("dotenv").config();
 
 const app = express();
-
-// 🔴 SEM ISTO O LOGIN NUNCA FUNCIONA
+app.use(cors());
 app.use(express.json());
 
+// servir ficheiros públicos
+app.use(express.static(path.join(__dirname, "../public")));
+
 // rotas
-const authRoutes = require("./src/routes/authRoutes");
 app.use("/api/auth", authRoutes);
+app.use("/api/payments", paymentRoutes);
 
-// ficheiros públicos
-app.use(express.static(path.join(__dirname, "public")));
-
-// dashboard
+// rota dashboard
 app.get("/dashboard", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "dashboard.html"));
+  res.sendFile(path.join(__dirname, "../public/dashboard.html"));
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log("Servidor rodando na porta", PORT);
-});
+const PORT = process.env.PORT || 10000;
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
