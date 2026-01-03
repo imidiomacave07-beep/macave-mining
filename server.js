@@ -3,20 +3,21 @@ const express = require("express");
 const path = require("path");
 const app = express();
 
+// JSON middleware
 app.use(express.json());
 
-// rotas
+// Rotas
 const authRoutes = require("./routes/authRoutes");
 app.use("/api/auth", authRoutes);
 
-// servir ficheiros públicos
+// Servir ficheiros públicos
 app.use(express.static(path.join(__dirname, "../public")));
 
-// rota dashboard protegida
+// Dashboard
 app.get("/dashboard", (req, res) => {
   res.sendFile(path.join(__dirname, "../public/dashboard.html"));
 });
 
-// iniciar servidor
+// Porta
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Servidor a correr na porta ${PORT}`));
