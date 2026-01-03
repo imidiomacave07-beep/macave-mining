@@ -1,16 +1,14 @@
-// src/middleware/authMiddleware.js
 const jwt = require("jsonwebtoken");
 
-module.exports = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) return res.status(401).json({ error: "Token não fornecido" });
+module.exports = function (req, res, next) {
+  const token = req.headers.authorization;
+  if (!token) return res.status(401).json({ msg: "Sem token" });
 
-  const [, token] = authHeader.split(" ");
-
-  jwt.verify(token, process.env.JWT_SECRET || "macave_secret", (err, decoded) => {
-    if (err) return res.status(401).json({ error: "Token inválido" });
-
-    req.userId = decoded.id;
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
     next();
-  });
+  } catch {
+    res.status(401).json({ msg: "Token inválido" });
+  }
 };
