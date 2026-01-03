@@ -1,25 +1,33 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
-require("dotenv").config();
+const dotenv = require("dotenv");
 
+dotenv.config();
 const app = express();
-const PORT = process.env.PORT || 3000;
 
+// middlewares
 app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
-.then(() => console.log("MongoDB conectado!"))
-.catch(err => console.error("Erro ao conectar MongoDB:", err));
-
+// rotas
 const authRoutes = require("./routes/authRoutes");
-const paymentRoutes = require("./routes/paymentRoutes");
-
 app.use("/api/auth", authRoutes);
-app.use("/api/payment", paymentRoutes);
 
+// servir ficheiros públicos
 app.use(express.static(path.join(__dirname, "../public")));
 
-app.get("/dashboard", (req, res) => res.sendFile(path.join(__dirname, "../public/dashboard.html")));
+// rota dashboard protegida (exemplo simples)
+app.get("/dashboard", (req, res) => {
+  res.sendFile(path.join(__dirname, "../public/dashboard.html"));
+});
 
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+// MongoDB connection
+mongoose
+  .connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    console.log("MongoDB conectado com sucesso!");
+    app.listen(process.env.PORT || 10000, () =>
+      console.log(`Servidor rodando na porta ${process.env.PORT || 10000}`)
+    );
+  })
+  .catch((err) => console.error("Erro ao conectar MongoDB:", err));
