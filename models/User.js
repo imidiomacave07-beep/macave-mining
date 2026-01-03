@@ -1,10 +1,20 @@
-const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
 
-const userSchema = new mongoose.Schema({
-  name: String,
-  email: { type: String, unique: true },
-  password: String,
-  balance: { type: Number, default: 0 }
-});
+module.exports = (req, res, next) => {
+  const authHeader = req.headers.authorization;
 
-module.exports = mongoose.model("User", userSchema);
+  if (!authHeader) {
+    return res.status(401).json({ error: "Token não fornecido" });
+  }
+
+  const [, token] = authHeader.split(" ");
+
+  jwt.verify(token, process.env.JWT_SECRET || "macave_secret", (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ error: "Token inválido" });
+    }
+
+    req.userId = decoded.id;
+    next();
+  });
+};
