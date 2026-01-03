@@ -1,0 +1,5 @@
+body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }I
+h1, h2 { color: #333; }
+.plano { background: #fff; padding: 10px; margin: 10px 0; border-radius: 5px; }
+button { padding: 5px 10px; cursor: pointer; }
+.modal { position: fixed; top: 20%; left: 50%; transform: translate(-50%, 0); background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
