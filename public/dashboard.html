@@ -1,20 +1,21 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <title>Macave Mining - Dashboard</title>
-  <link rel="stylesheet" href="dashboard.css">
+  <meta charset="UTF-8" />
+  <title>Dashboard | Macave Mining</title>
+  <link rel="stylesheet" href="dashboard.css" />
 </head>
 <body>
-  <h1>Bem-vindo à Macave Mining!</h1>
-  <div>
-    Nome: <span id="userName">Carregando...</span><br>
-    Email: <span id="userEmail">Carregando...</span><br>
-    Saldo: <span id="userBalance">0 M-Coin</span>
+
+  <h1>📊 Dashboard</h1>
+
+  <div id="info">
+    <p><strong>Email:</strong> <span id="email"></span></p>
+    <p><strong>Plano:</strong> <span id="plan"></span></p>
+    <p><strong>Saldo:</strong> $<span id="balance"></span></p>
   </div>
 
-  <h2>Escolha um Plano</h2>
-  <div id="planos"></div>
+  <button onclick="updateEarnings()">🔄 Atualizar ganhos</button>
 
   <script src="dashboard.js"></script>
 </body>
