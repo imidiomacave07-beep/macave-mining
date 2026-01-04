@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-// rota de teste de pagamentos
+// rota de teste
 router.get("/", (req, res) => {
   res.json({ message: "API de pagamentos funcionando!" });
 });
@@ -11,7 +11,6 @@ router.post("/crypto", (req, res) => {
   const { userId, amount } = req.body;
 
   // lógica de pagamento via crypto aqui
-  // por enquanto só retorna sucesso
   res.json({ status: "sucesso", userId, amount });
 });
 
