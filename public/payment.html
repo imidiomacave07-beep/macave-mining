@@ -1,41 +1,46 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Pagamento Cripto</title>
+  <meta charset="UTF-8">
+  <title>Pagamento</title>
 </head>
 <body>
-  <h2>Pagamento com Criptomoedas</h2>
 
-  <p><b>BTC:</b> bc1qSEUENDERECOAQUI</p>
-  <p><b>USDT (TRC20):</b> TXSEUENDERECOAQUI</p>
+<h2>💳 Escolher Pagamento</h2>
 
-  <form id="payForm">
-    <input placeholder="Seu email" id="email"><br><br>
-    <input placeholder="Plano" id="plan"><br><br>
-    <input placeholder="BTC ou USDT" id="crypto"><br><br>
-    <input placeholder="TXID / Hash" id="txid"><br><br>
-    <button type="submit">Enviar Pagamento</button>
-  </form>
+<select id="crypto">
+  <option value="USDT">USDT</option>
+  <option value="BTC">BTC</option>
+  <option value="ETH">ETH</option>
+</select>
 
-  <script>
-    document.getElementById("payForm").onsubmit = async (e) => {
-      e.preventDefault();
+<button onclick="pay()">Gerar pagamento</button>
 
-      const data = {
-        userEmail: email.value,
-        plan: plan.value,
-        crypto: crypto.value,
-        txid: txid.value
-      };
+<pre id="result"></pre>
 
-      const res = await fetch("/api/payment/pay", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
+<script>
+async function pay() {
+  const token = localStorage.getItem("token");
+  const crypto = document.getElementById("crypto").value;
 
-      alert("Pagamento enviado!");
-    };
-  </script>
+  const res = await fetch("/api/payment", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + token
+    },
+    body: JSON.stringify({
+      plan: "Básico",
+      amount: 50,
+      crypto
+    })
+  });
+
+  const data = await res.json();
+  document.getElementById("result").innerText =
+    "Enviar para:\n" + data.wallet;
+}
+</script>
+
 </body>
 </html>
