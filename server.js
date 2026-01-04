@@ -1,28 +1,31 @@
-const express = require('express');
-const mongoose = require('mongoose');
-require('dotenv').config();
+const express = require("express");
+const mongoose = require("mongoose");
+const path = require("path");
+require("dotenv").config();
 
 const app = express();
-
-// Middleware
 app.use(express.json());
 
-// 🔹 ROTA DE TESTE (IMPORTANTE)
-app.get('/', (req, res) => {
-  res.send('🚀 Macave Mining API está online');
+// ===== TESTE BÁSICO =====
+app.get("/", (req, res) => {
+  res.send("🚀 Macave Mining está online");
 });
 
-app.get('/api', (req, res) => {
-  res.json({ status: 'API funcionando corretamente' });
+// ===== CONEXÃO MONGODB =====
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ MongoDB conectado"))
+  .catch(err => console.error("❌ Erro MongoDB:", err));
+
+// ===== SERVIR FRONTEND =====
+app.use(express.static(path.join(__dirname, "public")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// MongoDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✅ MongoDB conectado'))
-  .catch(err => console.error('❌ Erro MongoDB:', err));
-
-// Porta
+// ===== PORT =====
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+  console.log(`✅ Servidor rodando na porta ${PORT}`);
 });
