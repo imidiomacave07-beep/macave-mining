@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pagamento Cripto</title>
+</head>
+<body>
+  <h2>Pagamento com Criptomoedas</h2>
+
+  <p><b>BTC:</b> bc1qSEUENDERECOAQUI</p>
+  <p><b>USDT (TRC20):</b> TXSEUENDERECOAQUI</p>
+
+  <form id="payForm">
+    <input placeholder="Seu email" id="email"><br><br>
+    <input placeholder="Plano" id="plan"><br><br>
+    <input placeholder="BTC ou USDT" id="crypto"><br><br>
+    <input placeholder="TXID / Hash" id="txid"><br><br>
+    <button type="submit">Enviar Pagamento</button>
+  </form>
+
+  <script>
+    document.getElementById("payForm").onsubmit = async (e) => {
+      e.preventDefault();
+
+      const data = {
+        userEmail: email.value,
+        plan: plan.value,
+        crypto: crypto.value,
+        txid: txid.value
+      };
+
+      const res = await fetch("/api/payment/pay", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      alert("Pagamento enviado!");
+    };
+  </script>
+</body>
+</html>
