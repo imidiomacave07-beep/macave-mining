@@ -1,23 +1,34 @@
 const express = require("express");
+const authMiddleware = require("../middleware/authMiddleware");
 const Payment = require("../models/Payment");
 
 const router = express.Router();
 
-// Criar pagamento
-router.post("/pay", async (req, res) => {
-  try {
-    const payment = new Payment(req.body);
-    await payment.save();
-    res.json({ message: "Pagamento enviado com sucesso" });
-  } catch (err) {
-    res.status(500).json({ error: "Erro ao registrar pagamento" });
-  }
+// criar pedido de pagamento
+router.post("/payment", authMiddleware, async (req, res) => {
+  const { plan, amount, crypto } = req.body;
+
+  const payment = await Payment.create({
+    userId: req.userId,
+    plan,
+    amount,
+    crypto
+  });
+
+  res.json({
+    message: "Pedido criado",
+    wallet: getWallet(crypto),
+    payment
+  });
 });
 
-// Listar pagamentos (admin)
-router.get("/all", async (req, res) => {
-  const payments = await Payment.find();
-  res.json(payments);
-});
+function getWallet(crypto) {
+  const wallets = {
+    USDT: "TXYZ-EXEMPLO-USDT-ENDERECO",
+    BTC: "bc1q-exemplo-btc",
+    ETH: "0xExemploEthWallet"
+  };
+  return wallets[crypto];
+}
 
 module.exports = router;
