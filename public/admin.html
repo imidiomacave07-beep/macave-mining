@@ -1,0 +1,21 @@
+<h1>👑 Painel Admin</h1>
+<div id="users"></div>
+
+<script>
+const token = localStorage.getItem("token");
+
+if (!token) location.href = "/login.html";
+
+fetch("/api/admin/users", {
+  headers: {
+    Authorization: token
+  }
+})
+.then(res => res.json())
+.then(users => {
+  document.getElementById("users").innerHTML =
+    users.map(u =>
+      `<p>${u.email} | Saldo: ${u.balance}</p>`
+    ).join("");
+});
+</script>
