@@ -1,41 +1,13 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Macave Mining</title>
-  <style>
-    body {
-      font-family: Arial;
-      background: #0f172a;
-      color: white;
-      text-align: center;
-      padding-top: 60px;
-    }
-    button {
-      padding: 12px 20px;
-      border: none;
-      background: #22c55e;
-      color: black;
-      font-weight: bold;
-      cursor: pointer;
-    }
-  </style>
 </head>
 <body>
-
   <h1>🚀 Macave Mining</h1>
   <p>Plataforma ativa e conectada</p>
 
-  <button onclick="testApi()">Testar API</button>
-
-  <script>
-    function testApi() {
-      fetch("/api/auth/status")
-        .then(res => res.json())
-        .then(data => alert(JSON.stringify(data)))
-        .catch(err => alert("Erro na API"));
-    }
-  </script>
-
+  <a href="/login.html">Entrar</a>
 </body>
 </html>
