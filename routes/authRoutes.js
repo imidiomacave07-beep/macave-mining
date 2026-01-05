@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
-// rota de teste
-router.get("/", (req, res) => {
-  res.json({ message: "Auth API OK" });
+router.get("/status", (req, res) => {
+  res.json({
+    status: "ok",
+    message: "Autenticação funcionando"
+  });
 });
 
 module.exports = router;
