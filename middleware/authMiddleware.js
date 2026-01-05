@@ -9,12 +9,11 @@ module.exports = (req, res, next) => {
 
   const [, token] = authHeader.split(" ");
 
-  jwt.verify(token, process.env.JWT_SECRET || "macave_secret", (err, decoded) => {
-    if (err) {
-      return res.status(401).json({ error: "Token inválido" });
-    }
-
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
     req.userId = decoded.id;
     next();
-  });
+  } catch {
+    return res.status(401).json({ error: "Token inválido" });
+  }
 };
