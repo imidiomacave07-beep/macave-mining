@@ -1,23 +1,20 @@
-const User = require('../models/User');
+const Plan = require("../models/Plan");
+const User = require("../models/User");
 
-exports.mine = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
+// comprar plano
+exports.buyPlan = async (req, res) => {
+  const { amount } = req.body;
 
-    if (!user) {
-      return res.status(404).json({ message: 'Usuário não encontrado' });
-    }
-
-    const earned = Math.floor(Math.random() * 10);
-    user.balance += earned;
-    await user.save();
-
-    res.json({
-      message: 'Mineração concluída',
-      earned,
-      balance: user.balance
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  if (amount < 10) {
+    return res.status(400).json({ message: "Valor mínimo 10 USD" });
   }
+
+  const plan = new Plan({
+    userId: req.userId,
+    amount,
+    dailyRate: 0.03 // 3% ao dia
+  });
+
+  await plan.save();
+  res.json({ message: "Plano ativado com sucesso" });
 };
