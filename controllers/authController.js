@@ -1,47 +1,28 @@
-const User = require('../models/User'); // seu model de usuário
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+const User = require("../models/User");
+const jwt = require("jsonwebtoken");
 
-// Registrar usuário
-const registerUser = async (req, res) => {
-  const { username, email, password } = req.body;
+exports.login = async (req, res) => {
   try {
-    // Verifica se já existe
-    const userExists = await User.findOne({ email });
-    if (userExists) return res.status(400).json({ message: 'Usuário já existe' });
+    const { email, password } = req.body;
 
-    // Criptografar senha
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const user = await User.create({ username, email, password: hashedPassword });
-    res.status(201).json({ message: 'Conta criada com sucesso', userId: user._id });
-  } catch (err) {
-    res.status(500).json({ message: 'Erro no servidor', error: err.message });
-  }
-};
-
-// Login
-const loginUser = async (req, res) => {
-  const { email, password } = req.body;
-  try {
     const user = await User.findOne({ email });
-    if (!user) return res.status(400).json({ message: 'Usuário não encontrado' });
+    if (!user) {
+      return res.status(401).json({ error: "Usuário não encontrado" });
+    }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Senha incorreta' });
+    if (password !== user.password) {
+      return res.status(401).json({ error: "Senha incorreta" });
+    }
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-    res.json({ token });
+    const token = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET || "macave_secret",
+      { expiresIn: "1d" }
+    );
+
+    res.json({ token, user });
   } catch (err) {
-    res.status(500).json({ message: 'Erro no servidor', error: err.message });
+    console.error("ERRO LOGIN:", err);
+    res.status(500).json({ error: "Erro no servidor" });
   }
 };
-
-// Usuário logado
-const getMe = async (req, res) => {
-  const user = await User.findById(req.user.id).select('-password');
-  res.json(user);
-};
-
-module.exports = { registerUser, loginUser, getMe };
