@@ -3,25 +3,10 @@ const mongoose = require("mongoose");
 const PlanSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true
+    ref: "User"
   },
-  name: {
-    type: String,
-    required: true
-  },
-  dailyProfit: {
-    type: Number,
-    required: true
-  },
-  durationDays: {
-    type: Number,
-    required: true
-  },
-  startDate: {
-    type: Date,
-    default: Date.now
-  },
+  amount: Number,       // valor investido
+  dailyRate: Number,    // percentagem diária (ex: 0.03 = 3%)
   active: {
     type: Boolean,
     default: true
