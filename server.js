@@ -1,19 +1,36 @@
+require("dotenv").config();
 const express = require("express");
+const mongoose = require("mongoose");
+const path = require("path");
+
+const authRoutes = require("./routes/authRoutes");
+const paymentRoutes = require("./routes/paymentRoutes");
+
 const app = express();
 
+// middleware
 app.use(express.json());
 
-// ROTAS
-const authRoutes = require("./routes/authRoutes");
+// servir frontend
+app.use(express.static(path.join(__dirname, "public")));
 
-app.use("/api/auth", authRoutes);
-
-// rota raiz
+// rota principal → plataforma
 app.get("/", (req, res) => {
-  res.send("Macave Mining API está online 🚀");
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
+// rotas da API
+app.use("/api/auth", authRoutes);
+app.use("/api/payments", paymentRoutes);
+
+// MongoDB
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB conectado!"))
+  .catch((err) => console.error("Erro MongoDB:", err));
+
+// porta Render
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
-  console.log("Servidor rodando na porta", PORT);
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
