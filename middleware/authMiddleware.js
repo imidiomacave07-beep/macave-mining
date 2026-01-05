@@ -1,17 +1,11 @@
-const jwt = require("jsonwebtoken");
+const User = require("../models/User");
 
-module.exports = (req, res, next) => {
-  const token = req.headers["authorization"];
+module.exports = async (req, res, next) => {
+  const user = await User.findById(req.userId);
 
-  if (!token) {
-    return res.status(401).json({ message: "Acesso negado" });
+  if (!user || user.role !== "admin") {
+    return res.status(403).json({ message: "Acesso apenas para admin" });
   }
 
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decoded.id;
-    next();
-  } catch (err) {
-    return res.status(401).json({ message: "Token inválido" });
-  }
+  next();
 };
