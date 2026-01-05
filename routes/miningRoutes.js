@@ -1,8 +1,9 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { mine } = require('../controllers/miningController');
-const authMiddleware = require('../middleware/authMiddleware');
 
-router.post('/mine', authMiddleware, mine);
+const auth = require("../middleware/authMiddleware");
+const { buyPlan } = require("../controllers/miningController");
+
+router.post("/buy", auth, buyPlan);
 
 module.exports = router;
