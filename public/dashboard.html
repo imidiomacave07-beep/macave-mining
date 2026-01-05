@@ -1,22 +1,35 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8" />
-  <title>Dashboard | Macave Mining</title>
-  <link rel="stylesheet" href="dashboard.css" />
+  <meta charset="UTF-8">
+  <title>Macave Mining Dashboard</title>
 </head>
 <body>
+  <h1>Dashboard do Usuário</h1>
+  <p>Saldo: <span id="balance">0</span> USD</p>
+  <h2>Planos Ativos</h2>
+  <ul id="plans"></ul>
 
-  <h1>📊 Dashboard</h1>
+  <script>
+    const token = localStorage.getItem("token"); // token JWT do login
 
-  <div id="info">
-    <p><strong>Email:</strong> <span id="email"></span></p>
-    <p><strong>Plano:</strong> <span id="plan"></span></p>
-    <p><strong>Saldo:</strong> $<span id="balance"></span></p>
-  </div>
+    fetch("/api/dashboard", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("balance").innerText = data.balance;
 
-  <button onclick="updateEarnings()">🔄 Atualizar ganhos</button>
-
-  <script src="dashboard.js"></script>
+      const plansList = document.getElementById("plans");
+      data.plans.forEach(plan => {
+        const li = document.createElement("li");
+        li.innerText = `${plan.name} - Lucro diário: ${plan.dailyProfit}% por ${plan.durationDays} dias`;
+        plansList.appendChild(li);
+      });
+    })
+    .catch(err => console.error(err));
+  </script>
 </body>
 </html>
