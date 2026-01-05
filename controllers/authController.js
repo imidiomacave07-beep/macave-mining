@@ -1,28 +1,29 @@
 const User = require("../models/User");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 exports.login = async (req, res) => {
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
+  try {
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ error: "Usuário não encontrado" });
+      return res.status(401).json({ message: "Usuário não encontrado" });
     }
 
-    if (password !== user.password) {
-      return res.status(401).json({ error: "Senha incorreta" });
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(401).json({ message: "Senha incorreta" });
     }
 
     const token = jwt.sign(
       { id: user._id },
-      process.env.JWT_SECRET || "macave_secret",
+      process.env.JWT_SECRET,
       { expiresIn: "1d" }
     );
 
-    res.json({ token, user });
+    res.json({ token });
   } catch (err) {
-    console.error("ERRO LOGIN:", err);
-    res.status(500).json({ error: "Erro no servidor" });
+    res.status(500).json({ message: "Erro no servidor" });
   }
 };
