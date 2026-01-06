@@ -5,20 +5,16 @@
 </head>
 <body>
   <h1>Dashboard do Usuário</h1>
-  <p id="saldo">Saldo: 0 USD</p>
-  <h2>Planos Ativos</h2>
-  <ul id="planos"></ul>
+  <p>Saldo: <span id="balance">0</span> USD</p>
+  <button id="logout">Sair</button>
   <script>
+    const token = localStorage.getItem("token");
     async function loadDashboard() {
-      const res = await fetch("/api/dashboard");
-      const data = await res.json();
-      document.getElementById("saldo").textContent = `Saldo: ${data.saldo} USD`;
-      const ul = document.getElementById("planos");
-      data.planosAtivos.forEach(p => {
-        const li = document.createElement("li");
-        li.textContent = `${p.name} - ${p.value} USD`;
-        ul.appendChild(li);
+      const res = await fetch("/api/dashboard", {
+        headers: { "Authorization": token }
       });
+      const data = await res.json();
+      document.getElementById("balance").innerText = data.balance;
     }
     loadDashboard();
   </script>
