@@ -1,24 +1,29 @@
 {
   "name": "macave-mining",
   "version": "1.0.0",
-  "description": "Plataforma Macave Mining",
+  "description": "Macave Mining - Plataforma de mineração",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
-  "engines": {
-    "node": "22.x"
-  },
+  "keywords": [
+    "macave",
+    "mining",
+    "crypto",
+    "api"
+  ],
+  "author": "Imidio Macave",
+  "license": "MIT",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.0",
-    "mongoose": "^7.5.0"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^7.3.3"
   },
-  "devDependencies": {
-    "nodemon": "^3.0.1"
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
