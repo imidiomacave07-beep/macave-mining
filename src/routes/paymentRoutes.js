@@ -1,6 +1,7 @@
 const express = require("express");
-const router = express.Router();
 const { payWithCrypto } = require("../controllers/paymentController");
+
+const router = express.Router();
 
 router.post("/crypto", payWithCrypto);
 
