@@ -1,3 +1,6 @@
-exports.getDashboard = async (req, res) => {
-  res.json({ message: "Dashboard carregado!" });
+exports.getDashboard = (req, res) => {
+  res.json({
+    saldo: 0,
+    planosAtivos: []
+  });
 };
