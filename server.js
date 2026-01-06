@@ -3,29 +3,51 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 require("dotenv").config();
 
+const app = express();
+
+/* ========================
+   MIDDLEWARES
+======================== */
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+/* ========================
+   ROTAS
+======================== */
 const authRoutes = require("./src/routes/authRoutes");
 const dashboardRoutes = require("./src/routes/dashboardRoutes");
 const paymentRoutes = require("./src/routes/paymentRoutes");
 
-const app = express();
+/* rotas públicas */
+app.use("/api/auth", authRoutes);
+
+/* rotas protegidas */
+app.use("/api/dashboard", dashboardRoutes);
+app.use("/api/payments", paymentRoutes);
+
+/* rota raiz (para evitar Cannot GET /) */
+app.get("/", (req, res) => {
+  res.send("🚀 Macave Mining API está online");
+});
+
+/* ========================
+   MONGODB
+======================== */
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => {
+    console.log("MongoDB conectado!");
+  })
+  .catch((err) => {
+    console.error("Erro ao conectar MongoDB:", err);
+  });
+
+/* ========================
+   SERVER
+======================== */
 const PORT = process.env.PORT || 10000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.static("public"));
-
-// Rotas
-app.use("/api/auth", authRoutes);
-app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/payment", paymentRoutes);
-
-// Conexão MongoDB
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB conectado!"))
-  .catch(err => console.log("Erro MongoDB:", err));
-
-// Servidor
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
