@@ -1,34 +1,43 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-exports.register = async (req, res) => {
+// Registrar usuário
+const registerUser = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { username, password } = req.body;
 
-    if (!name || !email || !password) {
-      return res.status(400).json({ message: "Preencha todos os campos" });
-    }
+    const userExists = await User.findOne({ username });
+    if (userExists) return res.status(400).json({ msg: "Usuário já existe" });
 
-    const userExists = await User.findOne({ email });
-    if (userExists) {
-      return res.status(400).json({ message: "Usuário já existe" });
-    }
+    const hashedPassword = await bcrypt.hash(password, 10);
 
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
-
-    const user = new User({
-      name,
-      email,
-      password: hashedPassword
-    });
-
+    const user = new User({ username, password: hashedPassword });
     await user.save();
 
-    res.status(201).json({ message: "Usuário registrado com sucesso" });
-
-  } catch (error) {
-    console.error("ERRO REGISTO:", error);
-    res.status(500).json({ message: "Erro ao registrar" });
+    res.status(201).json({ msg: "Usuário registrado com sucesso" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
+
+// Login usuário
+const loginUser = async (req, res) => {
+  try {
+    const { username, password } = req.body;
+
+    const user = await User.findOne({ username });
+    if (!user) return res.status(400).json({ msg: "Usuário não encontrado" });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ msg: "Senha incorreta" });
+
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
+
+    res.json({ msg: "Login feito com sucesso", token });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+module.exports = { registerUser, loginUser };
