@@ -6,20 +6,14 @@
 <body>
   <h1>Login</h1>
   <form id="loginForm">
-    <input type="text" placeholder="Usuário" id="username" required>
-    <input type="password" placeholder="Senha" id="password" required>
+    <input type="text" placeholder="Usuário" id="username">
+    <input type="password" placeholder="Senha" id="password">
     <button type="submit">Entrar</button>
   </form>
-  <h2>Registrar</h2>
-  <form id="registerForm">
-    <input type="text" placeholder="Usuário" id="regUsername" required>
-    <input type="password" placeholder="Senha" id="regPassword" required>
-    <button type="submit">Registrar</button>
-  </form>
-
+  <p><a href="register.html">Registrar</a></p>
   <script>
-    const loginForm = document.getElementById("loginForm");
-    loginForm.addEventListener("submit", async e => {
+    const form = document.getElementById("loginForm");
+    form.addEventListener("submit", async e => {
       e.preventDefault();
       const res = await fetch("/api/auth/login", {
         method: "POST",
@@ -27,21 +21,6 @@
         body: JSON.stringify({
           username: document.getElementById("username").value,
           password: document.getElementById("password").value
-        })
-      });
-      const data = await res.json();
-      alert(JSON.stringify(data));
-    });
-
-    const registerForm = document.getElementById("registerForm");
-    registerForm.addEventListener("submit", async e => {
-      e.preventDefault();
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: document.getElementById("regUsername").value,
-          password: document.getElementById("regPassword").value
         })
       });
       const data = await res.json();
