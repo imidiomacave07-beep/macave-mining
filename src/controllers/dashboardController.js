@@ -1,11 +1,14 @@
-const User = require("../models/User");
+// controllers/dashboardController.js
 
-exports.getDashboard = async (req, res) => {
-  try {
-    const user = await User.findById(req.user.id);
-    if (!user) return res.status(404).json({ msg: "Usuário não encontrado" });
-    res.json({ username: user.username, balance: user.balance });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+// Simula dados do usuário e planos ativos
+const getDashboard = (req, res) => {
+  res.json({
+    saldo: 0,
+    planosAtivos: [
+      { nome: "Plano Bronze", valor: "10 USD", status: "Ativo" },
+      { nome: "Plano Prata", valor: "50 USD", status: "Ativo" }
+    ]
+  });
 };
+
+module.exports = { getDashboard };
