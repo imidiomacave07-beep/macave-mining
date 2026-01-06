@@ -1,140 +1,26 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Dashboard do Usuário | Macave Mining</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, Helvetica, sans-serif;
-      background: #0f172a;
-      color: #e5e7eb;
-    }
-
-    header {
-      background: #020617;
-      padding: 20px;
-      text-align: center;
-      font-size: 22px;
-      font-weight: bold;
-      color: #22c55e;
-    }
-
-    .container {
-      padding: 20px;
-      max-width: 900px;
-      margin: auto;
-    }
-
-    .card {
-      background: #020617;
-      border-radius: 10px;
-      padding: 20px;
-      margin-bottom: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    }
-
-    .saldo {
-      font-size: 32px;
-      color: #22c55e;
-      font-weight: bold;
-    }
-
-    .plan {
-      border: 1px solid #1e293b;
-      border-radius: 8px;
-      padding: 15px;
-      margin-top: 10px;
-    }
-
-    .plan-title {
-      font-size: 18px;
-      font-weight: bold;
-      color: #38bdf8;
-    }
-
-    button {
-      background: #22c55e;
-      color: #020617;
-      border: none;
-      padding: 10px 15px;
-      border-radius: 6px;
-      cursor: pointer;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-
-    button:hover {
-      background: #16a34a;
-    }
-
-    footer {
-      text-align: center;
-      padding: 15px;
-      color: #94a3b8;
-      font-size: 14px;
-    }
-  </style>
+  <title>Dashboard - Macave Mining</title>
 </head>
 <body>
-
-  <header>
-    🚀 Macave Mining — Dashboard do Usuário
-  </header>
-
-  <div class="container">
-
-    <!-- SALDO -->
-    <div class="card">
-      <h2>💰 Saldo Atual</h2>
-      <div class="saldo" id="saldo">0 USD</div>
-    </div>
-
-    <!-- PLANOS -->
-    <div class="card">
-      <h2>📦 Planos Ativos</h2>
-
-      <div class="plan">
-        <div class="plan-title">Plano Básico</div>
-        <p>Investimento: 50 USD</p>
-        <p>Lucro diário: 2%</p>
-        <p>Status: <strong>Ativo</strong></p>
-      </div>
-
-      <div class="plan">
-        <div class="plan-title">Plano Profissional</div>
-        <p>Investimento: 200 USD</p>
-        <p>Lucro diário: 3%</p>
-        <p>Status: <strong>Inativo</strong></p>
-      </div>
-    </div>
-
-    <!-- AÇÕES -->
-    <div class="card">
-      <h2>⚙️ Ações</h2>
-      <button onclick="alert('Funcionalidade em desenvolvimento')">
-        Solicitar Saque
-      </button>
-      <br><br>
-      <button onclick="logout()">
-        Sair
-      </button>
-    </div>
-
-  </div>
-
-  <footer>
-    © 2026 Macave Mining — Plataforma ativa e conectada
-  </footer>
-
+  <h1>Dashboard do Usuário</h1>
+  <p id="saldo">Saldo: 0 USD</p>
+  <h2>Planos Ativos</h2>
+  <ul id="planos"></ul>
   <script>
-    function logout() {
-      alert("Sessão terminada");
-      window.location.href = "/login.html";
+    async function loadDashboard() {
+      const res = await fetch("/api/dashboard");
+      const data = await res.json();
+      document.getElementById("saldo").textContent = `Saldo: ${data.saldo} USD`;
+      const ul = document.getElementById("planos");
+      data.planosAtivos.forEach(p => {
+        const li = document.createElement("li");
+        li.textContent = `${p.name} - ${p.value} USD`;
+        ul.appendChild(li);
+      });
     }
+    loadDashboard();
   </script>
-
 </body>
 </html>
