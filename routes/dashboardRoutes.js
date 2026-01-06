@@ -1,17 +1,20 @@
 const express = require("express");
-const authMiddleware = require("../middleware/authMiddleware");
-const User = require("../models/User");
-
 const router = express.Router();
+const { getDashboard } = require("../controllers/dashboardController");
+const jwt = require("jsonwebtoken");
 
-router.get("/dashboard", authMiddleware, async (req, res) => {
-  const user = await User.findById(req.userId).select("-__v");
-
-  if (!user) {
-    return res.status(404).json({ error: "Usuário não encontrado" });
+const authMiddleware = (req, res, next) => {
+  const token = req.headers["authorization"];
+  if (!token) return res.status(401).json({ msg: "Sem token" });
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    res.status(401).json({ msg: "Token inválido" });
   }
+};
 
-  res.json(user);
-});
+router.get("/", authMiddleware, getDashboard);
 
 module.exports = router;
