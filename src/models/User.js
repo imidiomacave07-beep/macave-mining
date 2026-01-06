@@ -1,9 +1,5 @@
-const mongoose = require("mongoose");
-
-const UserSchema = new mongoose.Schema({
-  name: String,
-  email: { type: String, unique: true },
-  password: String
-});
-
-module.exports = mongoose.model("User", UserSchema);
+exports.payWithCrypto = (req, res) => {
+  const { userId, amount, currency } = req.body;
+  // Aqui você conecta à API de cripto real
+  res.json({ message: `Pagamento de ${amount} ${currency} recebido para ${userId}` });
+};
