@@ -1,67 +1,152 @@
 // server.js
 const express = require("express");
-const app = express();
+const mongoose = require("mongoose");
 const cors = require("cors");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const path = require("path");
 
-app.use(express.json());
-app.use(cors());
-app.use(express.static("public")); // para login.html, dashboard.html etc.
+require("dotenv").config();
 
+const app = express();
 const PORT = process.env.PORT || 10000;
 
-// ---------------- Simulação de banco de dados ----------------
-let users = [
-  { _id: "user1", username: "teste", password: "1234", balance: 100, plans: [] }
-];
+// Middlewares
+app.use(cors());
+app.use(express.json());
+app.use(express.static(path.join(__dirname, "public"))); // para acessar HTML, CSS, JS
 
-const planos = [
-  { _id: "bronze", name: "Plano Bronze", price: 10, dailyProfit: 2, duration: 7 },
-  { _id: "prata", name: "Plano Prata", price: 25, dailyProfit: 3, duration: 15 },
-  { _id: "ouro", name: "Plano Ouro", price: 50, dailyProfit: 5, duration: 30 }
-];
+// MongoDB
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log("MongoDB conectado!"))
+.catch(err => console.log("Erro MongoDB:", err));
 
-// ---------------- Rotas de autenticação ----------------
-app.post("/api/auth/register", (req, res) => {
+// Schemas
+const userSchema = new mongoose.Schema({
+  username: { type: String, unique: true },
+  password: String,
+  balance: { type: Number, default: 0 },
+  plans: [{ type: mongoose.Schema.Types.ObjectId, ref: "Plan" }]
+});
+
+const planSchema = new mongoose.Schema({
+  name: String,
+  price: Number,
+  dailyProfit: Number,
+  duration: Number
+});
+
+const purchaseSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+  planId: { type: mongoose.Schema.Types.ObjectId, ref: "Plan" },
+  date: { type: Date, default: Date.now }
+});
+
+const User = mongoose.model("User", userSchema);
+const Plan = mongoose.model("Plan", planSchema);
+const Purchase = mongoose.model("Purchase", purchaseSchema);
+
+// JWT secret
+const JWT_SECRET = process.env.JWT_SECRET || "macave_secret";
+
+// --- Rotas --- //
+
+// Registro
+app.post("/api/auth/register", async (req, res) => {
   const { username, password } = req.body;
-  if (users.find(u => u.username === username))
-    return res.status(400).json({ message: "Usuário já existe" });
-
-  const newUser = { _id: "user" + (users.length + 1), username, password, balance: 100, plans: [] };
-  users.push(newUser);
-  res.json({ message: "Usuário registrado com sucesso!", userId: newUser._id });
+  try {
+    const hashed = await bcrypt.hash(password, 10);
+    const user = new User({ username, password: hashed });
+    await user.save();
+    res.json({ message: "Usuário registrado com sucesso!" });
+  } catch (err) {
+    res.status(400).json({ error: "Usuário já existe ou erro no registro." });
+  }
 });
 
-app.post("/api/auth/login", (req, res) => {
+// Login
+app.post("/api/auth/login", async (req, res) => {
   const { username, password } = req.body;
-  const user = users.find(u => u.username === username && u.password === password);
-  if (!user) return res.status(401).json({ message: "Credenciais inválidas" });
-  res.json({ message: "Login bem-sucedido", userId: user._id, balance: user.balance });
+  const user = await User.findOne({ username });
+  if (!user) return res.status(400).json({ error: "Credenciais inválidas." });
+
+  const match = await bcrypt.compare(password, user.password);
+  if (!match) return res.status(400).json({ error: "Credenciais inválidas." });
+
+  const token = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: "1d" });
+  res.json({ message: "Login bem-sucedido!", token, userId: user._id });
 });
 
-// ---------------- Rotas de planos ----------------
-app.get("/api/plans", (req, res) => {
-  res.json(planos);
+// Retornar planos
+app.get("/api/plans", async (req, res) => {
+  let plans = await Plan.find();
+  if (plans.length === 0) {
+    // Se não houver planos, criamos alguns padrão
+    plans = await Plan.insertMany([
+      { name: "Bronze", price: 10, dailyProfit: 2, duration: 7 },
+      { name: "Prata", price: 25, dailyProfit: 3, duration: 15 },
+      { name: "Ouro", price: 50, dailyProfit: 5, duration: 30 }
+    ]);
+  }
+  res.json(plans);
 });
 
-// ---------------- Rota de compras ----------------
-app.post("/api/purchase", (req, res) => {
+// Comprar plano
+app.post("/api/purchase", async (req, res) => {
   const { userId, planId } = req.body;
-  const user = users.find(u => u._id === userId);
-  const plan = planos.find(p => p._id === planId);
+  try {
+    const user = await User.findById(userId);
+    const plan = await Plan.findById(planId);
+    if (!user || !plan) return res.status(400).json({ error: "Usuário ou plano não encontrado." });
 
-  if (!user) return res.status(404).json({ message: "Usuário não encontrado" });
-  if (!plan) return res.status(404).json({ message: "Plano não encontrado" });
+    if (user.balance < plan.price) {
+      return res.status(400).json({ error: "Saldo insuficiente." });
+    }
 
-  if (user.balance < plan.price)
-    return res.status(400).json({ message: "Saldo insuficiente" });
+    user.balance -= plan.price;
+    user.plans.push(plan._id);
+    await user.save();
 
-  user.balance -= plan.price;
-  user.plans.push({ ...plan, startDate: new Date() });
+    await Purchase.create({ userId, planId });
 
-  res.json({ message: `Plano ${plan.name} comprado com sucesso!`, balance: user.balance });
+    res.json({ message: `Plano ${plan.name} comprado com sucesso!`, balance: user.balance });
+  } catch (err) {
+    res.status(500).json({ error: "Erro ao comprar plano." });
+  }
 });
 
-// ---------------- Start do servidor ----------------
-app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+// Dashboard do usuário
+app.get("/api/dashboard/:userId", async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const user = await User.findById(userId).populate("plans");
+    if (!user) return res.status(404).json({ error: "Usuário não encontrado." });
+    res.json({
+      username: user.username,
+      balance: user.balance,
+      plans: user.plans
+    });
+  } catch (err) {
+    res.status(500).json({ error: "Erro ao carregar dashboard." });
+  }
 });
+
+// Servir arquivos HTML
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+app.get("/login.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "login.html"));
+});
+app.get("/register.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "register.html"));
+});
+app.get("/dashboard.html", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "dashboard.html"));
+});
+
+// Rodar servidor
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
