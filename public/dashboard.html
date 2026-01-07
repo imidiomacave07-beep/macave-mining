@@ -2,100 +2,123 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Macave Mining | Dashboard</title>
+  <title>Dashboard - Macave Mining</title>
+
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(135deg, #0a3d62, #1e90ff);
+      background: #0a1f44;
       color: white;
+      margin: 0;
       padding: 20px;
     }
-    h1 {
+
+    header {
       text-align: center;
+      margin-bottom: 20px;
     }
-    .logo {
+
+    header h1 {
+      color: #00bfff;
       font-size: 32px;
-      font-weight: bold;
-      text-align: center;
-      margin-bottom: 10px;
     }
-    .plan {
-      background: white;
-      color: #333;
+
+    .saldo {
+      background: #102c66;
       padding: 15px;
-      margin: 10px 0;
-      border-radius: 8px;
+      border-radius: 10px;
+      font-size: 20px;
+      margin-bottom: 20px;
     }
+
+    .plan {
+      background: #102c66;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 15px;
+    }
+
     button {
-      background: #1e90ff;
-      color: white;
+      background: #00bfff;
       border: none;
-      padding: 10px;
-      cursor: pointer;
+      padding: 10px 15px;
       border-radius: 5px;
+      cursor: pointer;
+      font-weight: bold;
     }
+
     button:hover {
-      background: #0a3d62;
-    }
-    .menu {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: #0a3d62;
-      display: flex;
-      justify-content: space-around;
-      padding: 10px;
+      background: #009acd;
     }
   </style>
 </head>
 <body>
 
-  <div class="logo">MM</div>
-  <h1>Macave Mining</h1>
+<header>
+  <h1>MM • Macave Mining</h1>
+</header>
 
-  <p>Saldo: <strong>0 USD</strong></p>
+<div class="saldo">
+  💰 Saldo: <span id="balance">Carregando...</span> USD
+</div>
 
-  <h2>Planos</h2>
-  <div id="plans"></div>
+<h2>📦 Planos Disponíveis</h2>
+<div id="plans"></div>
 
-  <div class="menu">
-    <span>Mineração</span>
-    <span>Saques</span>
-    <span>Dashboard</span>
-  </div>
+<script>
+/* ======================
+   CARREGAR SALDO
+====================== */
+async function loadBalance() {
+  const res = await fetch("/api/balance");
+  const data = await res.json();
+  document.getElementById("balance").innerText = data.balance;
+}
 
-  <script>
-    const userId = "teste123";
+/* ======================
+   CARREGAR PLANOS
+====================== */
+async function loadPlans() {
+  const res = await fetch("/api/plans");
+  const plans = await res.json();
 
-    async function loadPlans() {
-      const res = await fetch("/api/plans");
-      const plans = await res.json();
+  const container = document.getElementById("plans");
+  container.innerHTML = "";
 
-      document.getElementById("plans").innerHTML = plans.map(p => `
-        <div class="plan">
-          <h3>${p.name}</h3>
-          <p>Preço: $${p.price}</p>
-          <p>Lucro diário: ${p.dailyProfit}%</p>
-          <p>Duração: ${p.duration} dias</p>
-          <button onclick="buyPlan('${p._id}')">Comprar</button>
-        </div>
-      `).join("");
-    }
+  plans.forEach(plan => {
+    container.innerHTML += `
+      <div class="plan">
+        <h3>${plan.name}</h3>
+        <p>Preço: $${plan.price}</p>
+        <p>Lucro diário: ${plan.dailyProfit}%</p>
+        <p>Duração: ${plan.duration} dias</p>
+        <button onclick="buyPlan('${plan._id}')">Comprar</button>
+      </div>
+    `;
+  });
+}
 
-    async function buyPlan(planId) {
-      const res = await fetch("/api/purchase", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, planId })
-      });
+/* ======================
+   COMPRAR PLANO
+====================== */
+async function buyPlan(planId) {
+  const res = await fetch("/api/purchase", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      userId: "teste123",
+      planId
+    })
+  });
 
-      const data = await res.json();
-      alert(data.message);
-    }
+  const data = await res.json();
+  alert(data.message);
+  loadBalance();
+}
 
-    loadPlans();
-  </script>
+loadBalance();
+loadPlans();
+</script>
 
 </body>
 </html>
