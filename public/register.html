@@ -1,17 +1,16 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <title>Registrar - Macave Mining</title>
+  <title>Register - Macave Mining</title>
 </head>
 <body>
   <h1>Registrar</h1>
   <form id="registerForm">
-    <input type="text" placeholder="Usuário" id="username" required>
-    <input type="password" placeholder="Senha" id="password" required>
+    <input type="text" placeholder="Usuário" id="username">
+    <input type="password" placeholder="Senha" id="password">
     <button type="submit">Registrar</button>
   </form>
-  <p>Já tem conta? <a href="login.html">Entrar</a></p>
+  <p>Já tem conta? <a href="login.html">Login</a></p>
 
   <script>
     const form = document.getElementById("registerForm");
@@ -26,12 +25,8 @@
         })
       });
       const data = await res.json();
-      if(data.success) {
-        alert("Conta criada com sucesso!");
-        window.location.href = "login.html";
-      } else {
-        alert(data.message || "Erro ao registrar");
-      }
+      alert(data.message);
+      if(data.userId) window.location.href = "login.html";
     });
   </script>
 </body>
