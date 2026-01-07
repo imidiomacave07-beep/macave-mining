@@ -1,16 +1,10 @@
 const mongoose = require("mongoose");
 
-const PlanSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User"
-  },
-  amount: Number,       // valor investido
-  dailyRate: Number,    // percentagem diária (ex: 0.03 = 3%)
-  active: {
-    type: Boolean,
-    default: true
-  }
+const planSchema = new mongoose.Schema({
+  name: String,
+  price: Number,
+  dailyProfit: Number,
+  durationDays: Number
 });
 
-module.exports = mongoose.model("Plan", PlanSchema);
+module.exports = mongoose.model("Plan", planSchema);
