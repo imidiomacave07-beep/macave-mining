@@ -1,16 +1,70 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt">
 <head>
+  <meta charset="UTF-8">
   <title>Login - Macave Mining</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(120deg, #0d1b2a, #1b263b);
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column;
+    }
+    h1 {
+      color: #fca311;
+      margin-bottom: 20px;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      gap: 10px;
+    }
+    input {
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+    }
+    button {
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      background: #fca311;
+      color: #162447;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    button:hover { background: #ffba08; }
+    .link {
+      margin-top: 10px;
+      text-align: center;
+    }
+    .link a { color: #fca311; text-decoration: none; }
+  </style>
 </head>
 <body>
-  <h1>Login</h1>
+  <h1>MM - Macave Mining</h1>
+
   <form id="loginForm">
-    <input type="text" placeholder="Usuário" id="username">
-    <input type="password" placeholder="Senha" id="password">
+    <input type="text" placeholder="Usuário" id="username" required>
+    <input type="password" placeholder="Senha" id="password" required>
     <button type="submit">Entrar</button>
   </form>
-  <p>Não tem conta? <a href="register.html">Registrar</a></p>
+
+  <div class="link">
+    <a href="register.html">Criar conta</a>
+  </div>
 
   <script>
     const form = document.getElementById("loginForm");
@@ -25,11 +79,11 @@
         })
       });
       const data = await res.json();
-      if(data.userId){
-        localStorage.setItem("userId", data.userId);
+      if (data.success) {
+        localStorage.setItem("userId", data.user._id);
         window.location.href = "dashboard.html";
       } else {
-        alert(data.message);
+        alert("Erro: " + (data.message || "Credenciais inválidas"));
       }
     });
   </script>
