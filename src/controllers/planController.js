@@ -1,25 +1,27 @@
-const Plan = require("../models/Plan");
+const Plan = require('../models/Plan');
+const User = require('../models/User');
 
-// criar novo plano
-exports.createPlan = async (req, res) => {
-  try {
-    const { name, price, dailyProfit, durationDays } = req.body;
-
-    const plan = new Plan({ name, price, dailyProfit, durationDays });
-    await plan.save();
-
-    res.status(201).json({ message: "Plano criado com sucesso", plan });
-  } catch (err) {
-    res.status(500).json({ error: "Erro ao criar plano", details: err.message });
-  }
+exports.getPlans = async (req, res) => {
+  const plans = await Plan.find();
+  res.json(plans);
 };
 
-// listar todos os planos
-exports.getPlans = async (req, res) => {
+exports.purchasePlan = async (req, res) => {
   try {
-    const plans = await Plan.find();
-    res.status(200).json(plans);
+    const { userId, planId } = req.body;
+    const user = await User.findById(userId);
+    const plan = await Plan.findById(planId);
+
+    if (!user || !plan) return res.status(400).json({ message: 'Usuário ou plano não encontrado' });
+
+    if (user.balance < plan.price) return res.status(400).json({ message: 'Saldo insuficiente' });
+
+    user.balance -= plan.price;
+    user.purchasedPlans.push(plan._id);
+    await user.save();
+
+    res.json({ message: `Plano ${plan.name} comprado com sucesso!` });
   } catch (err) {
-    res.status(500).json({ error: "Erro ao buscar planos", details: err.message });
+    res.status(500).json({ message: 'Erro ao comprar plano', error: err.message });
   }
 };
