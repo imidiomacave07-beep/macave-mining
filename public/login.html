@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html>
 <head>
-  <meta charset="UTF-8">
   <title>Login - Macave Mining</title>
 </head>
 <body>
   <h1>Login</h1>
   <form id="loginForm">
-    <input type="text" placeholder="Usuário" id="username" required>
-    <input type="password" placeholder="Senha" id="password" required>
+    <input type="text" placeholder="Usuário" id="username">
+    <input type="password" placeholder="Senha" id="password">
     <button type="submit">Entrar</button>
   </form>
   <p>Não tem conta? <a href="register.html">Registrar</a></p>
@@ -26,11 +25,11 @@
         })
       });
       const data = await res.json();
-      if(data.success) {
-        alert("Login feito com sucesso!");
-        window.location.href = "dashboard.html"; // redireciona para dashboard
+      if(data.userId){
+        localStorage.setItem("userId", data.userId);
+        window.location.href = "dashboard.html";
       } else {
-        alert(data.message || "Credenciais inválidas");
+        alert(data.message);
       }
     });
   </script>
