@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Macave Mining</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #6a11cb, #2575fc);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      color: #fff;
+      margin: 0;
+    }
+    .login-container {
+      background: rgba(255,255,255,0.1);
+      padding: 40px;
+      border-radius: 15px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      animation: fadeIn 1s ease-in;
+      text-align: center;
+    }
+    input {
+      display: block;
+      width: 250px;
+      margin: 15px auto;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      outline: none;
+    }
+    button {
+      padding: 10px 20px;
+      border-radius: 8px;
+      border: none;
+      background: #ffb347;
+      background: linear-gradient(to right, #ffcc33, #ff6666);
+      color: #fff;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <h1>Macave Mining</h1>
+    <form id="loginForm">
+      <input type="text" placeholder="Usuário" id="username">
+      <input type="password" placeholder="Senha" id="password">
+      <button type="submit">Entrar</button>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("loginForm");
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: document.getElementById("username").value,
+          password: document.getElementById("password").value
+        })
+      });
+      const data = await res.json();
+      alert(data.message);
+      if(data.userId) window.location.href = "/dashboard.html";
+    });
+  </script>
+</body>
+</html>
