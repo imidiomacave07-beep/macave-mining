@@ -5,26 +5,33 @@
 </head>
 <body>
   <h1>Login</h1>
+
   <form id="loginForm">
-    <input type="text" placeholder="Usuário" id="username">
-    <input type="password" placeholder="Senha" id="password">
+    <input type="text" id="username" placeholder="Usuário" required>
+    <input type="password" id="password" placeholder="Senha" required>
     <button type="submit">Entrar</button>
   </form>
-  <p><a href="register.html">Registrar</a></p>
+
   <script>
-    const form = document.getElementById("loginForm");
-    form.addEventListener("submit", async e => {
+    document.getElementById("loginForm").addEventListener("submit", async e => {
       e.preventDefault();
+
       const res = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username: document.getElementById("username").value,
-          password: document.getElementById("password").value
+          username: username.value,
+          password: password.value
         })
       });
+
       const data = await res.json();
-      alert(JSON.stringify(data));
+
+      if (data.success) {
+        window.location.href = "/dashboard.html";
+      } else {
+        alert("Erro ao fazer login");
+      }
     });
   </script>
 </body>
