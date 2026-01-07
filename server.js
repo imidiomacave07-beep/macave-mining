@@ -1,29 +1,26 @@
 const express = require("express");
 const app = express();
+const PORT = process.env.PORT || 10000;
+
+const plans = require("./data/plans");
+const users = require("./data/users");
 
 app.use(express.json());
 app.use(express.static("public"));
-
-const PORT = process.env.PORT || 10000;
-
-/* ======================
-   USUÁRIO SIMULADO
-====================== */
-let user = {
-  id: "teste123",
-  balance: 100,
-  plans: []
-};
 
 /* ======================
    LISTAR PLANOS
 ====================== */
 app.get("/api/plans", (req, res) => {
-  res.json([
-    { _id: "bronze", name: "Plano Bronze", price: 10, dailyProfit: 2, duration: 7 },
-    { _id: "prata", name: "Plano Prata", price: 25, dailyProfit: 3, duration: 15 },
-    { _id: "ouro", name: "Plano Ouro", price: 50, dailyProfit: 5, duration: 30 }
-  ]);
+  res.json(plans);
+});
+
+/* ======================
+   SALDO
+====================== */
+app.get("/api/balance", (req, res) => {
+  const user = users["teste123"];
+  res.json({ balance: user.balance.toFixed(2) });
 });
 
 /* ======================
@@ -32,16 +29,11 @@ app.get("/api/plans", (req, res) => {
 app.post("/api/purchase", (req, res) => {
   const { userId, planId } = req.body;
 
-  const plans = {
-    bronze: { name: "Plano Bronze", price: 10 },
-    prata: { name: "Plano Prata", price: 25 },
-    ouro: { name: "Plano Ouro", price: 50 }
-  };
+  const user = users[userId];
+  const plan = plans.find(p => p.id === planId || p.id === planId);
 
-  const plan = plans[planId];
-
-  if (!plan) {
-    return res.status(400).json({ message: "Plano inválido" });
+  if (!user || !plan) {
+    return res.status(400).json({ message: "Dados inválidos" });
   }
 
   if (user.balance < plan.price) {
@@ -49,25 +41,35 @@ app.post("/api/purchase", (req, res) => {
   }
 
   user.balance -= plan.price;
-  user.plans.push(plan.name);
 
-  res.json({
-    message: "Plano comprado com sucesso!",
-    saldo: user.balance,
-    planos: user.plans
+  user.plans.push({
+    ...plan,
+    startDate: Date.now(),
+    lastPaid: Date.now()
   });
+
+  res.json({ message: "Plano comprado com sucesso!" });
 });
 
 /* ======================
-   SALDO
+   MINERAÇÃO AUTOMÁTICA
 ====================== */
-app.get("/api/balance", (req, res) => {
-  res.json({ balance: user.balance });
-});
+setInterval(() => {
+  Object.values(users).forEach(user => {
+    user.plans.forEach(plan => {
+      const now = Date.now();
+      const oneDay = 24 * 60 * 60 * 1000;
 
-/* ======================
-   START SERVER
-====================== */
+      if (now - plan.lastPaid >= oneDay) {
+        const profit = (plan.price * plan.dailyProfit) / 100;
+        user.balance += profit;
+        plan.lastPaid = now;
+        console.log("Lucro gerado:", profit);
+      }
+    });
+  });
+}, 60 * 1000); // verifica a cada 1 minuto
+
 app.listen(PORT, () => {
-  console.log("Servidor rodando na porta " + PORT);
+  console.log("🚀 Macave Mining rodando na porta", PORT);
 });
