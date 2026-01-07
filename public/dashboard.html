@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt">
 <head>
+  <meta charset="UTF-8">
   <title>Dashboard - Macave Mining</title>
 </head>
 <body>
@@ -9,17 +10,25 @@
   <button onclick="logout()">Sair</button>
 
   <h2>Planos Ativos</h2>
-  <div id="plans"></div>
+  <div id="plans">
+    <!-- Planos serão carregados aqui -->
+  </div>
 
   <script>
-    const userId = localStorage.getItem("userId");
+    // Simula id do usuário logado
+    const userId = "ID_DO_USUARIO_AQUI"; 
 
-    async function loadPlans() {
-      const res = await fetch("/api/plans");
-      const plans = await res.json();
+    // Lista de planos
+    const planos = [
+      { name: "Plano Bronze", price: 10, dailyProfit: 2, duration: 7, _id: "bronze" },
+      { name: "Plano Prata", price: 25, dailyProfit: 3, duration: 15, _id: "prata" },
+      { name: "Plano Ouro", price: 50, dailyProfit: 5, duration: 30, _id: "ouro" }
+    ];
 
+    // Carregar planos no HTML
+    function loadPlans() {
       const container = document.getElementById("plans");
-      container.innerHTML = plans.map(plan => `
+      container.innerHTML = planos.map(plan => `
         <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">
           <h3>${plan.name}</h3>
           <p>Preço: $${plan.price}</p>
@@ -30,19 +39,12 @@
       `).join("");
     }
 
-    async function buyPlan(planId) {
-      const res = await fetch("/api/purchase", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, planId })
-      });
-      const data = await res.json();
-      alert(data.message);
+    function buyPlan(planId) {
+      alert("Você comprou o plano: " + planId + " (função de compra ainda precisa ser implementada)");
     }
 
     function logout() {
-      localStorage.removeItem("userId");
-      window.location.href = "login.html";
+      window.location.href = "/login.html";
     }
 
     loadPlans();
