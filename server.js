@@ -1,62 +1,67 @@
+// server.js
 const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
 const app = express();
+const cors = require("cors");
 
-// Configurações
+app.use(express.json());
 app.use(cors());
-app.use(bodyParser.json());
-app.use(express.static("public")); // serve os HTML
+app.use(express.static("public")); // para login.html, dashboard.html etc.
 
-// Mock database (apenas para teste)
-let users = [];
-let plans = [
-  { _id: "1", name: "Plano Bronze", price: 10, dailyProfit: 2, duration: 7 },
-  { _id: "2", name: "Plano Prata", price: 25, dailyProfit: 3, duration: 15 },
-  { _id: "3", name: "Plano Ouro", price: 50, dailyProfit: 5, duration: 30 }
+const PORT = process.env.PORT || 10000;
+
+// ---------------- Simulação de banco de dados ----------------
+let users = [
+  { _id: "user1", username: "teste", password: "1234", balance: 100, plans: [] }
 ];
-let purchases = [];
 
-// ===== Rotas =====
+const planos = [
+  { _id: "bronze", name: "Plano Bronze", price: 10, dailyProfit: 2, duration: 7 },
+  { _id: "prata", name: "Plano Prata", price: 25, dailyProfit: 3, duration: 15 },
+  { _id: "ouro", name: "Plano Ouro", price: 50, dailyProfit: 5, duration: 30 }
+];
 
-// Registro
+// ---------------- Rotas de autenticação ----------------
 app.post("/api/auth/register", (req, res) => {
   const { username, password } = req.body;
-  if (!username || !password) return res.status(400).json({ message: "Preencha todos os campos." });
+  if (users.find(u => u.username === username))
+    return res.status(400).json({ message: "Usuário já existe" });
 
-  const exists = users.find(u => u.username === username);
-  if (exists) return res.status(400).json({ message: "Usuário já existe." });
-
-  const user = { id: `${users.length + 1}`, username, password, balance: 0 };
-  users.push(user);
-  res.json({ message: "Registro realizado com sucesso!", userId: user.id });
+  const newUser = { _id: "user" + (users.length + 1), username, password, balance: 100, plans: [] };
+  users.push(newUser);
+  res.json({ message: "Usuário registrado com sucesso!", userId: newUser._id });
 });
 
-// Login
 app.post("/api/auth/login", (req, res) => {
   const { username, password } = req.body;
   const user = users.find(u => u.username === username && u.password === password);
-  if (!user) return res.status(400).json({ message: "Credenciais inválidas." });
-  res.json({ message: "Login bem-sucedido!", userId: user.id });
+  if (!user) return res.status(401).json({ message: "Credenciais inválidas" });
+  res.json({ message: "Login bem-sucedido", userId: user._id, balance: user.balance });
 });
 
-// Retornar planos
+// ---------------- Rotas de planos ----------------
 app.get("/api/plans", (req, res) => {
-  res.json(plans);
+  res.json(planos);
 });
 
-// Comprar plano
+// ---------------- Rota de compras ----------------
 app.post("/api/purchase", (req, res) => {
   const { userId, planId } = req.body;
-  const user = users.find(u => u.id === userId);
-  const plan = plans.find(p => p._id === planId);
-  if (!user || !plan) return res.status(400).json({ message: "Usuário ou plano inválido." });
+  const user = users.find(u => u._id === userId);
+  const plan = planos.find(p => p._id === planId);
 
-  purchases.push({ userId, planId, date: new Date() });
-  user.balance += plan.dailyProfit; // simula crédito inicial
-  res.json({ message: `Plano ${plan.name} comprado com sucesso!` });
+  if (!user) return res.status(404).json({ message: "Usuário não encontrado" });
+  if (!plan) return res.status(404).json({ message: "Plano não encontrado" });
+
+  if (user.balance < plan.price)
+    return res.status(400).json({ message: "Saldo insuficiente" });
+
+  user.balance -= plan.price;
+  user.plans.push({ ...plan, startDate: new Date() });
+
+  res.json({ message: `Plano ${plan.name} comprado com sucesso!`, balance: user.balance });
 });
 
-// Inicia servidor
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+// ---------------- Start do servidor ----------------
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
+});
