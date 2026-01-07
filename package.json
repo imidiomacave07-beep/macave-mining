@@ -1,51 +1,13 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Dashboard - Macave Mining</title>
-</head>
-<body>
-  <h1>Dashboard do Usuário</h1>
-  <p>Saldo: <span id="balance">0 USD</span></p>
-  <button onclick="logout()">Sair</button>
-
-  <h2>Planos Ativos</h2>
-  <div id="plans"></div>
-
-  <script>
-    const userId = localStorage.getItem("userId");
-
-    async function loadPlans() {
-      const res = await fetch("/api/plans");
-      const plans = await res.json();
-
-      const container = document.getElementById("plans");
-      container.innerHTML = plans.map(plan => `
-        <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">
-          <h3>${plan.name}</h3>
-          <p>Preço: $${plan.price}</p>
-          <p>Lucro diário: ${plan.dailyProfit}%</p>
-          <p>Duração: ${plan.duration} dias</p>
-          <button onclick="buyPlan('${plan._id}')">Comprar</button>
-        </div>
-      `).join("");
-    }
-
-    async function buyPlan(planId) {
-      const res = await fetch("/api/purchase", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId, planId })
-      });
-      const data = await res.json();
-      alert(data.message);
-    }
-
-    function logout() {
-      localStorage.removeItem("userId");
-      window.location.href = "login.html";
-    }
-
-    loadPlans();
-  </script>
-</body>
-</html>
+{
+  "name": "macave-mining",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2"
+  }
+}
