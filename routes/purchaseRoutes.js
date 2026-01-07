@@ -1,37 +1,31 @@
 const express = require("express");
 const router = express.Router();
-const Plan = require("../models/Plan");
-const User = require("../models/User"); // supondo que você já tem o model User
 
-// comprar um plano
-router.post("/", async (req, res) => {
+// Simulação de base de dados em memória
+let users = [
+  { _id: "user1", username: "teste", balance: 0, plans: [] }
+];
+
+const planos = [
+  { _id: "bronze", name: "Plano Bronze", price: 10, dailyProfit: 2, duration: 7 },
+  { _id: "prata", name: "Plano Prata", price: 25, dailyProfit: 3, duration: 15 },
+  { _id: "ouro", name: "Plano Ouro", price: 50, dailyProfit: 5, duration: 30 }
+];
+
+// Compra de plano
+router.post("/", (req, res) => {
   const { userId, planId } = req.body;
+  const user = users.find(u => u._id === userId);
+  const plan = planos.find(p => p._id === planId);
 
-  try {
-    const user = await User.findById(userId);
-    const plan = await Plan.findById(planId);
+  if (!user) return res.status(404).json({ message: "Usuário não encontrado" });
+  if (!plan) return res.status(404).json({ message: "Plano não encontrado" });
 
-    if (!user || !plan) {
-      return res.status(404).json({ error: "Usuário ou plano não encontrado" });
-    }
+  // Simula débito e adiciona plano
+  user.balance -= plan.price;
+  user.plans.push({ ...plan, startDate: new Date() });
 
-    // adicionar plano ao usuário
-    if (!user.plans) user.plans = [];
-    user.plans.push({
-      plan: plan._id,
-      startDate: new Date(),
-      endDate: new Date(Date.now() + plan.duration * 24 * 60 * 60 * 1000),
-      dailyProfit: plan.dailyProfit,
-      price: plan.price
-    });
-
-    await user.save();
-
-    res.json({ message: "Plano comprado com sucesso!", user });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Erro ao comprar o plano" });
-  }
+  res.json({ message: `Plano ${plan.name} comprado com sucesso!`, balance: user.balance });
 });
 
 module.exports = router;
