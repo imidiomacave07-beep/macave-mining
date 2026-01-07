@@ -10,37 +10,35 @@
   <button onclick="logout()">Sair</button>
 
   <h2>Planos Ativos</h2>
-  <div id="plans">
-    <!-- Planos serão carregados aqui -->
-  </div>
+  <div id="plans"></div>
 
   <script>
-    // Simula id do usuário logado
-    const userId = "ID_DO_USUARIO_AQUI"; 
+    const userId = "ID_DO_USUARIO_AQUI"; // Substitua pelo usuário real
 
-    // Lista de planos
-    const planos = [
-      { name: "Plano Bronze", price: 10, dailyProfit: 2, duration: 7, _id: "bronze" },
-      { name: "Plano Prata", price: 25, dailyProfit: 3, duration: 15, _id: "prata" },
-      { name: "Plano Ouro", price: 50, dailyProfit: 5, duration: 30, _id: "ouro" }
-    ];
+    // Carrega planos do back-end
+    async function loadPlans() {
+      try {
+        const res = await fetch("/api/plans");
+        const plans = await res.json();
 
-    // Carregar planos no HTML
-    function loadPlans() {
-      const container = document.getElementById("plans");
-      container.innerHTML = planos.map(plan => `
-        <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">
-          <h3>${plan.name}</h3>
-          <p>Preço: $${plan.price}</p>
-          <p>Lucro diário: ${plan.dailyProfit}%</p>
-          <p>Duração: ${plan.duration} dias</p>
-          <button onclick="buyPlan('${plan._id}')">Comprar</button>
-        </div>
-      `).join("");
+        const container = document.getElementById("plans");
+        container.innerHTML = plans.map(plan => `
+          <div style="border:1px solid #ccc; padding:10px; margin:10px 0;">
+            <h3>${plan.name}</h3>
+            <p>Preço: $${plan.price}</p>
+            <p>Lucro diário: ${plan.dailyProfit}%</p>
+            <p>Duração: ${plan.duration} dias</p>
+            <button onclick="buyPlan('${plan._id}')">Comprar</button>
+          </div>
+        `).join("");
+      } catch (err) {
+        alert("Erro ao carregar planos: " + err.message);
+      }
     }
 
-    function buyPlan(planId) {
-      alert("Você comprou o plano: " + planId + " (função de compra ainda precisa ser implementada)");
+    // Simula compra de plano
+    async function buyPlan(planId) {
+      alert(`Plano ${planId} comprado com sucesso! (simulação)`);
     }
 
     function logout() {
