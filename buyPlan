@@ -1,0 +1,19 @@
+async function buyPlan(planId) {
+  try {
+    const res = await fetch("/api/purchase", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ userId, planId })
+    });
+    const data = await res.json();
+
+    if (res.ok) {
+      alert(data.message);
+      document.getElementById("balance").textContent = data.balance + " USD";
+    } else {
+      alert("Erro: " + data.message);
+    }
+  } catch (err) {
+    alert("Erro ao comprar plano: " + err.message);
+  }
+}
