@@ -2,156 +2,96 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard - Macave Mining</title>
+  <title>Macave Mining | Dashboard</title>
   <style>
     body {
       font-family: Arial, sans-serif;
-      background: linear-gradient(120deg, #0d1b2a, #1b263b);
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
-    header {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px 0;
-      background: #162447;
-      font-size: 2rem;
-      font-weight: bold;
-      color: #fca311;
-      letter-spacing: 5px;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-    main {
+      background: linear-gradient(135deg, #0a3d62, #1e90ff);
+      color: white;
       padding: 20px;
-      flex: 1;
-      overflow-y: auto;
     }
-    .balance {
+    h1 {
       text-align: center;
-      font-size: 1.5rem;
-      margin-bottom: 20px;
     }
-    .plans {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
+    .logo {
+      font-size: 32px;
+      font-weight: bold;
+      text-align: center;
+      margin-bottom: 10px;
     }
-    .plan-card {
-      background: #1b263b;
-      border: 2px solid #fca311;
-      border-radius: 10px;
+    .plan {
+      background: white;
+      color: #333;
       padding: 15px;
-      width: 220px;
-      text-align: center;
-      transition: transform 0.3s;
+      margin: 10px 0;
+      border-radius: 8px;
     }
-    .plan-card:hover { transform: scale(1.05); }
-    .plan-card h3 { color: #fca311; margin-bottom: 10px; }
-    .plan-card p { margin: 5px 0; }
-    .plan-card button {
-      margin-top: 10px;
-      padding: 8px 15px;
+    button {
+      background: #1e90ff;
+      color: white;
       border: none;
-      border-radius: 5px;
-      background: #fca311;
-      color: #162447;
-      cursor: pointer;
-      font-weight: bold;
-      transition: background 0.3s;
-    }
-    .plan-card button:hover { background: #ffba08; }
-    .ads {
-      margin: 20px auto;
       padding: 10px;
-      background: #ffba08;
-      color: #162447;
+      cursor: pointer;
       border-radius: 5px;
-      text-align: center;
-      font-weight: bold;
-      max-width: 400px;
-      animation: slideIn 2s;
     }
-    @keyframes slideIn {
-      from { transform: translateY(-50px); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+    button:hover {
+      background: #0a3d62;
     }
-    nav {
+    .menu {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #0a3d62;
       display: flex;
       justify-content: space-around;
-      padding: 15px 0;
-      background: #162447;
-      border-top: 2px solid #fca311;
+      padding: 10px;
     }
-    nav a {
-      color: #fca311;
-      text-decoration: none;
-      font-weight: bold;
-      font-size: 1rem;
-      text-align: center;
-      transition: color 0.3s;
-    }
-    nav a:hover { color: #ffba08; }
   </style>
 </head>
 <body>
 
-  <header>MM</header>
+  <div class="logo">MM</div>
+  <h1>Macave Mining</h1>
 
-  <main>
-    <div class="balance">Saldo: <span id="balance">0 USD</span></div>
-    <div class="ads">💰 Invista em planos justos e aumente seu lucro diário! 💰</div>
-    <div class="plans" id="plans"></div>
-  </main>
+  <p>Saldo: <strong>0 USD</strong></p>
 
-  <nav>
-    <a href="#mining">Mineração</a>
-    <a href="#withdraws">Saques</a>
-    <a href="#dashboard">Dashboard</a>
-  </nav>
+  <h2>Planos</h2>
+  <div id="plans"></div>
+
+  <div class="menu">
+    <span>Mineração</span>
+    <span>Saques</span>
+    <span>Dashboard</span>
+  </div>
 
   <script>
-    const userId = localStorage.getItem("userId") || "ID_DO_USUARIO_AQUI";
+    const userId = "teste123";
 
     async function loadPlans() {
-      try {
-        const res = await fetch("/api/plans");
-        const plans = await res.json();
-        const container = document.getElementById("plans");
-        container.innerHTML = plans.map(plan => `
-          <div class="plan-card">
-            <h3>${plan.name}</h3>
-            <p>Preço: $${plan.price}</p>
-            <p>Lucro diário: ${plan.dailyProfit}%</p>
-            <p>Duração: ${plan.duration} dias</p>
-            <button onclick="buyPlan('${plan._id}')">Comprar</button>
-          </div>
-        `).join("");
-      } catch (err) {
-        alert("Erro ao carregar planos: " + err.message);
-      }
+      const res = await fetch("/api/plans");
+      const plans = await res.json();
+
+      document.getElementById("plans").innerHTML = plans.map(p => `
+        <div class="plan">
+          <h3>${p.name}</h3>
+          <p>Preço: $${p.price}</p>
+          <p>Lucro diário: ${p.dailyProfit}%</p>
+          <p>Duração: ${p.duration} dias</p>
+          <button onclick="buyPlan('${p._id}')">Comprar</button>
+        </div>
+      `).join("");
     }
 
     async function buyPlan(planId) {
-      try {
-        const res = await fetch("/api/purchase", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ userId, planId })
-        });
-        const data = await res.json();
-        alert(data.message || JSON.stringify(data));
-      } catch (err) {
-        alert("Erro ao comprar plano: " + err.message);
-      }
+      const res = await fetch("/api/purchase", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, planId })
+      });
+
+      const data = await res.json();
+      alert(data.message);
     }
 
     loadPlans();
