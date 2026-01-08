@@ -1,63 +1,26 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <title>Dashboard - Macave Mining</title>
-  <link rel="stylesheet" href="style.css">
-</head>
-<body>
+<h2>Solicitar Saque (M-Pesa)</h2>
 
-<div class="logo">
-  <span>MM</span> Macave Mining
-</div>
+<input type="number" id="amount" placeholder="Valor do saque">
+<input type="text" id="mpesa" placeholder="Número M-Pesa">
 
-<div class="card">
-  <h2>Dashboard</h2>
-  <p id="saldo">Saldo: 0 USD</p>
-</div>
-
-<div class="card">
-  <h3>Planos de Mineração</h3>
-  <div id="plans"></div>
-</div>
-
-<div class="bottom-menu">
-  <a href="#">⛏<br>Mineração</a>
-  <a href="#">💰<br>Saques</a>
-  <a href="/dashboard.html">📊<br>Dashboard</a>
-</div>
+<button onclick="withdraw()">Solicitar Saque</button>
 
 <script>
-const userId = localStorage.getItem("userId");
+async function withdraw() {
+  const amount = document.getElementById("amount").value;
+  const mpesaNumber = document.getElementById("mpesa").value;
 
-async function loadPlans() {
-  const res = await fetch("/api/plans");
-  const plans = await res.json();
-
-  document.getElementById("plans").innerHTML =
-    plans.map(p => `
-      <div class="card">
-        <h4>${p.name}</h4>
-        <p>Preço: $${p.price}</p>
-        <p>Lucro diário: ${p.dailyProfit}%</p>
-        <p>Duração: ${p.duration} dias</p>
-        <button onclick="buy('${p._id}')">Comprar</button>
-      </div>
-    `).join("");
-}
-
-async function buy(planId) {
-  const res = await fetch("/api/purchase", {
+  const res = await fetch("/api/withdraw", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, planId })
+    body: JSON.stringify({
+      userId,
+      amount,
+      mpesaNumber
+    })
   });
+
   const data = await res.json();
-  alert(data.message || "Plano comprado");
+  alert(data.message);
 }
-
-loadPlans();
 </script>
-
-</body>
-</html>
