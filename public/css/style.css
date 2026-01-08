@@ -1,0 +1,70 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #eef3f9;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  background: #fff;
+  max-width: 420px;
+  margin: 20px auto;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+
+h2 {
+  color: #0074D9;
+}
+
+h3 {
+  margin-top: 20px;
+}
+
+input, select {
+  width: 100%;
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  background: #0074D9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #005fa3;
+}
+
+.message {
+  margin-top: 10px;
+}
+
+.plan, .active-plan {
+  border: 1px solid #ddd;
+  padding: 10px;
+  border-radius: 6px;
+  margin-top: 8px;
+  text-align: left;
+}
+
+.withdraw {
+  font-size: 14px;
+  border-bottom: 1px solid #ddd;
+  padding: 6px 0;
+  word-break: break-all;
+}
