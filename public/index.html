@@ -1,60 +1,80 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <title>Macave Mining | Mineração Digital</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Macave Mining - Login & Registro</title>
+<style>
+body { font-family: Arial; background:#f4f7fa; margin:0; color:#333; display:flex; justify-content:center; align-items:center; height:100vh; }
+.container { background:white; padding:30px; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.1); width:300px; text-align:center; }
+h2 { color:#0074D9; }
+input { width:100%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; }
+button { width:100%; padding:10px; border:none; border-radius:5px; background:#0074D9; color:white; cursor:pointer; }
+button:hover { background:#005fa3; }
+.message { margin:10px 0; color:green; }
+.error { color:red; }
+</style>
 </head>
 <body>
 
-<!-- TOPO -->
-<div class="logo">
-  <span>MM</span> Macave Mining
+<div class="container">
+  <h2>Macave Mining</h2>
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Senha">
+  
+  <button onclick="register()">Registrar</button>
+  <button onclick="login()">Login</button>
+  
+  <div class="message" id="message"></div>
 </div>
 
-<div class="card">
-  <h2>Ganhe com Mineração Digital</h2>
-  <p>
-    A <strong>Macave Mining</strong> é uma plataforma moderna de mineração digital,
-    criada para gerar lucros diários de forma simples, segura e transparente.
-  </p>
+<script>
+const API_URL = "https://macave-mining.onrender.com/api/auth";
 
-  <p>
-    💎 Planos acessíveis  
-    <br>⚡ Lucros diários automáticos  
-    <br>🔒 Plataforma segura  
-    <br>📊 Controle total no dashboard
-  </p>
+function showMessage(text, isError=false) {
+  const msg = document.getElementById("message");
+  msg.textContent = text;
+  msg.className = isError ? "error" : "message";
+}
 
-  <button onclick="location.href='login.html'">Entrar / Registrar</button>
-</div>
+async function register() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  try {
+    const res = await fetch(`${API_URL}/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if(res.ok) showMessage(data.message);
+    else showMessage(data.error, true);
+  } catch(err) {
+    showMessage("Erro de conexão", true);
+  }
+}
 
-<!-- PLANOS -->
-<div class="card">
-  <h3>Planos Disponíveis</h3>
-
-  <p>
-    🟤 <strong>Bronze</strong> — $10 | 2% ao dia | 7 dias  
-    <br>⚪ <strong>Prata</strong> — $25 | 3% ao dia | 15 dias  
-    <br>🟡 <strong>Ouro</strong> — $50 | 5% ao dia | 30 dias
-  </p>
-</div>
-
-<!-- PROPAGANDA JUSTA -->
-<div class="card">
-  <h3>Por que confiar?</h3>
-  <p>
-    ✔️ Transparência nos planos  
-    <br>✔️ Sem promessas irreais  
-    <br>✔️ Controle total dos ganhos  
-    <br>✔️ Pagamentos processados manualmente
-  </p>
-</div>
-
-<!-- RODAPÉ -->
-<div style="text-align:center;padding:20px;font-size:14px;">
-  © 2026 Macave Mining • Todos os direitos reservados
-</div>
+async function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+  try {
+    const res = await fetch(`${API_URL}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    if(res.ok) {
+      showMessage("Login sucesso! Token: " + data.token);
+      console.log("JWT:", data.token);
+    } else {
+      showMessage(data.error, true);
+    }
+  } catch(err) {
+    showMessage("Erro de conexão", true);
+  }
+}
+</script>
 
 </body>
 </html>
