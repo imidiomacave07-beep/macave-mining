@@ -1,27 +1,27 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Macave Mining - Dashboard</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <title>Macave Mining</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<!-- Autenticação -->
-<div class="container" id="auth">
+<div class="container" id="authBox">
   <h2>Macave Mining</h2>
+
   <input type="email" id="email" placeholder="Email">
   <input type="password" id="password" placeholder="Senha">
+
   <button onclick="register()">Registrar</button>
   <button onclick="login()">Login</button>
-  <div class="message" id="message"></div>
+
+  <div id="authMsg" class="message"></div>
 </div>
 
-<!-- Dashboard Usuário -->
-<div class="container" id="dashboard">
+<div class="container hidden" id="dashboard">
   <h2>Bem-vindo, Usuário!</h2>
-  <p>Saldo: <span id="balance">0</span> 💎</p>
+  <p>Saldo: <b id="balance">0</b> 💎</p>
 
   <h3>Planos Disponíveis</h3>
   <div id="plans"></div>
@@ -36,21 +36,21 @@
     <option value="BEP20">USDT (BEP20)</option>
     <option value="ERC20">Ethereum (ERC20)</option>
   </select>
+
   <input type="text" id="walletAddress" placeholder="Endereço da carteira">
-  <input type="number" id="withdrawAmount" placeholder="Valor do saque">
+  <input type="number" id="withdrawAmount" placeholder="Valor">
+
   <button onclick="requestWithdraw()">Solicitar Saque</button>
 
   <h3>Histórico de Saques</h3>
-  <div class="withdraw-history" id="withdrawHistory">Nenhum saque ainda.</div>
+  <div id="withdrawHistory">Nenhum saque ainda.</div>
 
   <button onclick="logout()">Logout</button>
-  <div class="message" id="dashMessage"></div>
 </div>
 
-<!-- Painel Admin -->
-<div class="container" id="adminPanel">
+<div class="container hidden" id="adminPanel">
   <h2>Painel Admin</h2>
-  <div id="usersList"></div>
+  <div id="adminUsers"></div>
   <button onclick="logout()">Logout</button>
 </div>
 
