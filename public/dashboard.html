@@ -2,123 +2,165 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard - Macave Mining</title>
+  <title>Macave Mining</title>
 
   <style>
     body {
-      font-family: Arial, sans-serif;
-      background: #0a1f44;
-      color: white;
       margin: 0;
-      padding: 20px;
-    }
-
-    header {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #0a3cff, #0f7bff);
+      color: white;
       text-align: center;
+    }
+
+    /* LOGO */
+    .logo {
+      font-size: 48px;
+      font-weight: bold;
+      margin-top: 20px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .subtitle {
+      opacity: 0.9;
       margin-bottom: 20px;
     }
 
-    header h1 {
-      color: #00bfff;
-      font-size: 32px;
+    /* SALDO */
+    .card {
+      background: rgba(255,255,255,0.15);
+      margin: 20px;
+      padding: 20px;
+      border-radius: 15px;
     }
 
-    .saldo {
-      background: #102c66;
-      padding: 15px;
-      border-radius: 10px;
-      font-size: 20px;
-      margin-bottom: 20px;
-    }
-
+    /* PLANOS */
     .plan {
-      background: #102c66;
+      background: white;
+      color: #0033cc;
+      margin: 15px;
       padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 15px;
+      border-radius: 15px;
+      animation: fadeUp 1s;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     button {
-      background: #00bfff;
+      background: #0a3cff;
+      color: white;
       border: none;
-      padding: 10px 15px;
-      border-radius: 5px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      font-size: 16px;
       cursor: pointer;
-      font-weight: bold;
     }
 
     button:hover {
-      background: #009acd;
+      background: #002db3;
+    }
+
+    /* MENU */
+    .menu {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background: #002db3;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px 0;
+    }
+
+    .menu div {
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .promo {
+      font-size: 14px;
+      opacity: 0.9;
+      margin-top: 10px;
     }
   </style>
 </head>
+
 <body>
 
-<header>
-  <h1>MM • Macave Mining</h1>
-</header>
+  <!-- LOGO -->
+  <div class="logo">MM</div>
+  <div class="subtitle">Macave Mining • Ganhe todos os dias</div>
 
-<div class="saldo">
-  💰 Saldo: <span id="balance">Carregando...</span> USD
-</div>
+  <!-- PROMO -->
+  <div class="promo">
+    ⛏️ Mineração automática • 💰 Lucros diários • 🔒 Plataforma segura
+  </div>
 
-<h2>📦 Planos Disponíveis</h2>
-<div id="plans"></div>
+  <!-- SALDO -->
+  <div class="card">
+    <h2>Saldo</h2>
+    <h1 id="balance">0 USD</h1>
+  </div>
 
-<script>
-/* ======================
-   CARREGAR SALDO
-====================== */
-async function loadBalance() {
-  const res = await fetch("/api/balance");
-  const data = await res.json();
-  document.getElementById("balance").innerText = data.balance;
-}
+  <!-- PLANOS -->
+  <h2>Planos Ativos</h2>
+  <div id="plans"></div>
 
-/* ======================
-   CARREGAR PLANOS
-====================== */
-async function loadPlans() {
-  const res = await fetch("/api/plans");
-  const plans = await res.json();
+  <!-- MENU -->
+  <div class="menu">
+    <div>⛏️ Mineração</div>
+    <div>💸 Saques</div>
+    <div>📊 Dashboard</div>
+  </div>
 
-  const container = document.getElementById("plans");
-  container.innerHTML = "";
+  <script>
+    const userId = "teste123";
 
-  plans.forEach(plan => {
-    container.innerHTML += `
-      <div class="plan">
-        <h3>${plan.name}</h3>
-        <p>Preço: $${plan.price}</p>
-        <p>Lucro diário: ${plan.dailyProfit}%</p>
-        <p>Duração: ${plan.duration} dias</p>
-        <button onclick="buyPlan('${plan._id}')">Comprar</button>
-      </div>
-    `;
-  });
-}
+    async function loadBalance() {
+      const res = await fetch("/api/balance");
+      const data = await res.json();
+      document.getElementById("balance").innerText = data.balance + " USD";
+    }
 
-/* ======================
-   COMPRAR PLANO
-====================== */
-async function buyPlan(planId) {
-  const res = await fetch("/api/purchase", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      userId: "teste123",
-      planId
-    })
-  });
+    async function loadPlans() {
+      const res = await fetch("/api/plans");
+      const plans = await res.json();
 
-  const data = await res.json();
-  alert(data.message);
-  loadBalance();
-}
+      const container = document.getElementById("plans");
+      container.innerHTML = plans.map(plan => `
+        <div class="plan">
+          <h3>${plan.name}</h3>
+          <p>Preço: $${plan.price}</p>
+          <p>Lucro diário: ${plan.dailyProfit}%</p>
+          <p>Duração: ${plan.duration} dias</p>
+          <button onclick="buyPlan('${plan.id}')">Comprar</button>
+        </div>
+      `).join("");
+    }
 
-loadBalance();
-loadPlans();
-</script>
+    async function buyPlan(planId) {
+      const res = await fetch("/api/purchase", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId, planId })
+      });
+
+      const data = await res.json();
+      alert(data.message);
+      loadBalance();
+    }
+
+    loadBalance();
+    loadPlans();
+  </script>
 
 </body>
 </html>
