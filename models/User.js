@@ -1,5 +1,13 @@
 const mongoose = require("mongoose");
 
+const planSchema = new mongoose.Schema({
+  id: Number,
+  name: String,
+  price: Number,
+  profit: Number,
+  date: String
+});
+
 const withdrawSchema = new mongoose.Schema({
   amount: Number,
   method: String,
@@ -13,6 +21,7 @@ const userSchema = new mongoose.Schema({
   password: String,
   balance: { type: Number, default: 0 },
   isAdmin: { type: Boolean, default: false },
+  plans: [planSchema],
   withdraws: [withdrawSchema]
 });
 
