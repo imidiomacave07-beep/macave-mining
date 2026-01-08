@@ -1,16 +1,31 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8">
-<title>Dashboard - Macave Mining</title>
+  <meta charset="UTF-8">
+  <title>Dashboard - Macave Mining</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h1>Dashboard do Usuário</h1>
-<p id="saldo">Saldo: 0 USD</p>
+<div class="logo">
+  <span>MM</span> Macave Mining
+</div>
 
-<h2>Planos Disponíveis</h2>
-<div id="plans"></div>
+<div class="card">
+  <h2>Dashboard</h2>
+  <p id="saldo">Saldo: 0 USD</p>
+</div>
+
+<div class="card">
+  <h3>Planos de Mineração</h3>
+  <div id="plans"></div>
+</div>
+
+<div class="bottom-menu">
+  <a href="#">⛏<br>Mineração</a>
+  <a href="#">💰<br>Saques</a>
+  <a href="/dashboard.html">📊<br>Dashboard</a>
+</div>
 
 <script>
 const userId = localStorage.getItem("userId");
@@ -19,27 +34,26 @@ async function loadPlans() {
   const res = await fetch("/api/plans");
   const plans = await res.json();
 
-  const div = document.getElementById("plans");
-  div.innerHTML = plans.map(p => `
-    <div style="border:1px solid #ccc; padding:10px; margin:10px">
-      <h3>${p.name}</h3>
-      <p>Preço: $${p.price}</p>
-      <p>Lucro diário: ${p.dailyProfit}%</p>
-      <p>Duração: ${p.duration} dias</p>
-      <button onclick="buy('${p._id}')">Comprar</button>
-    </div>
-  `).join("");
+  document.getElementById("plans").innerHTML =
+    plans.map(p => `
+      <div class="card">
+        <h4>${p.name}</h4>
+        <p>Preço: $${p.price}</p>
+        <p>Lucro diário: ${p.dailyProfit}%</p>
+        <p>Duração: ${p.duration} dias</p>
+        <button onclick="buy('${p._id}')">Comprar</button>
+      </div>
+    `).join("");
 }
 
 async function buy(planId) {
-  const res = await fetch("/api/plans/buy", {
+  const res = await fetch("/api/purchase", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId, planId })
   });
-
   const data = await res.json();
-  alert(data.message);
+  alert(data.message || "Plano comprado");
 }
 
 loadPlans();
