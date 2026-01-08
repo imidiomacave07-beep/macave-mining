@@ -1,0 +1,60 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #0a3cff, #0bbcd6);
+  color: white;
+}
+
+/* LOGO */
+.logo {
+  text-align: center;
+  font-size: 36px;
+  font-weight: bold;
+  margin: 30px 0;
+}
+.logo span {
+  color: #00ffea;
+}
+
+/* CARD */
+.card {
+  background: white;
+  color: #333;
+  border-radius: 12px;
+  padding: 20px;
+  margin: 15px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+}
+
+/* BOTÕES */
+button {
+  background: #0a3cff;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  width: 100%;
+  font-size: 16px;
+  cursor: pointer;
+}
+button:hover {
+  background: #0830c9;
+}
+
+/* MENU INFERIOR */
+.bottom-menu {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #0a3cff;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+}
+
+.bottom-menu a {
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  text-align: center;
+}
