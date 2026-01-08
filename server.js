@@ -1,26 +1,9 @@
-require("dotenv").config();
-const express = require("express");
-const mongoose = require("mongoose");
-const cors = require("cors");
+const runDailyMining = require("./utils/dailyMining");
 
-const authRoutes = require("./routes/authRoutes");
+// 1 dia em milissegundos
+const ONE_DAY = 24 * 60 * 60 * 1000;
 
-const app = express();
-
-app.use(cors());
-app.use(express.json());
-app.use(express.static("public"));
-
-app.use("/api/auth", authRoutes);
-
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log("MongoDB conectado"))
-  .catch(err => console.log(err));
-
-app.get("/", (req, res) => {
-  res.send("Macave Mining API online 🚀");
-});
-
-app.listen(process.env.PORT, () => {
-  console.log("Servidor rodando na porta", process.env.PORT);
-});
+// roda automaticamente todo dia
+setInterval(() => {
+  runDailyMining();
+}, ONE_DAY);
