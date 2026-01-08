@@ -2,15 +2,17 @@ const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const { v4: uuidv4 } = require("uuid");
+const path = require("path");
 
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, "public"))); // serve frontend
 
-// ==================== Banco de dados simulado ====================
-let users = []; // {id, email, password, balance, isAdmin, wallet, plans, withdraws}
+// Banco de dados simulado
+let users = [];
 
-// ==================== Helpers ====================
+// Helpers
 function generateWallet() {
   return "0x" + Math.random().toString(16).substr(2, 40).toUpperCase();
 }
@@ -18,7 +20,7 @@ function findUserByEmail(email) {
   return users.find(u => u.email === email);
 }
 
-// ==================== ROTAS ====================
+// ---------------- Rotas ----------------
 
 // Registro
 app.post("/api/auth/register", (req, res) => {
@@ -27,8 +29,8 @@ app.post("/api/auth/register", (req, res) => {
   const newUser = {
     id: uuidv4(),
     email,
-    password, // sem hash para simplificar, mas ideal seria bcrypt
-    balance: 100, // saldo inicial
+    password,
+    balance: 100,
     isAdmin: false,
     wallet: generateWallet(),
     plans: [],
@@ -45,11 +47,12 @@ app.post("/api/auth/login", (req, res) => {
   if(!user || user.password !== password) return res.status(400).json({error:"Credenciais inválidas"});
   res.json({
     message:"Login bem-sucedido",
-    token: user.id, // token simples
+    token: user.id,
     isAdmin: user.isAdmin,
     wallet: user.wallet,
     balance: user.balance,
-    plans: user.plans
+    plans: user.plans,
+    withdraws: user.withdraws
   });
 });
 
@@ -91,6 +94,11 @@ app.get("/api/admin/users", (req,res)=>{
   res.json({users:list});
 });
 
-// ==================== Server ====================
+// Serve frontend
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/index.html"));
+});
+
+// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, ()=>console.log(`Macave Mining API rodando na porta ${PORT}`));
