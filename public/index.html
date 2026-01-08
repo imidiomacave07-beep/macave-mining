@@ -3,33 +3,43 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Macave Mining - Login & Registro</title>
+<title>Macave Mining - Dashboard</title>
 <style>
 body { font-family: Arial; background:#f4f7fa; margin:0; color:#333; display:flex; justify-content:center; align-items:center; height:100vh; }
-.container { background:white; padding:30px; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.1); width:300px; text-align:center; }
+.container { background:white; padding:30px; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.1); width:350px; text-align:center; }
 h2 { color:#0074D9; }
 input { width:100%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; }
-button { width:100%; padding:10px; border:none; border-radius:5px; background:#0074D9; color:white; cursor:pointer; }
+button { width:100%; padding:10px; border:none; border-radius:5px; background:#0074D9; color:white; cursor:pointer; margin:5px 0; }
 button:hover { background:#005fa3; }
 .message { margin:10px 0; color:green; }
 .error { color:red; }
+#dashboard { display:none; }
 </style>
 </head>
 <body>
 
-<div class="container">
+<div class="container" id="auth">
   <h2>Macave Mining</h2>
   <input type="email" id="email" placeholder="Email">
   <input type="password" id="password" placeholder="Senha">
-  
   <button onclick="register()">Registrar</button>
   <button onclick="login()">Login</button>
-  
   <div class="message" id="message"></div>
 </div>
 
+<div class="container" id="dashboard">
+  <h2>Bem-vindo!</h2>
+  <p>Saldo: <span id="balance">0</span> 💎</p>
+  <input type="number" id="withdrawAmount" placeholder="Valor do saque">
+  <button onclick="requestWithdraw()">Solicitar Saque</button>
+  <button onclick="logout()">Logout</button>
+  <div class="message" id="dashMessage"></div>
+</div>
+
 <script>
-const API_URL = "https://macave-mining.onrender.com/api/auth";
+const API_URL = "https://macave-mining.onrender.com/api";
+let token = null;
+let balance = 100; // valor inicial simulado
 
 function showMessage(text, isError=false) {
   const msg = document.getElementById("message");
@@ -37,11 +47,22 @@ function showMessage(text, isError=false) {
   msg.className = isError ? "error" : "message";
 }
 
+function showDashMessage(text, isError=false) {
+  const msg = document.getElementById("dashMessage");
+  msg.textContent = text;
+  msg.className = isError ? "error" : "message";
+}
+
+function updateBalanceDisplay() {
+  document.getElementById("balance").textContent = balance.toFixed(2);
+}
+
+// ---------------- Registro ----------------
 async function register() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
   try {
-    const res = await fetch(`${API_URL}/register`, {
+    const res = await fetch(`${API_URL}/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
@@ -54,24 +75,65 @@ async function register() {
   }
 }
 
+// ---------------- Login ----------------
 async function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
   try {
-    const res = await fetch(`${API_URL}/login`, {
+    const res = await fetch(`${API_URL}/auth/login`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password })
     });
     const data = await res.json();
     if(res.ok) {
-      showMessage("Login sucesso! Token: " + data.token);
-      console.log("JWT:", data.token);
+      token = data.token;
+      document.getElementById("auth").style.display = "none";
+      document.getElementById("dashboard").style.display = "block";
+      updateBalanceDisplay();
+      showDashMessage("Login bem-sucedido!");
     } else {
       showMessage(data.error, true);
     }
   } catch(err) {
     showMessage("Erro de conexão", true);
+  }
+}
+
+// ---------------- Logout ----------------
+function logout() {
+  token = null;
+  document.getElementById("auth").style.display = "block";
+  document.getElementById("dashboard").style.display = "none";
+  showMessage("");
+  showDashMessage("");
+}
+
+// ---------------- Saque Simulado ----------------
+async function requestWithdraw() {
+  const amount = parseFloat(document.getElementById("withdrawAmount").value);
+  if(!amount || amount <= 0) return showDashMessage("Valor inválido", true);
+  if(amount > balance) return showDashMessage("Saldo insuficiente", true);
+
+  try {
+    const res = await fetch(`${API_URL}/withdraw/request`, {
+      method: "POST",
+      headers: { 
+        "Content-Type": "application/json",
+        "Authorization": token
+      },
+      body: JSON.stringify({ amount, method:"simulado", destination:"teste" })
+    });
+    const data = await res.json();
+    if(res.ok || data.message) {
+      balance -= amount; // simula débito
+      updateBalanceDisplay();
+      showDashMessage("Saque solicitado com sucesso!");
+    } else {
+      showDashMessage(data.error || "Erro no saque", true);
+    }
+  } catch(err) {
+    showDashMessage("Erro de conexão", true);
   }
 }
 </script>
