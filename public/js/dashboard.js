@@ -11,25 +11,39 @@ const plansData = [
   { id: 3, name: "Plano Premium", price: 100, profit: 35 }
 ];
 
-function showMessage(id, msg, error=false) {
-  const el = document.getElementById(id);
-  el.textContent = msg;
-  el.style.color = error ? "red" : "green";
+/* ================= VALIDAÇÃO DE CARTEIRAS ================= */
+function validateWallet(address, type) {
+  if (!address) return false;
+
+  switch (type) {
+    case "TRC20":
+      return /^T[a-zA-Z0-9]{33}$/.test(address);
+
+    case "BTC":
+      return /^(1|3|bc1)[a-zA-Z0-9]{25,39}$/.test(address);
+
+    case "BEP20":
+    case "ERC20":
+      return /^0x[a-fA-F0-9]{40}$/.test(address);
+
+    default:
+      return false;
+  }
 }
 
-// AUTH
+/* ================= AUTH ================= */
 async function register() {
-  const email = email.value;
-  const password = password.value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
   const res = await fetch("/api/auth/register", {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
   });
 
   const data = await res.json();
-  showMessage("authMsg", data.message || data.error, !res.ok);
+  alert(data.message || data.error);
 }
 
 async function login() {
@@ -37,13 +51,13 @@ async function login() {
   const password = document.getElementById("password").value;
 
   const res = await fetch("/api/auth/login", {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
   });
 
   const data = await res.json();
-  if(!res.ok) return showMessage("authMsg", data.error, true);
+  if (!res.ok) return alert(data.error);
 
   userId = data.token;
   balance = data.balance;
@@ -53,7 +67,7 @@ async function login() {
 
   document.getElementById("authBox").classList.add("hidden");
 
-  if(isAdmin) {
+  if (isAdmin) {
     document.getElementById("adminPanel").classList.remove("hidden");
     loadAdmin();
   } else {
@@ -62,7 +76,7 @@ async function login() {
   }
 }
 
-// DASHBOARD
+/* ================= DASHBOARD ================= */
 function renderDashboard() {
   document.getElementById("balance").textContent = balance;
 
@@ -79,38 +93,46 @@ function renderDashboard() {
     `;
   });
 
-  const active = document.getElementById("activePlans");
-  active.innerHTML = plans.length
-    ? plans.map(p=>`<div class="active-plan">${p.name}</div>`).join("")
-    : "Nenhum plano comprado ainda.";
+  document.getElementById("activePlans").innerHTML =
+    plans.length
+      ? plans.map(p => `<div class="active-plan">${p.name}</div>`).join("")
+      : "Nenhum plano comprado ainda.";
 
   renderWithdraws();
 }
 
 async function buyPlan(id) {
-  const p = plansData.find(x=>x.id===id);
+  const p = plansData.find(x => x.id === id);
+
   const res = await fetch("/api/plans/buy", {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ userId, ...p })
   });
+
   const data = await res.json();
-  if(!res.ok) return alert(data.error);
+  if (!res.ok) return alert(data.error);
 
   balance = data.balance;
   plans.push(data.plan);
   renderDashboard();
 }
 
-// SAQUE
+/* ================= SAQUE ================= */
 async function requestWithdraw() {
-  const amount = Number(withdrawAmount.value);
-  const walletType = walletType.value;
-  const walletAddress = walletAddress.value;
+  const amount = Number(document.getElementById("withdrawAmount").value);
+  const walletType = document.getElementById("walletType").value;
+  const walletAddress = document.getElementById("walletAddress").value.trim();
+
+  if (!amount || amount <= 0)
+    return alert("Valor inválido");
+
+  if (!validateWallet(walletAddress, walletType))
+    return alert("Endereço inválido para a rede selecionada");
 
   const res = await fetch("/api/withdraw/request", {
-    method:"POST",
-    headers:{ "Content-Type":"application/json" },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       userId,
       amount,
@@ -120,7 +142,7 @@ async function requestWithdraw() {
   });
 
   const data = await res.json();
-  if(!res.ok) return alert(data.error);
+  if (!res.ok) return alert(data.error);
 
   balance = data.balance;
   withdraws.push({
@@ -136,7 +158,7 @@ async function requestWithdraw() {
 function renderWithdraws() {
   const div = document.getElementById("withdrawHistory");
   div.innerHTML = withdraws.length
-    ? withdraws.map(w=>`
+    ? withdraws.map(w => `
         <div class="withdraw">
           ${w.amount} | ${w.method}<br>
           ${w.destination}<br>
@@ -146,15 +168,15 @@ function renderWithdraws() {
     : "Nenhum saque ainda.";
 }
 
-// ADMIN
+/* ================= ADMIN ================= */
 async function loadAdmin() {
   const res = await fetch("/api/admin/users", {
-    headers:{ Authorization:userId }
+    headers: { Authorization: userId }
   });
-  const data = await res.json();
 
+  const data = await res.json();
   document.getElementById("adminUsers").innerHTML =
-    data.users.map(u=>`
+    data.users.map(u => `
       <div class="plan">
         <b>${u.email}</b><br>
         Saldo: ${u.balance}<br>
@@ -163,7 +185,7 @@ async function loadAdmin() {
     `).join("");
 }
 
-// LOGOUT
+/* ================= LOGOUT ================= */
 function logout() {
   location.reload();
 }
