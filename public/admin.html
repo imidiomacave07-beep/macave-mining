@@ -1,21 +1,129 @@
-<h1>👑 Painel Admin</h1>
-<div id="users"></div>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - Macave Mining</title>
+  <style>
+    body {
+      background: #071a33;
+      color: white;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
 
-<script>
-const token = localStorage.getItem("token");
+    h1 {
+      text-align: center;
+      color: #00bfff;
+    }
 
-if (!token) location.href = "/login.html";
+    .section {
+      background: #102a52;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(0,191,255,0.3);
+    }
 
-fetch("/api/admin/users", {
-  headers: {
-    Authorization: token
-  }
-})
-.then(res => res.json())
-.then(users => {
-  document.getElementById("users").innerHTML =
-    users.map(u =>
-      `<p>${u.email} | Saldo: ${u.balance}</p>`
-    ).join("");
-});
-</script>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 8px;
+      border-bottom: 1px solid #1e3a66;
+      text-align: left;
+    }
+
+    th {
+      color: #00ffcc;
+    }
+
+    button {
+      background: #00bfff;
+      border: none;
+      padding: 6px 10px;
+      border-radius: 5px;
+      cursor: pointer;
+      color: #000;
+      font-weight: bold;
+    }
+
+    .menu {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #06142b;
+      display: flex;
+      justify-content: space-around;
+      padding: 10px;
+    }
+
+    .menu a {
+      color: #00bfff;
+      text-decoration: none;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+
+<h1>MM — Painel Admin</h1>
+
+<div class="section">
+  <h2>👤 Usuários</h2>
+  <table>
+    <tr>
+      <th>Email</th>
+      <th>Saldo</th>
+    </tr>
+    <tr>
+      <td>user@email.com</td>
+      <td>50 USD</td>
+    </tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>📦 Planos Comprados</h2>
+  <table>
+    <tr>
+      <th>Usuário</th>
+      <th>Plano</th>
+      <th>Valor</th>
+    </tr>
+    <tr>
+      <td>user@email.com</td>
+      <td>Plano Ouro</td>
+      <td>$50</td>
+    </tr>
+  </table>
+</div>
+
+<div class="section">
+  <h2>💸 Pedidos de Saque</h2>
+  <table>
+    <tr>
+      <th>Usuário</th>
+      <th>Valor</th>
+      <th>Ação</th>
+    </tr>
+    <tr>
+      <td>user@email.com</td>
+      <td>$20</td>
+      <td>
+        <button>Aprovar</button>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<div class="menu">
+  <a href="/dashboard.html">Dashboard</a>
+  <a href="/admin.html">Admin</a>
+  <a href="/login.html">Sair</a>
+</div>
+
+</body>
+</html>
