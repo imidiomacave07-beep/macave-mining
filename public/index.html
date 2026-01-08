@@ -15,8 +15,9 @@ button:hover { background:#005fa3; }
 .message { margin:10px 0; color:green; }
 .error { color:red; }
 #dashboard, #adminPanel { display:none; }
-.plan, .user-card { border:1px solid #ccc; padding:10px; margin:5px; border-radius:5px; text-align:left; }
+.plan, .user-card, .active-plan { border:1px solid #ccc; padding:10px; margin:5px; border-radius:5px; text-align:left; }
 .withdraw-history { text-align:left; margin-top:10px; font-size:14px; }
+.wallet { font-size:13px; color:#555; margin-top:5px; word-break:break-all; }
 </style>
 </head>
 <body>
@@ -63,12 +64,13 @@ button:hover { background:#005fa3; }
 <script>
 const API_URL = "https://macave-mining.onrender.com/api";
 let token = null;
-let balance = 100;
-let withdraws = [];
-let activePlans = [];
+let userId = null;
 let isAdmin = false;
+let balance = 0;
+let activePlans = [];
+let withdraws = [];
 
-// Mensagens
+// ---------------- Mensagens ----------------
 function showMessage(text, isError=false) {
   const msg = document.getElementById("message");
   msg.textContent = text;
@@ -85,11 +87,6 @@ function updateWithdrawHistory() {
   if(withdraws.length===0) histDiv.textContent="Nenhum saque ainda.";
   else histDiv.innerHTML = withdraws.map(w=>`${w.amount} 💎 - ${w.date}`).join("<br>");
 }
-function renderActivePlans() {
-  const activeDiv = document.getElementById("activePlans");
-  if(activePlans.length===0) activeDiv.textContent="Nenhum plano comprado ainda.";
-  else activeDiv.innerHTML = activePlans.map(p=>`${p.name} - Lucro/5s: ${p.profit} 💎`).join("<br>");
-}
 
 // ---------------- Registro ----------------
 async function register() {
@@ -100,7 +97,8 @@ async function register() {
       method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,password})
     });
     const data = await res.json();
-    if(res.ok) showMessage(data.message); else showMessage(data.error,true);
+    if(res.ok) showMessage(data.message);
+    else showMessage(data.error,true);
   } catch(err){ showMessage("Erro de conexão",true); }
 }
 
@@ -115,7 +113,12 @@ async function login() {
     const data = await res.json();
     if(res.ok) {
       token = data.token;
-      isAdmin = data.isAdmin || false; // flag retornada do backend
+      userId = data.token; // nosso token é o id do usuário
+      isAdmin = data.isAdmin;
+      balance = data.balance;
+      activePlans = data.plans || [];
+      withdraws = data.withdraws || [];
+
       document.getElementById("auth").style.display="none";
       if(isAdmin) {
         document.getElementById("adminPanel").style.display="block";
@@ -131,7 +134,7 @@ async function login() {
 
 // ---------------- Logout ----------------
 function logout() {
-  token = null; activePlans=[]; withdraws=[];
+  token = null; userId=null; activePlans=[]; withdraws=[]; balance=0;
   document.getElementById("auth").style.display="block";
   document.getElementById("dashboard").style.display="none";
   document.getElementById("adminPanel").style.display="none";
@@ -148,58 +151,93 @@ function renderPlans() {
   const plansDiv=document.getElementById("plans"); plansDiv.innerHTML="";
   plans.forEach(plan=>{
     const div=document.createElement("div"); div.className="plan";
-    div.innerHTML=`<strong>${plan.name}</strong><br>Preço: $${plan.price} 💎<br>Lucro: $${plan.profit} 💎 / 5s<br><button onclick="buyPlan(${plan.id})">Comprar</button>`;
+    div.innerHTML=`<strong>${plan.name}</strong><br>Preço: $${plan.price} 💎<br>Lucro: $${plan.profit} 💎 / 5s<br>
+    <button onclick="buyPlan(${plan.id})">Comprar</button>`;
     plansDiv.appendChild(div);
   });
 }
-function buyPlan(planId) {
-  const plan=plans.find(p=>p.id===planId); if(!plan) return;
-  if(balance<plan.price) return showDashMessage("Saldo insuficiente",true);
-  balance-=plan.price;
-  activePlans.push({...plan});
-  updateBalanceDisplay(); renderActivePlans();
-  showDashMessage(`Você comprou o plano ${plan.name}!`);
+
+// ---------------- Comprar Plano ----------------
+async function buyPlan(planId) {
+  const plan = plans.find(p=>p.id===planId);
+  if(!plan) return;
+  if(balance < plan.price) return showDashMessage("Saldo insuficiente", true);
+
+  try {
+    const res = await fetch(`${API_URL}/plans/buy`, {
+      method:"POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({userId, planId:plan.id, name:plan.name, price:plan.price, profit:plan.profit})
+    });
+    const data = await res.json();
+    if(res.ok) {
+      activePlans.push(data.plan);
+      balance = data.balance;
+      updateBalanceDisplay();
+      renderActivePlans();
+      showDashMessage(`Você comprou o plano ${plan.name}! Endereço da carteira: ${data.plan.wallet}`);
+    } else showDashMessage(data.error,true);
+  } catch(err){ showDashMessage("Erro de conexão",true); }
+}
+
+// ---------------- Renderiza Planos Ativos ----------------
+function renderActivePlans() {
+  const activeDiv=document.getElementById("activePlans");
+  if(activePlans.length===0) { activeDiv.textContent="Nenhum plano comprado ainda."; return; }
+  activeDiv.innerHTML="";
+  activePlans.forEach(p=>{
+    const div=document.createElement("div"); div.className="active-plan";
+    div.innerHTML=`<strong>${p.name}</strong> - Lucro/5s: ${p.profit} 💎<br>
+    <span class="wallet">Carteira: ${p.wallet}</span>`;
+    activeDiv.appendChild(div);
+  });
 }
 
 // ---------------- Saque ----------------
 async function requestWithdraw() {
   const amount=parseFloat(document.getElementById("withdrawAmount").value);
   if(!amount || amount<=0) return showDashMessage("Valor inválido",true);
-  if(amount>balance) return showDashMessage("Saldo insuficiente",true);
+
   try {
-    const res=await fetch(`${API_URL}/withdraw/request`, {
-      method:"POST", headers:{"Content-Type":"application/json","Authorization":token},
-      body:JSON.stringify({amount,method:"simulado",destination:"teste"})
+    const res = await fetch(`${API_URL}/withdraw/request`, {
+      method:"POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({userId, amount, method:"simulado", destination:"teste"})
     });
-    const data=await res.json();
-    if(res.ok || data.message){
-      balance-=amount;
-      withdraws.push({amount,date:new Date().toLocaleString()});
+    const data = await res.json();
+    if(res.ok) {
+      balance = data.balance;
+      withdraws.push({amount, date:new Date().toLocaleString()});
       updateBalanceDisplay(); updateWithdrawHistory();
       showDashMessage("Saque solicitado com sucesso!");
-    } else showDashMessage(data.error||"Erro no saque",true);
+    } else showDashMessage(data.error||"Erro no saque", true);
   } catch(err){ showDashMessage("Erro de conexão",true); }
 }
 
-// ---------------- Lucro por Plano ----------------
+// ---------------- Lucro Automático ----------------
 function startProfitSimulation() {
   setInterval(()=>{
-    let totalProfit=0; activePlans.forEach(p=>{ totalProfit+=p.profit; });
-    balance+=totalProfit; updateBalanceDisplay();
-  },5000);
+    let totalProfit = 0;
+    activePlans.forEach(p => { totalProfit += p.profit; });
+    balance += totalProfit;
+    updateBalanceDisplay();
+  }, 5000);
 }
 
 // ---------------- Painel Admin ----------------
 async function loadAdminUsers() {
   try {
-    const res=await fetch(`${API_URL}/admin/users`, { headers:{"Authorization":token} });
-    const data=await res.json();
-    const usersDiv=document.getElementById("usersList"); usersDiv.innerHTML="";
+    const res = await fetch(`${API_URL}/admin/users`, { headers: {"Authorization": token} });
+    const data = await res.json();
+    const usersDiv = document.getElementById("usersList"); usersDiv.innerHTML="";
     if(!res.ok) usersDiv.textContent="Erro ao carregar usuários";
     else {
       data.users.forEach(u=>{
-        const div=document.createElement("div"); div.className="user-card";
-        div.innerHTML=`<strong>${u.email}</strong><br>Saldo: ${u.balance} 💎<br>Planos: ${u.plans.map(p=>p.name).join(", ")}<br>Saques: ${u.withdraws.map(w=>w.amount+" 💎").join(", ")}`;
+        const div = document.createElement("div"); div.className="user-card";
+        div.innerHTML=`<strong>${u.email}</strong><br>Saldo: ${u.balance} 💎<br>
+        Carteira: ${u.wallet}<br>
+        Planos: ${u.plans.map(p=>p.name).join(", ")}<br>
+        Saques: ${u.withdraws.map(w=>w.amount+" 💎").join(", ")}`;
         usersDiv.appendChild(div);
       });
     }
@@ -208,4 +246,4 @@ async function loadAdminUsers() {
 </script>
 
 </body>
-</html>to
+</html>
