@@ -3,22 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Macave Mining - Dashboard Final</title>
-<style>
-body { font-family: Arial; background:#f4f7fa; margin:0; color:#333; display:flex; justify-content:center; align-items:flex-start; padding-top:20px; }
-.container { background:white; padding:30px; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.1); width:400px; text-align:center; margin-bottom:20px; }
-h2 { color:#0074D9; }
-h3 { margin-top:20px; }
-input { width:100%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; }
-button { width:100%; padding:10px; border:none; border-radius:5px; background:#0074D9; color:white; cursor:pointer; margin:5px 0; }
-button:hover { background:#005fa3; }
-.message { margin:10px 0; color:green; }
-.error { color:red; }
-#dashboard, #adminPanel { display:none; }
-.plan, .user-card, .active-plan { border:1px solid #ccc; padding:10px; margin:5px; border-radius:5px; text-align:left; }
-.withdraw-history { text-align:left; margin-top:10px; font-size:14px; }
-.wallet { font-size:13px; color:#555; margin-top:5px; word-break:break-all; }
-</style>
+<title>Macave Mining - Dashboard</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
@@ -44,6 +30,13 @@ button:hover { background:#005fa3; }
   <div id="activePlans">Nenhum plano comprado ainda.</div>
 
   <h3>Saque</h3>
+  <select id="walletType">
+    <option value="TRC20">USDT (TRC20)</option>
+    <option value="BTC">Bitcoin (BTC)</option>
+    <option value="BEP20">USDT (BEP20)</option>
+    <option value="ERC20">Ethereum (ERC20)</option>
+  </select>
+  <input type="text" id="walletAddress" placeholder="Endereço da carteira">
   <input type="number" id="withdrawAmount" placeholder="Valor do saque">
   <button onclick="requestWithdraw()">Solicitar Saque</button>
 
@@ -61,189 +54,6 @@ button:hover { background:#005fa3; }
   <button onclick="logout()">Logout</button>
 </div>
 
-<script>
-const API_URL = "https://macave-mining.onrender.com/api";
-let token = null;
-let userId = null;
-let isAdmin = false;
-let balance = 0;
-let activePlans = [];
-let withdraws = [];
-
-// ---------------- Mensagens ----------------
-function showMessage(text, isError=false) {
-  const msg = document.getElementById("message");
-  msg.textContent = text;
-  msg.className = isError ? "error" : "message";
-}
-function showDashMessage(text, isError=false) {
-  const msg = document.getElementById("dashMessage");
-  msg.textContent = text;
-  msg.className = isError ? "error" : "message";
-}
-function updateBalanceDisplay() { document.getElementById("balance").textContent = balance.toFixed(2); }
-function updateWithdrawHistory() {
-  const histDiv = document.getElementById("withdrawHistory");
-  if(withdraws.length===0) histDiv.textContent="Nenhum saque ainda.";
-  else histDiv.innerHTML = withdraws.map(w=>`${w.amount} 💎 - ${w.date}`).join("<br>");
-}
-
-// ---------------- Registro ----------------
-async function register() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  try {
-    const res = await fetch(`${API_URL}/auth/register`, {
-      method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,password})
-    });
-    const data = await res.json();
-    if(res.ok) showMessage(data.message);
-    else showMessage(data.error,true);
-  } catch(err){ showMessage("Erro de conexão",true); }
-}
-
-// ---------------- Login ----------------
-async function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  try {
-    const res = await fetch(`${API_URL}/auth/login`, {
-      method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({email,password})
-    });
-    const data = await res.json();
-    if(res.ok) {
-      token = data.token;
-      userId = data.token; // nosso token é o id do usuário
-      isAdmin = data.isAdmin;
-      balance = data.balance;
-      activePlans = data.plans || [];
-      withdraws = data.withdraws || [];
-
-      document.getElementById("auth").style.display="none";
-      if(isAdmin) {
-        document.getElementById("adminPanel").style.display="block";
-        loadAdminUsers();
-      } else {
-        document.getElementById("dashboard").style.display="block";
-        renderPlans(); renderActivePlans(); updateBalanceDisplay(); updateWithdrawHistory();
-        startProfitSimulation();
-      }
-    } else { showMessage(data.error,true); }
-  } catch(err){ showMessage("Erro de conexão",true); }
-}
-
-// ---------------- Logout ----------------
-function logout() {
-  token = null; userId=null; activePlans=[]; withdraws=[]; balance=0;
-  document.getElementById("auth").style.display="block";
-  document.getElementById("dashboard").style.display="none";
-  document.getElementById("adminPanel").style.display="none";
-  showMessage(""); showDashMessage("");
-}
-
-// ---------------- Planos ----------------
-const plans=[
-  {id:1,name:"Bronze",price:10,profit:1},
-  {id:2,name:"Prata",price:50,profit:6},
-  {id:3,name:"Ouro",price:100,profit:15},
-];
-function renderPlans() {
-  const plansDiv=document.getElementById("plans"); plansDiv.innerHTML="";
-  plans.forEach(plan=>{
-    const div=document.createElement("div"); div.className="plan";
-    div.innerHTML=`<strong>${plan.name}</strong><br>Preço: $${plan.price} 💎<br>Lucro: $${plan.profit} 💎 / 5s<br>
-    <button onclick="buyPlan(${plan.id})">Comprar</button>`;
-    plansDiv.appendChild(div);
-  });
-}
-
-// ---------------- Comprar Plano ----------------
-async function buyPlan(planId) {
-  const plan = plans.find(p=>p.id===planId);
-  if(!plan) return;
-  if(balance < plan.price) return showDashMessage("Saldo insuficiente", true);
-
-  try {
-    const res = await fetch(`${API_URL}/plans/buy`, {
-      method:"POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({userId, planId:plan.id, name:plan.name, price:plan.price, profit:plan.profit})
-    });
-    const data = await res.json();
-    if(res.ok) {
-      activePlans.push(data.plan);
-      balance = data.balance;
-      updateBalanceDisplay();
-      renderActivePlans();
-      showDashMessage(`Você comprou o plano ${plan.name}! Endereço da carteira: ${data.plan.wallet}`);
-    } else showDashMessage(data.error,true);
-  } catch(err){ showDashMessage("Erro de conexão",true); }
-}
-
-// ---------------- Renderiza Planos Ativos ----------------
-function renderActivePlans() {
-  const activeDiv=document.getElementById("activePlans");
-  if(activePlans.length===0) { activeDiv.textContent="Nenhum plano comprado ainda."; return; }
-  activeDiv.innerHTML="";
-  activePlans.forEach(p=>{
-    const div=document.createElement("div"); div.className="active-plan";
-    div.innerHTML=`<strong>${p.name}</strong> - Lucro/5s: ${p.profit} 💎<br>
-    <span class="wallet">Carteira: ${p.wallet}</span>`;
-    activeDiv.appendChild(div);
-  });
-}
-
-// ---------------- Saque ----------------
-async function requestWithdraw() {
-  const amount=parseFloat(document.getElementById("withdrawAmount").value);
-  if(!amount || amount<=0) return showDashMessage("Valor inválido",true);
-
-  try {
-    const res = await fetch(`${API_URL}/withdraw/request`, {
-      method:"POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({userId, amount, method:"simulado", destination:"teste"})
-    });
-    const data = await res.json();
-    if(res.ok) {
-      balance = data.balance;
-      withdraws.push({amount, date:new Date().toLocaleString()});
-      updateBalanceDisplay(); updateWithdrawHistory();
-      showDashMessage("Saque solicitado com sucesso!");
-    } else showDashMessage(data.error||"Erro no saque", true);
-  } catch(err){ showDashMessage("Erro de conexão",true); }
-}
-
-// ---------------- Lucro Automático ----------------
-function startProfitSimulation() {
-  setInterval(()=>{
-    let totalProfit = 0;
-    activePlans.forEach(p => { totalProfit += p.profit; });
-    balance += totalProfit;
-    updateBalanceDisplay();
-  }, 5000);
-}
-
-// ---------------- Painel Admin ----------------
-async function loadAdminUsers() {
-  try {
-    const res = await fetch(`${API_URL}/admin/users`, { headers: {"Authorization": token} });
-    const data = await res.json();
-    const usersDiv = document.getElementById("usersList"); usersDiv.innerHTML="";
-    if(!res.ok) usersDiv.textContent="Erro ao carregar usuários";
-    else {
-      data.users.forEach(u=>{
-        const div = document.createElement("div"); div.className="user-card";
-        div.innerHTML=`<strong>${u.email}</strong><br>Saldo: ${u.balance} 💎<br>
-        Carteira: ${u.wallet}<br>
-        Planos: ${u.plans.map(p=>p.name).join(", ")}<br>
-        Saques: ${u.withdraws.map(w=>w.amount+" 💎").join(", ")}`;
-        usersDiv.appendChild(div);
-      });
-    }
-  } catch(err){ document.getElementById("usersList").textContent="Erro de conexão"; }
-}
-</script>
-
+<script src="js/dashboard.js"></script>
 </body>
 </html>
