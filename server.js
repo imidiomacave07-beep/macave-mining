@@ -1,12 +1,25 @@
-{
-  "name": "imidio-mining",
-  "version": "1.0.0",
-  "main": "backend/server.js",
-  "scripts": { "start": "node backend/server.js" },
-  "dependencies": {
-    "bcrypt": "^5.1.0",
-    "body-parser": "^1.20.2",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.0"
-  }
-}
+const express = require("express");
+const bodyParser = require("body-parser");
+
+const authRoutes = require("./backend/auth");
+const withdrawRoutes = require("./backend/withdraw");
+
+const app = express(); // ✅ APP DEFINIDO PRIMEIRO
+const PORT = process.env.PORT || 3000;
+
+// Middlewares
+app.use(bodyParser.json());
+
+// Rotas
+app.use("/api/auth", authRoutes);
+app.use("/api/withdraw", withdrawRoutes);
+
+// Rota teste (IMPORTANTE para Render)
+app.get("/", (req, res) => {
+  res.send("🚀 Macave Mining API rodando");
+});
+
+// Start server
+app.listen(PORT, () => {
+  console.log("Servidor rodando na porta", PORT);
+});
