@@ -1,7 +1,24 @@
-<h2>Login</h2>
-<input id="u" placeholder="Usuário">
-<input id="p" type="password" placeholder="Senha">
-<button onclick="login()">Entrar</button>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Macave Mining</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="logo">
+  <span>MM</span> Macave Mining
+</div>
+
+<div class="card">
+  <h2>Entrar</h2>
+
+  <input id="username" placeholder="Usuário" style="width:100%;padding:10px;margin-bottom:10px">
+  <input id="password" type="password" placeholder="Senha" style="width:100%;padding:10px;margin-bottom:10px">
+
+  <button onclick="login()">Entrar</button>
+</div>
 
 <script>
 async function login() {
@@ -9,17 +26,21 @@ async function login() {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      username: u.value,
-      password: p.value
+      username: username.value,
+      password: password.value
     })
   });
 
   const data = await res.json();
+
   if (data.userId) {
     localStorage.setItem("userId", data.userId);
-    location.href = "/dashboard.html";
+    window.location.href = "/dashboard.html";
   } else {
-    alert(data.message);
+    alert("Erro no login");
   }
 }
 </script>
+
+</body>
+</html>
