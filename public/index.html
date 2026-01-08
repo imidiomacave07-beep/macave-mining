@@ -8,16 +8,20 @@
 body { font-family: Arial; background:#f4f7fa; margin:0; color:#333; display:flex; justify-content:center; align-items:center; height:100vh; }
 .container { background:white; padding:30px; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.1); width:350px; text-align:center; }
 h2 { color:#0074D9; }
+h3 { margin-top:20px; }
 input { width:100%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; }
 button { width:100%; padding:10px; border:none; border-radius:5px; background:#0074D9; color:white; cursor:pointer; margin:5px 0; }
 button:hover { background:#005fa3; }
 .message { margin:10px 0; color:green; }
 .error { color:red; }
 #dashboard { display:none; }
+.plan { border:1px solid #ccc; padding:10px; margin:5px; border-radius:5px; }
+.withdraw-history { text-align:left; margin-top:10px; font-size:14px; }
 </style>
 </head>
 <body>
 
+<!-- Autenticação -->
 <div class="container" id="auth">
   <h2>Macave Mining</h2>
   <input type="email" id="email" placeholder="Email">
@@ -27,11 +31,24 @@ button:hover { background:#005fa3; }
   <div class="message" id="message"></div>
 </div>
 
+<!-- Dashboard -->
 <div class="container" id="dashboard">
   <h2>Bem-vindo!</h2>
   <p>Saldo: <span id="balance">0</span> 💎</p>
+
+  <!-- Planos -->
+  <h3>Planos Disponíveis</h3>
+  <div id="plans"></div>
+
+  <!-- Saque -->
+  <h3>Saque</h3>
   <input type="number" id="withdrawAmount" placeholder="Valor do saque">
   <button onclick="requestWithdraw()">Solicitar Saque</button>
+
+  <!-- Histórico de Saques -->
+  <h3>Histórico de Saques</h3>
+  <div class="withdraw-history" id="withdrawHistory">Nenhum saque ainda.</div>
+
   <button onclick="logout()">Logout</button>
   <div class="message" id="dashMessage"></div>
 </div>
@@ -39,8 +56,10 @@ button:hover { background:#005fa3; }
 <script>
 const API_URL = "https://macave-mining.onrender.com/api";
 let token = null;
-let balance = 100; // valor inicial simulado
+let balance = 100; // saldo inicial simulado
+let withdraws = [];
 
+// Mensagens
 function showMessage(text, isError=false) {
   const msg = document.getElementById("message");
   msg.textContent = text;
@@ -53,8 +72,16 @@ function showDashMessage(text, isError=false) {
   msg.className = isError ? "error" : "message";
 }
 
+// Atualiza saldo
 function updateBalanceDisplay() {
   document.getElementById("balance").textContent = balance.toFixed(2);
+}
+
+// Atualiza histórico de saques
+function updateWithdrawHistory() {
+  const histDiv = document.getElementById("withdrawHistory");
+  if(withdraws.length === 0) histDiv.textContent = "Nenhum saque ainda.";
+  else histDiv.innerHTML = withdraws.map(w => `${w.amount} 💎 - ${w.date}`).join("<br>");
 }
 
 // ---------------- Registro ----------------
@@ -91,7 +118,10 @@ async function login() {
       document.getElementById("auth").style.display = "none";
       document.getElementById("dashboard").style.display = "block";
       updateBalanceDisplay();
+      renderPlans();
+      updateWithdrawHistory();
       showDashMessage("Login bem-sucedido!");
+      startProfitSimulation();
     } else {
       showMessage(data.error, true);
     }
@@ -107,6 +137,38 @@ function logout() {
   document.getElementById("dashboard").style.display = "none";
   showMessage("");
   showDashMessage("");
+}
+
+// ---------------- Planos ----------------
+const plans = [
+  { id: 1, name: "Bronze", price: 10, profit: 1 },
+  { id: 2, name: "Prata", price: 50, profit: 6 },
+  { id: 3, name: "Ouro", price: 100, profit: 15 },
+];
+
+function renderPlans() {
+  const plansDiv = document.getElementById("plans");
+  plansDiv.innerHTML = "";
+  plans.forEach(plan => {
+    const div = document.createElement("div");
+    div.className = "plan";
+    div.innerHTML = `
+      <strong>${plan.name}</strong><br>
+      Preço: $${plan.price} 💎<br>
+      Lucro: $${plan.profit} 💎<br>
+      <button onclick="buyPlan(${plan.id})">Comprar</button>
+    `;
+    plansDiv.appendChild(div);
+  });
+}
+
+function buyPlan(planId) {
+  const plan = plans.find(p => p.id === planId);
+  if(!plan) return;
+  if(balance < plan.price) return showDashMessage("Saldo insuficiente", true);
+  balance -= plan.price;
+  updateBalanceDisplay();
+  showDashMessage(`Você comprou o plano ${plan.name}!`);
 }
 
 // ---------------- Saque Simulado ----------------
@@ -126,8 +188,10 @@ async function requestWithdraw() {
     });
     const data = await res.json();
     if(res.ok || data.message) {
-      balance -= amount; // simula débito
+      balance -= amount;
+      withdraws.push({ amount, date: new Date().toLocaleString() });
       updateBalanceDisplay();
+      updateWithdrawHistory();
       showDashMessage("Saque solicitado com sucesso!");
     } else {
       showDashMessage(data.error || "Erro no saque", true);
@@ -136,6 +200,16 @@ async function requestWithdraw() {
     showDashMessage("Erro de conexão", true);
   }
 }
+
+// ---------------- Lucro Automático ----------------
+function startProfitSimulation() {
+  setInterval(() => {
+    const totalProfit = plans.reduce((acc, plan) => acc + plan.profit*0.01, 0); // lucro contínuo simulado
+    balance += totalProfit;
+    updateBalanceDisplay();
+  }, 5000); // a cada 5 segundos
+}
+
 </script>
 
 </body>
