@@ -3,10 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Macave Mining - Dashboard</title>
+<title>Macave Mining - Dashboard Final</title>
 <style>
-body { font-family: Arial; background:#f4f7fa; margin:0; color:#333; display:flex; justify-content:center; align-items:center; height:100vh; }
-.container { background:white; padding:30px; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.1); width:350px; text-align:center; }
+body { font-family: Arial; background:#f4f7fa; margin:0; color:#333; display:flex; justify-content:center; align-items:flex-start; padding-top:20px; }
+.container { background:white; padding:30px; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.1); width:400px; text-align:center; }
 h2 { color:#0074D9; }
 h3 { margin-top:20px; }
 input { width:100%; padding:10px; margin:10px 0; border-radius:5px; border:1px solid #ccc; }
@@ -15,7 +15,7 @@ button:hover { background:#005fa3; }
 .message { margin:10px 0; color:green; }
 .error { color:red; }
 #dashboard { display:none; }
-.plan { border:1px solid #ccc; padding:10px; margin:5px; border-radius:5px; }
+.plan { border:1px solid #ccc; padding:10px; margin:5px; border-radius:5px; text-align:left; }
 .withdraw-history { text-align:left; margin-top:10px; font-size:14px; }
 </style>
 </head>
@@ -40,6 +40,10 @@ button:hover { background:#005fa3; }
   <h3>Planos Disponíveis</h3>
   <div id="plans"></div>
 
+  <!-- Planos Comprados -->
+  <h3>Planos Ativos</h3>
+  <div id="activePlans">Nenhum plano comprado ainda.</div>
+
   <!-- Saque -->
   <h3>Saque</h3>
   <input type="number" id="withdrawAmount" placeholder="Valor do saque">
@@ -58,6 +62,7 @@ const API_URL = "https://macave-mining.onrender.com/api";
 let token = null;
 let balance = 100; // saldo inicial simulado
 let withdraws = [];
+let activePlans = [];
 
 // Mensagens
 function showMessage(text, isError=false) {
@@ -82,6 +87,16 @@ function updateWithdrawHistory() {
   const histDiv = document.getElementById("withdrawHistory");
   if(withdraws.length === 0) histDiv.textContent = "Nenhum saque ainda.";
   else histDiv.innerHTML = withdraws.map(w => `${w.amount} 💎 - ${w.date}`).join("<br>");
+}
+
+// Atualiza planos ativos
+function renderActivePlans() {
+  const activeDiv = document.getElementById("activePlans");
+  if(activePlans.length === 0) {
+    activeDiv.textContent = "Nenhum plano comprado ainda.";
+  } else {
+    activeDiv.innerHTML = activePlans.map(p => `${p.name} - Lucro por 5s: ${p.profit} 💎`).join("<br>");
+  }
 }
 
 // ---------------- Registro ----------------
@@ -119,6 +134,7 @@ async function login() {
       document.getElementById("dashboard").style.display = "block";
       updateBalanceDisplay();
       renderPlans();
+      renderActivePlans();
       updateWithdrawHistory();
       showDashMessage("Login bem-sucedido!");
       startProfitSimulation();
@@ -155,7 +171,7 @@ function renderPlans() {
     div.innerHTML = `
       <strong>${plan.name}</strong><br>
       Preço: $${plan.price} 💎<br>
-      Lucro: $${plan.profit} 💎<br>
+      Lucro: $${plan.profit} 💎 / 5s<br>
       <button onclick="buyPlan(${plan.id})">Comprar</button>
     `;
     plansDiv.appendChild(div);
@@ -167,7 +183,9 @@ function buyPlan(planId) {
   if(!plan) return;
   if(balance < plan.price) return showDashMessage("Saldo insuficiente", true);
   balance -= plan.price;
+  activePlans.push({...plan});
   updateBalanceDisplay();
+  renderActivePlans();
   showDashMessage(`Você comprou o plano ${plan.name}!`);
 }
 
@@ -201,10 +219,13 @@ async function requestWithdraw() {
   }
 }
 
-// ---------------- Lucro Automático ----------------
+// ---------------- Lucro Automático por Plano ----------------
 function startProfitSimulation() {
   setInterval(() => {
-    const totalProfit = plans.reduce((acc, plan) => acc + plan.profit*0.01, 0); // lucro contínuo simulado
+    let totalProfit = 0;
+    activePlans.forEach(plan => {
+      totalProfit += plan.profit;
+    });
     balance += totalProfit;
     updateBalanceDisplay();
   }, 5000); // a cada 5 segundos
