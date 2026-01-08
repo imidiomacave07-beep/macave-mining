@@ -1,9 +1,28 @@
-const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const UserSchema = new mongoose.Schema({
-  username: String,
-  password: String,
-  balance: { type: Number, default: 0 }
+const userSchema = new Schema({
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
+  balance: { type: Number, default: 100 },
+  isAdmin: { type: Boolean, default: false },
+  wallet: { type: String, default: "" },
+  plans: [
+    {
+      id: Number,
+      name: String,
+      profit: Number,
+      wallet: String
+    }
+  ],
+  withdraws: [
+    {
+      amount: Number,
+      method: String,
+      destination: String,
+      date: String,
+      status: String
+    }
+  ]
 });
 
-module.exports = mongoose.model("User", UserSchema);
+module.exports = model("User", userSchema);
