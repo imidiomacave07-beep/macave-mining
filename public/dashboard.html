@@ -1,12 +1,49 @@
-<h1>Dashboard</h1>
-<p id="saldo"></p>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard - Macave Mining</title>
+</head>
+<body>
+
+<h1>Dashboard do Usuário</h1>
+<p id="saldo">Saldo: 0 USD</p>
+
+<h2>Planos Disponíveis</h2>
+<div id="plans"></div>
 
 <script>
 const userId = localStorage.getItem("userId");
 
-fetch("/api/auth/me/" + userId)
-  .then(res => res.json())
-  .then(user => {
-    saldo.innerText = "Saldo: " + user.balance + " USD";
+async function loadPlans() {
+  const res = await fetch("/api/plans");
+  const plans = await res.json();
+
+  const div = document.getElementById("plans");
+  div.innerHTML = plans.map(p => `
+    <div style="border:1px solid #ccc; padding:10px; margin:10px">
+      <h3>${p.name}</h3>
+      <p>Preço: $${p.price}</p>
+      <p>Lucro diário: ${p.dailyProfit}%</p>
+      <p>Duração: ${p.duration} dias</p>
+      <button onclick="buy('${p._id}')">Comprar</button>
+    </div>
+  `).join("");
+}
+
+async function buy(planId) {
+  const res = await fetch("/api/plans/buy", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, planId })
   });
+
+  const data = await res.json();
+  alert(data.message);
+}
+
+loadPlans();
 </script>
+
+</body>
+</html>
