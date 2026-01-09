@@ -2,58 +2,48 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Macave Mining</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f0f2f5; margin:0; padding:0; }
+    header { background:#0055aa; color:#fff; padding:15px; text-align:center; }
+    main { padding:20px; max-width:900px; margin: auto; }
+    .plan-card { background:#fff; border-radius:10px; padding:15px; margin-bottom:15px; box-shadow:0 0 5px rgba(0,0,0,0.1); }
+    .plan-card h3 { margin:0 0 10px; }
+    .plan-card p { margin:5px 0; }
+    button { background:#0055aa; color:#fff; border:none; padding:10px 15px; border-radius:5px; cursor:pointer; }
+    button:hover { background:#003f7f; }
+    #plans { margin-top:20px; }
+    footer { text-align:center; margin-top:40px; color:#555; }
+  </style>
 </head>
 <body>
+  <header>
+    <h1>Macave Mining</h1>
+    <p>Bem-vindo, <span id="username">Usuário</span>! | Saldo: <span id="balance">0</span> 💎</p>
+  </header>
 
-<div class="container" id="authBox">
-  <h2>Macave Mining</h2>
+  <main>
+    <h2>Planos Disponíveis</h2>
+    <div id="plans">
+      <!-- Planos serão carregados aqui pelo dashboard.js -->
+    </div>
 
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Senha">
+    <h2>Planos Ativos</h2>
+    <div id="activePlans">
+      Nenhum plano comprado ainda.
+    </div>
+  </main>
 
-  <button onclick="register()">Registrar</button>
-  <button onclick="login()">Login</button>
+  <footer>
+    Macave Mining &copy; 2026
+  </footer>
 
-  <div id="authMsg" class="message"></div>
-</div>
-
-<div class="container hidden" id="dashboard">
-  <h2>Bem-vindo, Usuário!</h2>
-  <p>Saldo: <b id="balance">0</b> 💎</p>
-
-  <h3>Planos Disponíveis</h3>
-  <div id="plans"></div>
-
-  <h3>Planos Ativos</h3>
-  <div id="activePlans">Nenhum plano comprado ainda.</div>
-
-  <h3>Saque</h3>
-  <select id="walletType">
-    <option value="TRC20">USDT (TRC20)</option>
-    <option value="BTC">Bitcoin (BTC)</option>
-    <option value="BEP20">USDT (BEP20)</option>
-    <option value="ERC20">Ethereum (ERC20)</option>
-  </select>
-
-  <input type="text" id="walletAddress" placeholder="Endereço da carteira">
-  <input type="number" id="withdrawAmount" placeholder="Valor">
-
-  <button onclick="requestWithdraw()">Solicitar Saque</button>
-
-  <h3>Histórico de Saques</h3>
-  <div id="withdrawHistory">Nenhum saque ainda.</div>
-
-  <button onclick="logout()">Logout</button>
-</div>
-
-<div class="container hidden" id="adminPanel">
-  <h2>Painel Admin</h2>
-  <div id="adminUsers"></div>
-  <button onclick="logout()">Logout</button>
-</div>
-
-<script src="js/dashboard.js"></script>
+  <script>
+    // Simula usuário logado
+    const userId = "123456"; // Depois substituir pelo ID real do login
+  </script>
+  <script src="js/dashboard.js"></script>
 </body>
 </html>
