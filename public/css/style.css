@@ -1,121 +1,115 @@
 /* Reset básico */
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
 
-/* Corpo da página */
+/* BODY */
 body {
-  font-family: 'Arial', sans-serif;
-  background-color: #f0f2f5;
-  color: #333;
-  line-height: 1.6;
-}
-
-/* Header */
-header {
-  background-color: #0055aa;
-  color: #fff;
+  background-color: #f0f4f8;
+  color: #1a1a1a;
   padding: 20px;
-  text-align: center;
 }
 
-header h1 {
-  font-size: 2rem;
-  margin-bottom: 5px;
-}
-
-header p {
-  font-size: 1rem;
-}
-
-/* Main content */
-main {
-  max-width: 900px;
-  margin: 20px auto;
-  padding: 0 15px;
-}
-
-/* Seções */
-h2 {
-  color: #0055aa;
-  margin-bottom: 15px;
-  font-size: 1.5rem;
-}
-
-/* Planos */
-#plans {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 15px;
-}
-
-.plan-card {
-  background-color: #fff;
+/* LOGIN */
+#loginPage {
+  max-width: 400px;
+  margin: 100px auto;
+  background-color: #e6f0ff;
+  padding: 30px;
   border-radius: 12px;
-  padding: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  transition: transform 0.2s, box-shadow 0.2s;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
-.plan-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+#loginPage input {
+  width: 80%;
+  padding: 10px;
+  margin: 10px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+#loginPage button {
+  padding: 10px 20px;
+  background-color: #0066cc;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+#loginPage button:hover {
+  background-color: #0052a3;
+}
+
+/* DASHBOARD */
+header {
+  background-color: #0066cc;
+  color: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+header button {
+  padding: 6px 12px;
+  border: none;
+  border-radius: 6px;
+  background-color: #004a80;
+  color: #fff;
+  cursor: pointer;
+}
+
+header button:hover {
+  background-color: #003366;
+}
+
+/* PLANOS E SAQUES */
+.plan-card {
+  background-color: #e6f0ff;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
 .plan-card h3 {
-  margin-bottom: 10px;
-  color: #003f7f;
+  color: #003366;
+  margin-bottom: 8px;
 }
 
 .plan-card p {
-  margin: 5px 0;
+  margin: 4px 0;
 }
 
 .plan-card button {
-  margin-top: 10px;
-  width: 100%;
-  background-color: #0055aa;
+  margin-top: 8px;
+  padding: 6px 12px;
+  background-color: #0066cc;
   color: #fff;
   border: none;
-  padding: 10px 0;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
-  font-weight: bold;
-  font-size: 1rem;
-  transition: background-color 0.2s;
 }
 
 .plan-card button:hover {
-  background-color: #003f7f;
+  background-color: #0052a3;
 }
 
-/* Planos ativos */
-#activePlans {
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 15px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-  min-height: 60px;
+/* FORMULÁRIO SAQUE */
+.plan-card input, .plan-card select {
+  width: 100%;
+  padding: 8px;
+  margin: 6px 0;
+  border-radius: 6px;
+  border: 1px solid #ccc;
 }
 
-/* Footer */
+/* RODAPÉ */
 footer {
-  text-align: center;
   margin-top: 40px;
-  padding: 15px 0;
-  color: #555;
-  font-size: 0.9rem;
-}
-
-/* Responsivo */
-@media(max-width: 600px) {
-  header h1 {
-    font-size: 1.5rem;
-  }
-  
-  h2 {
-    font-size: 1.2rem;
-  }
+  text-align: center;
+  color: #666;
 }
