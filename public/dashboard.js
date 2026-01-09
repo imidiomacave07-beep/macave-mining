@@ -1,32 +1,20 @@
-const token = localStorage.getItem("token");
+let user = JSON.parse(localStorage.getItem("user"));
 
-if (!token) {
-  alert("Faça login primeiro");
-  window.location.href = "/login.html";
+function renderPlans() {
+  activePlans.innerHTML = user.plans.length
+    ? user.plans.map(p => `
+        <div>
+          <b>${p.name}</b><br>
+          Lucro diário: ${p.profit}<br>
+          Última mineração: ${new Date(p.lastMined).toLocaleDateString()}
+        </div>
+      `).join("")
+    : "Nenhum plano comprado ainda.";
 }
 
-async function loadDashboard() {
-  const res = await fetch("/api/dashboard", {
-    headers: {
-      Authorization: "Bearer " + token
-    }
-  });
-
-  const data = await res.json();
-
-  document.getElementById("email").innerText = data.email;
-  document.getElementById("plan").innerText = data.plan;
-  document.getElementById("balance").innerText = data.balance.toFixed(2);
+function render() {
+  balanceEl.innerText = user.balance;
+  renderPlans();
 }
 
-async function updateEarnings() {
-  await fetch("/api/earnings", {
-    headers: {
-      Authorization: "Bearer " + token
-    }
-  });
-
-  loadDashboard();
-}
-
-loadDashboard();
+render();
