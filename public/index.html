@@ -1,18 +1,51 @@
-<h2>Saque</h2>
-<div class="plan-card">
-  <label>Valor:</label>
-  <input type="number" id="withdrawAmount" placeholder="Ex: 10" min="1" style="width:100%; padding:8px; margin:5px 0;">
-  
-  <label>Tipo de carteira:</label>
-  <select id="walletType" style="width:100%; padding:8px; margin:5px 0;">
-    <option value="TRC20">USDT (TRC20)</option>
-    <option value="BEP20">USDT (BEP20)</option>
-    <option value="BTC">Bitcoin (BTC)</option>
-    <option value="ERC20">Ethereum (ERC20)</option>
-  </select>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Macave Mining</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Macave Mining</h1>
+    <p>Bem-vindo, <span id="username">Usuário</span>! | Saldo: <span id="balance">0</span> 💎</p>
+  </header>
 
-  <label>Endereço da carteira:</label>
-  <input type="text" id="walletAddress" placeholder="Cole seu endereço" style="width:100%; padding:8px; margin:5px 0;">
+  <main>
+    <h2>Planos Disponíveis</h2>
+    <div id="plans"></div>
 
-  <button onclick="requestWithdraw()">Solicitar Saque</button>
-</div>
+    <h2>Planos Ativos</h2>
+    <div id="activePlans">Nenhum plano comprado ainda.</div>
+
+    <h2>Saque</h2>
+    <div class="plan-card">
+      <label>Valor:</label>
+      <input type="number" id="withdrawAmount" placeholder="Ex: 10" min="1">
+      <label>Tipo de carteira:</label>
+      <select id="walletType">
+        <option value="TRC20">USDT (TRC20)</option>
+        <option value="BEP20">USDT (BEP20)</option>
+        <option value="BTC">Bitcoin (BTC)</option>
+        <option value="ERC20">Ethereum (ERC20)</option>
+      </select>
+      <label>Endereço da carteira:</label>
+      <input type="text" id="walletAddress" placeholder="Cole seu endereço">
+      <button onclick="requestWithdraw()">Solicitar Saque</button>
+    </div>
+
+    <h2>Histórico de Saques</h2>
+    <div id="withdrawHistory" class="plan-card">Nenhum saque ainda.</div>
+  </main>
+
+  <footer>
+    Macave Mining &copy; 2026
+  </footer>
+
+  <script>
+    const userId = "123456"; // Substituir pelo login real depois
+  </script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
