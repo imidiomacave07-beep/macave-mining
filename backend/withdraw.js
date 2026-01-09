@@ -1,12 +1,32 @@
-const express = require("express");
-const router = express.Router();
+// Backend para saques
+const users = {}; // Simula DB de usuários, depois substituir por MongoDB real
 
-router.get("/history", (req, res) => {
-  res.json([]);
-});
+module.exports = async function requestWithdraw(req, res) {
+  const { userId, amount, method, destination } = req.body;
 
-router.post("/request", (req, res) => {
-  res.json({ message: "Saque simulado recebido" });
-});
+  // Validações básicas
+  if (!users[userId]) return res.status(400).json({ error: "Usuário não encontrado" });
+  if (!amount || amount <= 0) return res.status(400).json({ error: "Valor inválido" });
+  if (!destination || destination.length < 10) return res.status(400).json({ error: "Endereço inválido" });
 
-module.exports = router;
+  const user = users[userId];
+  if (amount > user.balance) return res.status(400).json({ error: "Saldo insuficiente" });
+
+  // Deduz saldo
+  user.balance -= amount;
+
+  // Registra saque
+  if (!user.withdraws) user.withdraws = [];
+  user.withdraws.push({
+    amount,
+    method,
+    destination,
+    date: new Date().toLocaleString()
+  });
+
+  res.json({
+    success: true,
+    balance: user.balance,
+    withdraws: user.withdraws
+  });
+};
