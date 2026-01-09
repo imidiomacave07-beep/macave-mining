@@ -1,10 +1,34 @@
 const API_URL = "https://macave-mining.onrender.com/api";
-const userId = "123456";
+
+let userId = null;
+let username = "";
 let balance = 0;
 let activePlans = [];
 let activeWithdraws = [];
 
-async function loadPlans() {
+// LOGIN SIMULADO
+function login() {
+  username = document.getElementById("usernameInput").value.trim();
+  if (!username) { alert("Digite seu nome"); return; }
+  userId = username.toLowerCase().replace(/\s/g, "_"); // id único simples
+  document.getElementById("usernameDisplay").textContent = username;
+  document.getElementById("loginPage").style.display = "none";
+  document.getElementById("dashboardPage").style.display = "block";
+
+  // Inicializa dados do usuário
+  fetchPlans();
+  updateBalanceDisplay();
+  updateActivePlans();
+  updateWithdrawHistory();
+}
+
+// LOGOUT
+function logout() {
+  location.reload();
+}
+
+// CARREGAR PLANOS
+async function fetchPlans() {
   const res = await fetch(`${API_URL}/plans`);
   const plans = await res.json();
   const container = document.getElementById("plans");
@@ -22,6 +46,7 @@ async function loadPlans() {
   });
 }
 
+// COMPRAR PLANO
 async function buyPlan(planId) {
   const res = await fetch(`${API_URL}/plans/buy`, {
     method: "POST",
@@ -40,29 +65,7 @@ async function buyPlan(planId) {
   }
 }
 
-function updateBalanceDisplay() {
-  document.getElementById("balance").textContent = balance.toFixed(2);
-}
-
-function updateActivePlans() {
-  const container = document.getElementById("activePlans");
-  if (activePlans.length === 0) {
-    container.textContent = "Nenhum plano comprado ainda.";
-    return;
-  }
-  container.innerHTML = "";
-  activePlans.forEach(plan => {
-    const div = document.createElement("div");
-    div.className = "plan-card";
-    div.innerHTML = `
-      <h3>${plan.name} (Ativo)</h3>
-      <p>Preço: ${plan.price} USD</p>
-      <p>Rendimento: ${plan.dailyMin}% - ${plan.dailyMax}% / dia</p>
-    `;
-    container.appendChild(div);
-  });
-}
-
+// SAQUE
 async function requestWithdraw() {
   const amount = parseFloat(document.getElementById("withdrawAmount").value);
   const walletType = document.getElementById("walletType").value;
@@ -91,6 +94,29 @@ async function requestWithdraw() {
   }
 }
 
+// BALANCE
+function updateBalanceDisplay() {
+  document.getElementById("balance").textContent = balance.toFixed(2);
+}
+
+// PLANOS ATIVOS
+function updateActivePlans() {
+  const container = document.getElementById("activePlans");
+  if (activePlans.length === 0) { container.textContent = "Nenhum plano comprado ainda."; return; }
+  container.innerHTML = "";
+  activePlans.forEach(plan => {
+    const div = document.createElement("div");
+    div.className = "plan-card";
+    div.innerHTML = `
+      <h3>${plan.name} (Ativo)</h3>
+      <p>Preço: ${plan.price} USD</p>
+      <p>Rendimento: ${plan.dailyMin}% - ${plan.dailyMax}% / dia</p>
+    `;
+    container.appendChild(div);
+  });
+}
+
+// HISTÓRICO DE SAQUES
 function updateWithdrawHistory() {
   const container = document.getElementById("withdrawHistory");
   if (!activeWithdraws || activeWithdraws.length === 0) {
@@ -111,11 +137,14 @@ function updateWithdrawHistory() {
   });
 }
 
-function initDashboard() {
-  loadPlans();
+// LUCRO DIÁRIO SIMULADO
+function calcularLucroDiario() {
+  activePlans.forEach(plan => {
+    const ganho = plan.price * (Math.random() * (plan.dailyMax - plan.dailyMin) + plan.dailyMin) / 100;
+    balance += ganho;
+  });
   updateBalanceDisplay();
-  updateActivePlans();
-  updateWithdrawHistory();
 }
 
-document.addEventListener("DOMContentLoaded", initDashboard);
+// Simula lucro diário a cada 10s (teste rápido)
+setInterval(calcularLucroDiario, 10000);
