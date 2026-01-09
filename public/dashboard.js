@@ -1,20 +1,34 @@
-let user = JSON.parse(localStorage.getItem("user"));
+const API_URL = "https://macave-mining.onrender.com/api";
 
-function renderPlans() {
-  activePlans.innerHTML = user.plans.length
-    ? user.plans.map(p => `
-        <div>
-          <b>${p.name}</b><br>
-          Lucro diário: ${p.profit}<br>
-          Última mineração: ${new Date(p.lastMined).toLocaleDateString()}
-        </div>
-      `).join("")
-    : "Nenhum plano comprado ainda.";
+async function loadPlans() {
+  const res = await fetch(`${API_URL}/plans`);
+  const plans = await res.json();
+
+  const container = document.getElementById("plans");
+  container.innerHTML = "";
+
+  plans.forEach(plan => {
+    const div = document.createElement("div");
+    div.className = "plan-card";
+    div.innerHTML = `
+      <h3>${plan.name}</h3>
+      <p>Preço: ${plan.price} USD</p>
+      <p>Rendimento: ${plan.dailyMin}% - ${plan.dailyMax}% / dia</p>
+      <button onclick="buyPlan('${plan.id}')">Comprar</button>
+    `;
+    container.appendChild(div);
+  });
 }
 
-function render() {
-  balanceEl.innerText = user.balance;
-  renderPlans();
+async function buyPlan(planId) {
+  const res = await fetch(`${API_URL}/plans/buy`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ userId, planId })
+  });
+
+  const data = await res.json();
+  alert(data.message || "Erro");
 }
 
-render();
+loadPlans();
