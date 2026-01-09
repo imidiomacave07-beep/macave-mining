@@ -4,8 +4,9 @@ const planSchema = new mongoose.Schema({
   id: Number,
   name: String,
   price: Number,
-  profit: Number,
-  date: String
+  profit: Number, // lucro diário
+  date: String,
+  lastMined: { type: Date, default: Date.now }
 });
 
 const withdrawSchema = new mongoose.Schema({
