@@ -1,15 +1,24 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Macave Mining</title>
-  <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Macave Mining</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
+<div id="loginPage">
+  <h1>Macave Mining</h1>
+  <input type="text" id="usernameInput" placeholder="Digite seu nome">
+  <button onclick="login()">Entrar</button>
+</div>
+
+<div id="dashboardPage" style="display:none;">
   <header>
     <h1>Macave Mining</h1>
-    <p>Bem-vindo, <span id="username">Usuário</span>! | Saldo: <span id="balance">0</span> 💎</p>
+    <p>Bem-vindo, <span id="usernameDisplay"></span> | Saldo: <span id="balance">0</span> 💎</p>
+    <button onclick="logout()">Logout</button>
   </header>
 
   <main>
@@ -38,14 +47,8 @@
     <h2>Histórico de Saques</h2>
     <div id="withdrawHistory" class="plan-card">Nenhum saque ainda.</div>
   </main>
+</div>
 
-  <footer>
-    Macave Mining &copy; 2026
-  </footer>
-
-  <script>
-    const userId = "123456"; // Substituir pelo login real depois
-  </script>
-  <script src="js/dashboard.js"></script>
+<script src="js/dashboard.js"></script>
 </body>
 </html>
