@@ -4,26 +4,15 @@ const planSchema = new mongoose.Schema({
   id: Number,
   name: String,
   price: Number,
-  profit: Number, // lucro diário
-  date: String,
-  lastMined: { type: Date, default: Date.now }
-});
-
-const withdrawSchema = new mongoose.Schema({
-  amount: Number,
-  method: String,
-  destination: String,
-  date: String,
-  status: { type: String, default: "pendente" }
+  profitShare: Number // % de participação
 });
 
 const userSchema = new mongoose.Schema({
   email: String,
   password: String,
   balance: { type: Number, default: 0 },
-  isAdmin: { type: Boolean, default: false },
   plans: [planSchema],
-  withdraws: [withdrawSchema]
+  isAdmin: Boolean
 });
 
 module.exports = mongoose.model("User", userSchema);
