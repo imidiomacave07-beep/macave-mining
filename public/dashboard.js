@@ -1,93 +1,40 @@
-const API_URL = "https://macave-mining.onrender.com/api"; // Ajuste se necessário
+// FUNÇÃO PARA SOLICITAR SAQUE
+async function requestWithdraw() {
+  const amount = parseFloat(document.getElementById("withdrawAmount").value);
+  const walletType = document.getElementById("walletType").value;
+  const walletAddress = document.getElementById("walletAddress").value;
 
-// Simula usuário logado (substituir pelo login real depois)
-const userId = "123456"; 
-let balance = 0;
-let activePlans = [];
-
-// Função para mostrar planos disponíveis
-async function loadPlans() {
-  try {
-    const res = await fetch(`${API_URL}/plans`);
-    const plans = await res.json();
-
-    const container = document.getElementById("plans");
-    container.innerHTML = "";
-
-    plans.forEach(plan => {
-      const div = document.createElement("div");
-      div.className = "plan-card";
-      div.innerHTML = `
-        <h3>${plan.name}</h3>
-        <p>Preço: ${plan.price} USD</p>
-        <p>Rendimento: ${plan.dailyMin}% - ${plan.dailyMax}% / dia</p>
-        <button onclick="buyPlan('${plan.id}')">Comprar</button>
-      `;
-      container.appendChild(div);
-    });
-  } catch (err) {
-    console.error("Erro ao carregar planos:", err);
+  if (!walletAddress || walletAddress.length < 10) {
+    alert("Endereço de carteira inválido");
+    return;
   }
-}
-
-// Função para comprar plano
-async function buyPlan(planId) {
-  try {
-    const res = await fetch(`${API_URL}/plans/buy`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId, planId })
-    });
-
-    const data = await res.json();
-
-    if (data.success) {
-      activePlans.push(data.plan);
-      balance += data.plan.price; // ou outro cálculo de saldo
-      updateBalanceDisplay();
-      updateActivePlans();
-      alert(data.message);
-    } else {
-      alert(data.error || "Erro ao comprar plano");
-    }
-  } catch (err) {
-    console.error("Erro na compra:", err);
-    alert("Erro de conexão");
-  }
-}
-
-// Atualiza o saldo do usuário no dashboard
-function updateBalanceDisplay() {
-  const balanceEl = document.getElementById("balance");
-  balanceEl.textContent = balance.toFixed(2);
-}
-
-// Atualiza a lista de planos ativos
-function updateActivePlans() {
-  const container = document.getElementById("activePlans");
-  if (activePlans.length === 0) {
-    container.textContent = "Nenhum plano comprado ainda.";
+  if (!amount || amount <= 0) {
+    alert("Valor inválido");
     return;
   }
 
-  container.innerHTML = "";
-  activePlans.forEach(plan => {
-    const div = document.createElement("div");
-    div.className = "plan-card";
-    div.innerHTML = `
-      <h3>${plan.name} (Ativo)</h3>
-      <p>Preço: ${plan.price} USD</p>
-      <p>Rendimento: ${plan.dailyMin}% - ${plan.dailyMax}% / dia</p>
-    `;
-    container.appendChild(div);
-  });
-}
+  try {
+    const res = await fetch(`${API_URL}/withdraw/request`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        userId,
+        amount,
+        method: walletType,
+        destination: walletAddress
+      })
+    });
+    const data = await res.json();
 
-// Inicializa dashboard
-function initDashboard() {
-  loadPlans();
-  updateBalanceDisplay();
-  updateActivePlans();
+    if (res.ok) {
+      balance = data.balance;
+      alert("Saque solicitado com sucesso!");
+      updateBalanceDisplay();
+    } else {
+      alert(data.error || "Erro ao solicitar saque");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Erro de conexão");
+  }
 }
-
-document.addEventListener("DOMContentLoaded", initDashboard);
