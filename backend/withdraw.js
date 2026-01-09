@@ -1,21 +1,14 @@
-// Backend para saques
-const users = {}; // Simula DB de usuários, depois substituir por MongoDB real
-
 module.exports = async function requestWithdraw(req, res) {
   const { userId, amount, method, destination } = req.body;
 
-  // Validações básicas
-  if (!users[userId]) return res.status(400).json({ error: "Usuário não encontrado" });
+  if (!global.users || !global.users[userId]) return res.status(400).json({ error: "Usuário não encontrado" });
+  const user = global.users[userId];
+
   if (!amount || amount <= 0) return res.status(400).json({ error: "Valor inválido" });
   if (!destination || destination.length < 10) return res.status(400).json({ error: "Endereço inválido" });
-
-  const user = users[userId];
   if (amount > user.balance) return res.status(400).json({ error: "Saldo insuficiente" });
 
-  // Deduz saldo
   user.balance -= amount;
-
-  // Registra saque
   if (!user.withdraws) user.withdraws = [];
   user.withdraws.push({
     amount,
@@ -24,9 +17,5 @@ module.exports = async function requestWithdraw(req, res) {
     date: new Date().toLocaleString()
   });
 
-  res.json({
-    success: true,
-    balance: user.balance,
-    withdraws: user.withdraws
-  });
+  res.json({ success: true, balance: user.balance, withdraws: user.withdraws });
 };
