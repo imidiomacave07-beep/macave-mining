@@ -1,49 +1,18 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Macave Mining</title>
-  <link rel="stylesheet" href="css/style.css">
-  <style>
-    body { font-family: Arial, sans-serif; background: #f0f2f5; margin:0; padding:0; }
-    header { background:#0055aa; color:#fff; padding:15px; text-align:center; }
-    main { padding:20px; max-width:900px; margin: auto; }
-    .plan-card { background:#fff; border-radius:10px; padding:15px; margin-bottom:15px; box-shadow:0 0 5px rgba(0,0,0,0.1); }
-    .plan-card h3 { margin:0 0 10px; }
-    .plan-card p { margin:5px 0; }
-    button { background:#0055aa; color:#fff; border:none; padding:10px 15px; border-radius:5px; cursor:pointer; }
-    button:hover { background:#003f7f; }
-    #plans { margin-top:20px; }
-    footer { text-align:center; margin-top:40px; color:#555; }
-  </style>
-</head>
-<body>
-  <header>
-    <h1>Macave Mining</h1>
-    <p>Bem-vindo, <span id="username">Usuário</span>! | Saldo: <span id="balance">0</span> 💎</p>
-  </header>
+<h2>Saque</h2>
+<div class="plan-card">
+  <label>Valor:</label>
+  <input type="number" id="withdrawAmount" placeholder="Ex: 10" min="1" style="width:100%; padding:8px; margin:5px 0;">
+  
+  <label>Tipo de carteira:</label>
+  <select id="walletType" style="width:100%; padding:8px; margin:5px 0;">
+    <option value="TRC20">USDT (TRC20)</option>
+    <option value="BEP20">USDT (BEP20)</option>
+    <option value="BTC">Bitcoin (BTC)</option>
+    <option value="ERC20">Ethereum (ERC20)</option>
+  </select>
 
-  <main>
-    <h2>Planos Disponíveis</h2>
-    <div id="plans">
-      <!-- Planos serão carregados aqui pelo dashboard.js -->
-    </div>
+  <label>Endereço da carteira:</label>
+  <input type="text" id="walletAddress" placeholder="Cole seu endereço" style="width:100%; padding:8px; margin:5px 0;">
 
-    <h2>Planos Ativos</h2>
-    <div id="activePlans">
-      Nenhum plano comprado ainda.
-    </div>
-  </main>
-
-  <footer>
-    Macave Mining &copy; 2026
-  </footer>
-
-  <script>
-    // Simula usuário logado
-    const userId = "123456"; // Depois substituir pelo ID real do login
-  </script>
-  <script src="js/dashboard.js"></script>
-</body>
-</html>
+  <button onclick="requestWithdraw()">Solicitar Saque</button>
+</div>
