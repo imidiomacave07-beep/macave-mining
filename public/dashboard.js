@@ -1,99 +1,85 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Macave Mining</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+const API_URL="/api";
+let userId=null,balance=0,activePlans=[];
 
-  <!-- LANDING PAGE / INICIAL -->
-  <div id="landingPage" style="text-align:center; margin-top:50px;">
-    <h1># Macave Mining</h1>
-    <p>Escolha uma opção para começar:</p>
+async function register(){
+  const username=document.getElementById("username").value;
+  const password=document.getElementById("password").value;
+  if(!username||!password)return alert("Preencha os campos");
+  const res=await fetch(`${API_URL}/auth/register`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});
+  const data=await res.json();
+  if(res.ok){alert("Registrado! Faça login");}else alert(data.error);
+}
 
-    <div class="landing-buttons" style="margin-top:20px;">
-      <button onclick="showLandingTab('mining')">⛏️ Mineração</button>
-      <button onclick="showLandingTab('deposit')">💰 Depósito</button>
-      <button onclick="showLandingTab('contact')">📞 Contato</button>
-      <button onclick="goToLogin()">🔑 Login / Dashboard</button>
-    </div>
+async function login(){
+  const username=document.getElementById("username").value;
+  const password=document.getElementById("password").value;
+  if(!username||!password)return alert("Preencha os campos");
+  const res=await fetch(`${API_URL}/auth/login`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username,password})});
+  const data=await res.json();
+  if(res.ok){
+    userId=data.userId;
+    document.getElementById("usernameDisplay").textContent=username;
+    document.getElementById("landingPage").style.display="none";
+    document.getElementById("dashboardPage").style.display="block";
+    loadPlans(); loadActivePlans();
+  }else alert(data.error);
+}
 
-    <!-- ABAS PÚBLICAS -->
-    <div id="mining" class="landing-tab" style="display:none; margin-top:20px;">
-      <h2>Planos de Mineração</h2>
-      <div id="plans"></div>
-    </div>
+async function loadPlans(){
+  const res=await fetch(`${API_URL}/plans`);
+  const plans=await res.json();
+  const container=document.getElementById("plans"); container.innerHTML="";
+  plans.forEach(plan=>{
+    const div=document.createElement("div");
+    div.className="plan-card";
+    div.innerHTML=`<h4>${plan.name}</h4><p>Preço: ${plan.price} USD</p><p>Lucro diário: ${plan.daily}% / ${plan.days} dias</p><button onclick="buyPlan(${plan.id})">Comprar</button>`;
+    container.appendChild(div);
+  });
+}
 
-    <div id="deposit" class="landing-tab" style="display:none; margin-top:20px;">
-      <h2>Depósito</h2>
-      <ul>
-        <li>USDT (TRC20): TXxxxxxxxxxxxxxxxx</li>
-        <li>USDT (BEP20): 0xBEP20xxxxxxxxxxx</li>
-        <li>Bitcoin (BTC): 1Bxxxxxxxxxxxxxxxx</li>
-        <li>Ethereum (ERC20): 0xERC20xxxxxxxxxxx</li>
-      </ul>
-      <p>Após enviar fundos, faça login para ativar planos.</p>
-    </div>
+async function buyPlan(planId){
+  const res=await fetch(`${API_URL}/plans/buy`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId,planId})});
+  const data=await res.json();
+  if(res.ok)alert("Plano comprado! Aguarde aprovação do admin");else alert(data.error);
+}
 
-    <div id="contact" class="landing-tab" style="display:none; margin-top:20px;">
-      <h2>Contato & Novidades</h2>
-      <p>Email: suporte@macavemining.com</p>
-      <p>WhatsApp: +258 xxx xxx xxx</p>
-      <div style="margin-top:15px; background:#e6f0ff; padding:10px; border-radius:8px;">
-        <h4>📢 Promoções & Publicidade</h4>
-        <p>Aqui você pode colocar banners, anúncios e novidades da plataforma.</p>
-      </div>
-    </div>
+async function loadActivePlans(){
+  const usersRes=await fetch(`${API_URL}/auth/users`);
+  const users=await usersRes.json();
+  const user=users.find(u=>u._id===userId); if(!user) return;
+  balance=user.balance; activePlans=user.activePlans;
+  document.getElementById("balance").textContent=balance.toFixed(2);
+  const container=document.getElementById("activePlans"); container.innerHTML="";
+  if(activePlans.length===0){container.innerHTML="<p>Nenhum plano ativo.</p>";return;}
+  activePlans.forEach(p=>{
+    if(p.status==="active"){ const daysPassed=Math.floor((Date.now()-p.startDate)/(1000*60*60*24)); p.earned=p.price*(p.daily/100)*daysPassed;}
+    const div=document.createElement("div");
+    div.className="plan-card";
+    div.innerHTML=`<strong>${p.name}</strong><br>Valor: ${p.price} USD<br>Lucro diário: ${p.daily}%<br>Ganho atual: ${p.earned?.toFixed(2)||0} $<br>Status: ${p.status}`;
+    container.appendChild(div);
+  });
+  loadWithdrawHistory(user);
+}
 
-  </div>
+async function requestWithdraw(){
+  const amount=parseFloat(document.getElementById("withdrawAmount").value);
+  const method=document.getElementById("walletType").value;
+  const destination=document.getElementById("walletAddress").value;
+  if(!amount||amount<=0)return alert("Valor inválido");
+  if(!destination||destination.length<10)return alert("Endereço inválido");
+  const res=await fetch(`${API_URL}/withdraw/request`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId,amount,method,destination})});
+  const data=await res.json();
+  if(res.ok){alert("Saque solicitado!");loadActivePlans();}else alert(data.error);
+}
 
-  <!-- DASHBOARD INTERNO -->
-  <div id="dashboardPage" style="display:none;">
-    <!-- Aqui entra o dashboard com saldo, planos ativos, saques -->
-  </div>
+function loadWithdrawHistory(user){
+  const container=document.getElementById("withdrawHistory"); container.innerHTML="";
+  if(!user.withdraws || user.withdraws.length===0){container.innerHTML="<p>Nenhum saque.</p>";return;}
+  user.withdraws.forEach(w=>{
+    const div=document.createElement("div");
+    div.innerHTML=`${w.date}: ${w.amount} $ - ${w.method} - ${w.destination}`;
+    container.appendChild(div);
+  });
+}
 
-  <script src="js/dashboard.js"></script>
-  <script>
-    function showLandingTab(tabId) {
-      document.querySelectorAll(".landing-tab").forEach(tab => {
-        tab.style.display = "none";
-      });
-      document.getElementById(tabId).style.display = "block";
-    }
-
-    function goToLogin() {
-      document.getElementById("landingPage").style.display = "none";
-      document.getElementById("dashboardPage").style.display = "block";
-    }
-
-    // CARREGAR PLANOS PÚBLICOS
-    const plansData = [
-      { id: 1, name: "Plano Básico", price: 20, daily: 1.5, days: 30 },
-      { id: 2, name: "Plano Standard", price: 50, daily: 2, days: 30 },
-      { id: 3, name: "Plano Pro", price: 100, daily: 2.5, days: 40 },
-      { id: 4, name: "Plano Premium", price: 200, daily: 3, days: 45 }
-    ];
-
-    function loadPlans(plans) {
-      const container = document.getElementById("plans");
-      container.innerHTML = "";
-
-      plans.forEach(plan => {
-        const planDiv = document.createElement("div");
-        planDiv.className = "plan-card";
-        planDiv.innerHTML = `
-          <h4>${plan.name}</h4>
-          <p>Preço: ${plan.price} USD</p>
-          <p>Lucro diário: ${plan.daily}% por ${plan.days} dias</p>
-          <button onclick="alert('Simulação de compra: Plano ${plan.name}')">Comprar</button>
-        `;
-        container.appendChild(planDiv);
-      });
-    }
-
-    loadPlans(plansData);
-  </script>
-</body>
-</html>
+setInterval(loadActivePlans,5000);
