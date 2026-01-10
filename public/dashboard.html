@@ -7,22 +7,26 @@
 </head>
 <body>
 
-<!-- ANÚNCIO FIXO NO TOPO -->
+<!-- ANÚNCIO -->
 <div class="ad-box">
-  🚀 Macave Mining — Invista em mineração segura e acompanhe lucros diários.
+  🚀 Macave Mining — Plataforma de mineração com lucros diários
 </div>
 
-<!-- CONTEÚDO DINÂMICO -->
-<div id="content"></div>
+<!-- CONTEÚDO (OBRIGATÓRIO) -->
+<div id="content">
+  <h2>👋 Bem-vindo</h2>
+  <p>Clique numa aba abaixo para continuar.</p>
+</div>
 
-<!-- MENU FIXO EM BAIXO -->
+<!-- MENU EM BAIXO -->
 <div class="bottom-nav">
-  <button onclick="showSection('mining')">⛏️ Mineração</button>
-  <button onclick="showSection('deposit')">💰 Depósito</button>
-  <button onclick="showSection('withdraw')">💸 Saque</button>
-  <button onclick="showSection('contact')">📞 Contato</button>
+  <button id="btn-mining">⛏️ Mineração</button>
+  <button id="btn-deposit">💰 Depósito</button>
+  <button id="btn-withdraw">💸 Saque</button>
+  <button id="btn-contact">📞 Contato</button>
 </div>
 
+<!-- JS NO FINAL (MUITO IMPORTANTE) -->
 <script src="js/dashboard.js"></script>
 </body>
 </html>
