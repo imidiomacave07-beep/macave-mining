@@ -7,16 +7,18 @@
 </head>
 <body>
 
-<h1>Bem-vindo ao Dashboard</h1>
+<div id="content">
+  <!-- Conteúdo dinâmico entra aqui -->
+</div>
 
-<nav>
-  <a href="#">⛏️ Mineração</a>
-  <a href="#">💰 Depósito</a>
-  <a href="#">💸 Saque</a>
-  <a href="#">📞 Contato</a>
+<!-- MENU EM BAIXO -->
+<nav class="bottom-nav">
+  <button onclick="showSection('mining')">⛏️ Mineração</button>
+  <button onclick="showSection('deposit')">💰 Depósito</button>
+  <button onclick="showSection('withdraw')">💸 Saque</button>
+  <button onclick="showSection('contact')">📞 Contato</button>
 </nav>
 
-<p>Saldo: 0 💎</p>
-
+<script src="js/dashboard.js"></script>
 </body>
 </html>
