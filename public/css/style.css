@@ -1,155 +1,29 @@
-/* RESET BÁSICO */
-* {
+body {
+  font-family: Arial, sans-serif;
+  background: #0f172a;
+  color: #fff;
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
-  font-family: 'Arial', sans-serif;
 }
 
-/* BODY */
-body {
-  background-color: #f5f7fa;
-  color: #333;
+header {
+  background: #020617;
+  padding: 15px;
+}
+
+nav button {
+  margin: 5px;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.tab {
   padding: 20px;
 }
 
-/* LOGIN */
-#loginPage {
-  max-width: 400px;
-  margin: 50px auto;
-  background: #ffffff;
-  padding: 25px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-  text-align: center;
-}
-
-#loginPage input {
-  width: 80%;
+.plan {
+  border: 1px solid #334155;
   padding: 10px;
   margin: 10px 0;
   border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-#loginPage button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-#loginPage button:hover {
-  background-color: #0056b3;
-}
-
-/* DASHBOARD */
-#dashboardPage h2 {
-  margin-bottom: 10px;
-}
-
-/* MENU EM ABAS */
-.main-menu {
-  display: flex;
-  gap: 10px;
-  margin-bottom: 15px;
-  flex-wrap: wrap;
-}
-
-.main-menu button {
-  background-color: #007bff;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.main-menu button:hover {
-  background-color: #0056b3;
-}
-
-/* ABAS */
-.tab {
-  background: #ffffff;
-  padding: 15px;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  margin-bottom: 20px;
-}
-
-/* PLANO CARD */
-.plan-card {
-  border: 1px solid #007bff;
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 10px;
-  background: #e6f0ff;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.plan-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-}
-
-.plan-card h4 {
-  color: #007bff;
-  margin-bottom: 5px;
-}
-
-.plan-card button {
-  margin-top: 5px;
-  background-color: #28a745;
-  color: white;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-
-.plan-card button:hover {
-  background-color: #218838;
-}
-
-/* BANNER */
-#bannerArea {
-  border-radius: 8px;
-  background: linear-gradient(90deg, #00c6ff, #0072ff);
-  color: white;
-  font-weight: bold;
-  padding: 15px;
-  margin-bottom: 15px;
-  text-align: center;
-}
-
-/* LISTA DE CARTEIRAS */
-#deposit ul {
-  list-style: none;
-  margin-top: 10px;
-}
-
-#deposit ul li {
-  background: #e6f0ff;
-  margin-bottom: 8px;
-  padding: 8px;
-  border-radius: 6px;
-}
-
-/* CONTACTO / PUBLICIDADE */
-#contact div {
-  border: 1px solid #007bff;
-  border-radius: 8px;
-  padding: 10px;
-  background: #e6f0ff;
-  margin-top: 10px;
-}
-
-/* BOTÕES GERAIS */
-button {
-  font-size: 14px;
 }
