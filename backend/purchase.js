@@ -9,9 +9,7 @@ module.exports = (req, res) => {
   }
 
   const plan = plans.find(p => p.id === planId || p.id == planId);
-  if (!plan) {
-    return res.status(400).json({ error: "Plano não encontrado" });
-  }
+  if (!plan) return res.status(400).json({ error: "Plano não encontrado" });
 
   if (!global.users) global.users = {};
   if (!global.users[userId]) {
