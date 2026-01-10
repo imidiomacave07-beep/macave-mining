@@ -3,91 +3,39 @@
 <head>
   <meta charset="UTF-8">
   <title>Registrar - Macave Mining</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: linear-gradient(120deg, #0d1b2a, #1b263b);
-      color: #fff;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-    }
-    h1 {
-      color: #fca311;
-      margin-bottom: 20px;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.1); }
-      100% { transform: scale(1); }
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      width: 300px;
-      gap: 10px;
-    }
-    input {
-      padding: 10px;
-      border-radius: 5px;
-      border: none;
-    }
-    button {
-      padding: 10px;
-      border-radius: 5px;
-      border: none;
-      background: #fca311;
-      color: #162447;
-      font-weight: bold;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-    button:hover { background: #ffba08; }
-    .link {
-      margin-top: 10px;
-      text-align: center;
-    }
-    .link a { color: #fca311; text-decoration: none; }
-  </style>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <h1>MM - Criar Conta</h1>
 
-  <form id="registerForm">
-    <input type="text" placeholder="Usuário" id="username" required>
-    <input type="email" placeholder="Email" id="email" required>
-    <input type="password" placeholder="Senha" id="password" required>
-    <button type="submit">Registrar</button>
-  </form>
+<h2>Registrar</h2>
 
-  <div class="link">
-    <a href="login.html">Já tenho conta</a>
-  </div>
+<form id="registerForm">
+  <input type="email" placeholder="Email" required />
+  <input type="password" placeholder="Senha" required />
+  <button type="submit">Criar conta</button>
+</form>
 
-  <script>
-    const form = document.getElementById("registerForm");
-    form.addEventListener("submit", async e => {
-      e.preventDefault();
-      const res = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username: document.getElementById("username").value,
-          email: document.getElementById("email").value,
-          password: document.getElementById("password").value
-        })
-      });
-      const data = await res.json();
-      if (data.success) {
-        alert("Registrado com sucesso!");
-        window.location.href = "login.html";
-      } else {
-        alert("Erro: " + (data.message || "Não foi possível registrar"));
-      }
-    });
-  </script>
+<script>
+document.getElementById("registerForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = e.target[0].value;
+  const password = e.target[1].value;
+
+  const res = await fetch("/api/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+
+  if (res.ok) {
+    alert("Registro feito com sucesso!");
+    window.location.href = "login.html";
+  } else {
+    alert("Erro no registro");
+  }
+});
+</script>
+
 </body>
 </html>
