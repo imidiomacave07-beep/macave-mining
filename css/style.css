@@ -1,22 +1,39 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <title>Dashboard - Macave Mining</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
+#content {
+  padding: 20px;
+  margin-bottom: 80px;
+}
 
-<h1>Bem-vindo ao Dashboard</h1>
+.card {
+  background: #161b22;
+  margin: 15px auto;
+  padding: 15px;
+  border-radius: 8px;
+  width: 90%;
+}
 
-<nav>
-  <a href="#">⛏️ Mineração</a>
-  <a href="#">💰 Depósito</a>
-  <a href="#">💸 Saque</a>
-  <a href="#">📞 Contato</a>
-</nav>
+.card button {
+  margin-top: 10px;
+  padding: 8px;
+  width: 100%;
+  background: #00ffcc;
+  border: none;
+  cursor: pointer;
+}
 
-<p>Saldo: 0 💎</p>
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  background: #0d1117;
+  display: flex;
+  justify-content: space-around;
+  padding: 10px 0;
+  border-top: 1px solid #333;
+}
 
-</body>
-</html>
+.bottom-nav button {
+  background: none;
+  color: #00ffcc;
+  border: none;
+  font-size: 14px;
+}
