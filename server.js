@@ -1,25 +1,24 @@
-// server.js
 const express = require("express");
 const cors = require("cors");
-const path = require("path");
+const mongoose = require("mongoose");
+const bodyParser = require("body-parser");
+require("dotenv").config();
+
+const authRoutes = require("./backend/auth");
+const plansRoutes = require("./backend/plans");
+const withdrawRoutes = require("./backend/withdraw");
 
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use(bodyParser.json());
+app.use(express.static("public"));
 
-// Servir HTML/CSS/JS
-app.use(express.static(path.join(__dirname, "public")));
+mongoose.connect(process.env.MONGO_URI)
+  .then(()=>console.log("✅ MongoDB conectado"))
+  .catch(err=>console.log("❌ Erro MongoDB:",err));
 
-// Importar planos e compra
-const plans = require("./backend/plans");
-const purchasePlan = require("./backend/purchase");
+app.use("/api/auth", authRoutes);
+app.use("/api/plans", plansRoutes);
+app.use("/api/withdraw", withdrawRoutes);
 
-// Rotas
-app.get("/api/plans", (req, res) => res.json(plans));
-app.post("/api/plans/buy", purchasePlan);
-
-// Porta
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log("🚀 Macave Mining API rodando na porta", PORT);
-});
+app.listen(process.env.PORT, ()=>console.log(`🚀 Macave Mining API rodando na porta ${process.env.PORT}`));
