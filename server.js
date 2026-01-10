@@ -1,20 +1,25 @@
-require("dotenv").config();
 const express = require("express");
-const cors = require("cors");
-
-const authRoutes = require("./backend/auth.routes"); // << caminho correto
+const path = require("path");
 
 const app = express();
+const PORT = process.env.PORT || 10000;
 
-app.use(cors());
+// Middlewares
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+// Frontend (public)
+app.use(express.static(path.join(__dirname, "public")));
+
+// Rotas backend
+const authRoutes = require("./backend/auth.routes");
 app.use("/api/auth", authRoutes);
 
+// Página inicial
 app.get("/", (req, res) => {
-  res.send("🚀 Macave Mining API rodando na porta " + (process.env.PORT || 10000));
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => {
   console.log(`🚀 Macave Mining API rodando na porta ${PORT}`);
 });
