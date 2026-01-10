@@ -1,22 +1,27 @@
-/* Reset básico */
-* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+/* RESET BÁSICO */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Arial', sans-serif;
+}
 
 /* BODY */
 body {
-  background-color: #f0f4f8;
-  color: #1a1a1a;
+  background-color: #f5f7fa;
+  color: #333;
   padding: 20px;
 }
 
 /* LOGIN */
 #loginPage {
   max-width: 400px;
-  margin: 100px auto;
-  background-color: #e6f0ff;
-  padding: 30px;
-  border-radius: 12px;
+  margin: 50px auto;
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
 #loginPage input {
@@ -28,88 +33,123 @@ body {
 }
 
 #loginPage button {
-  padding: 10px 20px;
-  background-color: #0066cc;
-  color: #fff;
+  background-color: #007bff;
+  color: white;
   border: none;
+  padding: 10px 20px;
   border-radius: 6px;
   cursor: pointer;
-  font-weight: bold;
+  transition: background 0.3s;
 }
 
 #loginPage button:hover {
-  background-color: #0052a3;
+  background-color: #0056b3;
 }
 
 /* DASHBOARD */
-header {
-  background-color: #0066cc;
-  color: #fff;
-  padding: 15px;
-  border-radius: 10px;
-  margin-bottom: 20px;
+#dashboardPage h2 {
+  margin-bottom: 10px;
+}
+
+/* MENU EM ABAS */
+.main-menu {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  gap: 10px;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
 }
 
-header button {
-  padding: 6px 12px;
+.main-menu button {
+  background-color: #007bff;
+  color: white;
   border: none;
+  padding: 10px 15px;
   border-radius: 6px;
-  background-color: #004a80;
-  color: #fff;
   cursor: pointer;
+  transition: background 0.3s;
 }
 
-header button:hover {
-  background-color: #003366;
+.main-menu button:hover {
+  background-color: #0056b3;
 }
 
-/* PLANOS E SAQUES */
-.plan-card {
-  background-color: #e6f0ff;
+/* ABAS */
+.tab {
+  background: #ffffff;
   padding: 15px;
-  margin: 10px 0;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  margin-bottom: 20px;
 }
 
-.plan-card h3 {
-  color: #003366;
-  margin-bottom: 8px;
+/* PLANO CARD */
+.plan-card {
+  border: 1px solid #007bff;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #e6f0ff;
+  transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.plan-card p {
-  margin: 4px 0;
+.plan-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.plan-card h4 {
+  color: #007bff;
+  margin-bottom: 5px;
 }
 
 .plan-card button {
-  margin-top: 8px;
-  padding: 6px 12px;
-  background-color: #0066cc;
-  color: #fff;
+  margin-top: 5px;
+  background-color: #28a745;
+  color: white;
   border: none;
+  padding: 8px 12px;
   border-radius: 6px;
   cursor: pointer;
 }
 
 .plan-card button:hover {
-  background-color: #0052a3;
+  background-color: #218838;
 }
 
-/* FORMULÁRIO SAQUE */
-.plan-card input, .plan-card select {
-  width: 100%;
-  padding: 8px;
-  margin: 6px 0;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-/* RODAPÉ */
-footer {
-  margin-top: 40px;
+/* BANNER */
+#bannerArea {
+  border-radius: 8px;
+  background: linear-gradient(90deg, #00c6ff, #0072ff);
+  color: white;
+  font-weight: bold;
+  padding: 15px;
+  margin-bottom: 15px;
   text-align: center;
-  color: #666;
+}
+
+/* LISTA DE CARTEIRAS */
+#deposit ul {
+  list-style: none;
+  margin-top: 10px;
+}
+
+#deposit ul li {
+  background: #e6f0ff;
+  margin-bottom: 8px;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+/* CONTACTO / PUBLICIDADE */
+#contact div {
+  border: 1px solid #007bff;
+  border-radius: 8px;
+  padding: 10px;
+  background: #e6f0ff;
+  margin-top: 10px;
+}
+
+/* BOTÕES GERAIS */
+button {
+  font-size: 14px;
 }
