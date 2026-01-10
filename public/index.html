@@ -8,83 +8,60 @@
 </head>
 <body>
 
-  <!-- LOGIN -->
-  <div id="loginPage">
-    <h2>Macave Mining</h2>
-    <input type="text" id="usernameInput" placeholder="Digite seu nome">
-    <button onclick="login()">Entrar</button>
-  </div>
-
-  <!-- DASHBOARD -->
-  <div id="dashboardPage" style="display:none">
-
-    <!-- ESPAÇO PARA PUBLICIDADE / BANNERS -->
-    <div id="bannerArea" style="background:#dff0ff; padding:10px; margin-bottom:10px; text-align:center;">
-      <p>🔥 Promoção: Minere e ganhe até 3% ao dia! 🔥</p>
-    </div>
-
-    <h2>Bem-vindo, <span id="usernameDisplay"></span>!</h2>
-    <p>Saldo: <span id="balance">0</span> 💎</p>
-
-    <!-- MENU EM ABAS FIXO -->
-    <nav class="main-menu" style="margin-bottom:15px;">
+  <!-- HEADER / LANDING -->
+  <header style="text-align:center; margin-bottom:20px;">
+    <h1>Macave Mining</h1>
+    <nav class="main-menu">
       <button onclick="showTab('mining')">⛏️ Mineração</button>
       <button onclick="showTab('deposit')">💰 Depósito</button>
-      <button onclick="showTab('contact')">📞 Contacto</button>
-      <button onclick="logout()">Logout</button>
+      <button onclick="showTab('contact')">📞 Contato</button>
+      <button onclick="showTab('login')">🔑 Login</button>
     </nav>
+  </header>
 
-    <!-- CONTEÚDO DAS ABAS -->
+  <!-- PUBLIC TABS -->
+  <main>
+
+    <!-- LOGIN / REGISTRO -->
+    <section id="login" class="tab" style="display:none; text-align:center;">
+      <h2>Login</h2>
+      <input type="text" id="usernameInput" placeholder="Digite seu nome">
+      <button onclick="login()">Entrar</button>
+    </section>
+
     <!-- MINERAÇÃO -->
     <section id="mining" class="tab">
-      <h3>Planos Disponíveis</h3>
+      <h2>Planos de Mineração</h2>
       <div id="plans"></div>
-
-      <h3>Planos Ativos</h3>
-      <div id="activePlans">
-        <p>Nenhum plano comprado ainda.</p>
-      </div>
-
-      <h3>Saque</h3>
-      <div>
-        <button>USDT (TRC20)</button>
-        <button>USDT (BEP20)</button>
-        <button>Bitcoin (BTC)</button>
-        <button>Ethereum (ERC20)</button>
-        <button>Solicitar Saque</button>
-      </div>
-
-      <h3>Histórico de Saques</h3>
-      <p>Nenhum saque ainda.</p>
     </section>
 
     <!-- DEPÓSITO -->
     <section id="deposit" class="tab" style="display:none">
-      <h3>Depósito</h3>
-      <p>Envie fundos para começar a minerar:</p>
+      <h2>Depósito</h2>
+      <p>Escolha a carteira para enviar fundos e começar a minerar:</p>
       <ul>
         <li>USDT (TRC20): TXxxxxxxxxxxxxxxxx</li>
         <li>USDT (BEP20): 0xBEP20xxxxxxxxxxx</li>
         <li>Bitcoin (BTC): 1Bxxxxxxxxxxxxxxxx</li>
         <li>Ethereum (ERC20): 0xERC20xxxxxxxxxxx</li>
       </ul>
-      <p>Após enviar, aguarde aprovação do admin para ativar o plano.</p>
+      <p>Após enviar, faça login para comprar planos e aguarde aprovação do admin.</p>
     </section>
 
-    <!-- CONTACTO / PUBLICIDADE -->
+    <!-- CONTATO / PUBLICIDADE -->
     <section id="contact" class="tab" style="display:none">
-      <h3>Contacto / Anúncios</h3>
+      <h2>Contato & Novidades</h2>
       <p>Email: suporte@macavemining.com</p>
       <p>WhatsApp: +258 xxx xxx xxx</p>
-
-      <div style="margin-top:15px; background:#f0f8ff; padding:10px;">
-        <h4>📢 Novidades & Publicidade</h4>
-        <p>Aqui você pode colocar banners, promoções ou anúncios da plataforma.</p>
+      <div style="margin-top:15px; background:#e6f0ff; padding:10px; border-radius:8px;">
+        <h4>📢 Promoções e Publicidade</h4>
+        <p>Aqui você pode colocar banners, anúncios e novidades da plataforma.</p>
       </div>
     </section>
 
-  </div>
+  </main>
 
+  <!-- SCRIPTS -->
   <script src="js/dashboard.js"></script>
 
   <script>
@@ -94,6 +71,40 @@
       });
       document.getElementById(tabId).style.display = "block";
     }
+
+    // CARREGAR PLANOS (EXEMPLO)
+    const plansData = [
+      { id: 1, name: "Plano Básico", price: 20, daily: 1.5, days: 30 },
+      { id: 2, name: "Plano Standard", price: 50, daily: 2, days: 30 },
+      { id: 3, name: "Plano Pro", price: 100, daily: 2.5, days: 40 },
+      { id: 4, name: "Plano Premium", price: 200, daily: 3, days: 45 }
+    ];
+
+    function loadPlans(plans) {
+      const container = document.getElementById("plans");
+      container.innerHTML = "";
+
+      plans.forEach(plan => {
+        const planDiv = document.createElement("div");
+        planDiv.className = "plan-card";
+
+        planDiv.innerHTML = `
+          <h4>${plan.name}</h4>
+          <p>Preço: ${plan.price} USD</p>
+          <p>Lucro diário: ${plan.daily}% por ${plan.days} dias</p>
+          <button onclick="buyPlan(${plan.id})">Comprar</button>
+        `;
+
+        container.appendChild(planDiv);
+      });
+    }
+
+    function buyPlan(planId) {
+      alert("Simulação de compra: Plano " + planId + " selecionado!");
+      // Aqui você conecta com /api/plans/buy para comprar realmente
+    }
+
+    loadPlans(plansData);
   </script>
 
 </body>
