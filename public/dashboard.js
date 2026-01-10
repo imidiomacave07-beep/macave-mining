@@ -1,7 +1,7 @@
 // public/js/dashboard.js
 console.log("✅ dashboard.js carregado");
 
-// Wallets fixos
+// Carteiras fixas
 const DEPOSIT_WALLETS = {
   TRC20: "TXxxxxxxxxxxxxxxxx",
   BTC: "1Bxxxxxxxxxxxxxxxx",
@@ -9,6 +9,7 @@ const DEPOSIT_WALLETS = {
   ERC20: "0xERC20xxxxxxxxxxx"
 };
 
+// Variáveis globais
 let userId = null;
 let balance = 0;
 let activePlans = [];
@@ -40,7 +41,7 @@ function updateBalanceDisplay() {
   document.getElementById("balance").textContent = balance.toFixed(2);
 }
 
-// CARREGAR PLANOS
+// CARREGA PLANOS
 async function loadPlans() {
   try {
     const res = await fetch("/api/plans");
@@ -65,12 +66,12 @@ async function loadPlans() {
   }
 }
 
-// COMPRAR PLANO
+// COMPRAR PLANO – COM ESCOLHA DE CARTEIRA
 async function buyPlan(planId, price) {
   if (!userId) return alert("Faça login primeiro");
 
   const method = prompt(
-    "Escolha o método:\nTRC20\nBTC\nBEP20\nERC20"
+    "Escolha o método de depósito:\nTRC20\nBTC\nBEP20\nERC20"
   );
 
   if (!DEPOSIT_WALLETS[method]) return alert("Método inválido");
@@ -97,6 +98,7 @@ async function buyPlan(planId, price) {
 
     if (!res.ok) return alert(data.error || "Erro ao comprar plano");
 
+    // Adiciona ao frontend
     activePlans.push({
       ...data.plan,
       method,
@@ -119,6 +121,11 @@ async function buyPlan(planId, price) {
 function loadActivePlans() {
   const el = document.getElementById("activePlans");
   el.innerHTML = "";
+
+  if (activePlans.length === 0) {
+    el.innerHTML = "<p>Nenhum plano comprado ainda.</p>";
+    return;
+  }
 
   activePlans.forEach(p => {
     el.innerHTML += `
