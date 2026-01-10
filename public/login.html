@@ -3,43 +3,37 @@
 <head>
   <meta charset="UTF-8">
   <title>Login - Macave Mining</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<div class="logo">
-  <span>MM</span> Macave Mining
-</div>
+<h2>Login</h2>
 
-<div class="card">
-  <h2>Entrar</h2>
-
-  <input id="username" placeholder="Usuário" style="width:100%;padding:10px;margin-bottom:10px">
-  <input id="password" type="password" placeholder="Senha" style="width:100%;padding:10px;margin-bottom:10px">
-
-  <button onclick="login()">Entrar</button>
-</div>
+<form id="loginForm">
+  <input type="email" placeholder="Email" required />
+  <input type="password" placeholder="Senha" required />
+  <button type="submit">Entrar</button>
+</form>
 
 <script>
-async function login() {
+document.getElementById("loginForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const email = e.target[0].value;
+  const password = e.target[1].value;
+
   const res = await fetch("/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      username: username.value,
-      password: password.value
-    })
+    body: JSON.stringify({ email, password })
   });
 
-  const data = await res.json();
-
-  if (data.userId) {
-    localStorage.setItem("userId", data.userId);
-    window.location.href = "/dashboard.html";
+  if (res.ok) {
+    window.location.href = "dashboard.html";
   } else {
     alert("Erro no login");
   }
-}
+});
 </script>
 
 </body>
