@@ -1,68 +1,76 @@
-const API_URL = "https://SEU-SERVICO.onrender.com/api";
+const content = document.getElementById("content");
 
-function showTab(id) {
-  document.querySelectorAll(".tab").forEach(tab => {
-    tab.style.display = "none";
-  });
-  document.getElementById(id).style.display = "block";
-}
+function showSection(section) {
+  if (section === "mining") {
+    content.innerHTML = `
+      <h2>⛏️ Planos de Mineração</h2>
 
-function checkLogin() {
-  const token = localStorage.getItem("token");
+      <div class="card">
+        <h3>Plano Starter</h3>
+        <p>Preço: 20 USD</p>
+        <p>Lucro: 1.5% ao dia</p>
+        <button>Comprar</button>
+      </div>
 
-  if (token) {
-    document.getElementById("publicArea").style.display = "none";
-    document.getElementById("privateArea").style.display = "block";
-  } else {
-    document.getElementById("publicArea").style.display = "block";
-    document.getElementById("privateArea").style.display = "none";
+      <div class="card">
+        <h3>Plano Standard</h3>
+        <p>Preço: 50 USD</p>
+        <p>Lucro: 2% ao dia</p>
+        <button>Comprar</button>
+      </div>
+
+      <div class="card">
+        <h3>Plano Pro</h3>
+        <p>Preço: 100 USD</p>
+        <p>Lucro: 2.5% ao dia</p>
+        <button>Comprar</button>
+      </div>
+    `;
+  }
+
+  if (section === "deposit") {
+    content.innerHTML = `
+      <h2>💰 Depósito</h2>
+
+      <p>USDT (TRC20)</p>
+      <code onclick="copyText(this)">TX123TRC20</code>
+
+      <p>USDT (BEP20)</p>
+      <code onclick="copyText(this)">0xBEP20</code>
+
+      <p>Bitcoin (BTC)</p>
+      <code onclick="copyText(this)">1BTCADDRESS</code>
+    `;
+  }
+
+  if (section === "withdraw") {
+    content.innerHTML = `
+      <h2>💸 Solicitar Saque</h2>
+
+      <input placeholder="Valor">
+      <select>
+        <option>USDT (TRC20)</option>
+        <option>USDT (BEP20)</option>
+        <option>BTC</option>
+      </select>
+      <input placeholder="Endereço da carteira">
+      <button>Solicitar</button>
+    `;
+  }
+
+  if (section === "contact") {
+    content.innerHTML = `
+      <h2>📞 Contato</h2>
+      <p>Email: suporte@macavemining.com</p>
+      <p>WhatsApp: +258 XXX XXX XXX</p>
+    `;
   }
 }
 
-async function login() {
-  const email = document.getElementById("loginEmail").value;
-  const password = document.getElementById("loginPassword").value;
-
-  const res = await fetch(`${API_URL}/auth/login`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    alert(data.error || "Erro no login");
-    return;
-  }
-
-  localStorage.setItem("token", data.token);
-  checkLogin();
+function copyText(el) {
+  navigator.clipboard.writeText(el.innerText);
+  alert("Endereço copiado!");
 }
 
-async function register() {
-  const email = document.getElementById("regEmail").value;
-  const password = document.getElementById("regPassword").value;
-
-  const res = await fetch(`${API_URL}/auth/register`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
-
-  const data = await res.json();
-
-  if (!res.ok) {
-    alert(data.error || "Erro ao registrar");
-    return;
-  }
-
-  alert("Conta criada com sucesso. Faça login.");
-}
-
-function logout() {
-  localStorage.removeItem("token");
-  checkLogin();
-}
-
-checkLogin();
+// Abre mineração por padrão
+showSection("mining");
