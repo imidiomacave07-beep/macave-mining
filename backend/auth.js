@@ -1,46 +1,54 @@
 const express = require("express");
-const jwt = require("jsonwebtoken");
 const router = express.Router();
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
-const users = [];
-const secret = "seusegredo";
-
-router.post("/register", (req, res) => {
-  const { email, password } = req.body;
-
-  if (users.find(u => u.email === email)) {
-    return res.status(400).json({ error: "Usuário já existe" });
-  }
-
-  users.push({
-    id: Date.now(),
-    email,
-    password, // ⚠️ sem hash TEMPORARIAMENTE
-    balance: 0
-  });
-
-  res.json({ message: "Registro concluído" });
+// Schema
+const UserSchema = new mongoose.Schema({
+  username: String,
+  password: String,
+  balance: { type: Number, default: 0 },
+  activePlans: { type: Array, default: [] },
+  withdraws: { type: Array, default: [] }
 });
 
-router.post("/login", (req, res) => {
-  const { email, password } = req.body;
-  const user = users.find(u => u.email === email);
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
 
-  if (!user) {
+// Registrar
+router.post("/register", async (req, res) => {
+  const { username, password } = req.body;
+  if (!username || !password)
+    return res.status(400).json({ error: "Campos obrigatórios" });
+
+  const exists = await User.findOne({ username });
+  if (exists)
+    return res.status(400).json({ error: "Usuário já existe" });
+
+  const hash = await bcrypt.hash(password, 10);
+  const user = new User({ username, password: hash });
+  await user.save();
+
+  res.json({ message: "Usuário registrado com sucesso" });
+});
+
+// Login
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+  const user = await User.findOne({ username });
+  if (!user)
     return res.status(400).json({ error: "Usuário não encontrado" });
-  }
 
-  if (user.password !== password) {
+  const ok = await bcrypt.compare(password, user.password);
+  if (!ok)
     return res.status(400).json({ error: "Senha incorreta" });
-  }
 
-  const token = jwt.sign(
-    { id: user.id, email: user.email },
-    secret,
-    { expiresIn: "1h" }
-  );
+  res.json({ message: "Login OK", userId: user._id });
+});
 
-  res.json({ message: "Login sucesso", token });
+// Admin – listar usuários
+router.get("/users", async (req, res) => {
+  const users = await User.find({});
+  res.json(users);
 });
 
 module.exports = router;
