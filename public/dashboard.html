@@ -1,26 +1,70 @@
-<h2>Solicitar Saque (M-Pesa)</h2>
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Macave Mining</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
 
-<input type="number" id="amount" placeholder="Valor do saque">
-<input type="text" id="mpesa" placeholder="Número M-Pesa">
+<header>
+  <nav>
+    <button onclick="showTab('dash')">📊 Dashboard</button>
+    <button onclick="showTab('mining')">⛏️ Mineração</button>
+    <button onclick="showTab('deposit')">💰 Depósito</button>
+    <button onclick="showTab('withdraw')">💸 Saques</button>
+    <button onclick="showTab('contact')">📞 Contato</button>
+    <button onclick="logout()">🚪 Logout</button>
+  </nav>
+</header>
 
-<button onclick="withdraw()">Solicitar Saque</button>
+<section id="dash" class="tab">
+  <h2>Saldo</h2>
+  <p><strong>0</strong> 💎</p>
+</section>
 
-<script>
-async function withdraw() {
-  const amount = document.getElementById("amount").value;
-  const mpesaNumber = document.getElementById("mpesa").value;
+<section id="mining" class="tab" style="display:none">
+  <h2>Planos de Mineração</h2>
 
-  const res = await fetch("/api/withdraw", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      userId,
-      amount,
-      mpesaNumber
-    })
-  });
+  <div class="plan">
+    <h4>Standard</h4>
+    <p>50 USD — 1% / dia</p>
+    <button>Comprar</button>
+  </div>
 
-  const data = await res.json();
-  alert(data.message);
-}
-</script>
+  <div class="plan">
+    <h4>Pro</h4>
+    <p>100 USD — 1.5% / dia</p>
+    <button>Comprar</button>
+  </div>
+
+  <div class="plan">
+    <h4>Premium</h4>
+    <p>200 USD — 2% / dia</p>
+    <button>Comprar</button>
+  </div>
+</section>
+
+<section id="deposit" class="tab" style="display:none">
+  <h2>Depósito</h2>
+  <ul>
+    <li>USDT (TRC20): TX123</li>
+    <li>USDT (BEP20): 0xBEP123</li>
+    <li>BTC: 1BTC123</li>
+    <li>ETH: 0xERC123</li>
+  </ul>
+</section>
+
+<section id="withdraw" class="tab" style="display:none">
+  <h2>Saque</h2>
+  <p>Solicite seus saques aqui</p>
+</section>
+
+<section id="contact" class="tab" style="display:none">
+  <h2>Contato</h2>
+  <p>suporte@macavemining.com</p>
+</section>
+
+<script src="js/dashboard.js"></script>
+</body>
+</html>
