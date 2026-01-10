@@ -31,4 +31,9 @@ if (!global.users) global.users = {};
 calcularLucroDiario();
 setInterval(calcularLucroDiario, 60 * 60 * 1000);
 
-app.listen(3000, () => console.log("🚀 Macave Mining API rodando"));
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+  console.log("🚀 Macave Mining API rodando na porta", PORT);
+});
