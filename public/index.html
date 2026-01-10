@@ -1,95 +1,37 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>Macave Mining</title>
-  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <header>
   <h1>Macave Mining</h1>
-  <nav>
-    <button onclick="showTab('mining')">⛏️ Mineração</button>
-    <button onclick="showTab('deposit')">💰 Depósito</button>
-    <button onclick="showTab('contact')">📞 Contato</button>
-    <button onclick="showTab('login')">🔑 Login / Registrar</button>
-  </nav>
 </header>
 
-<!-- ÁREA PÚBLICA -->
-<div id="publicArea">
+<section class="public">
+  <h2>Mineração de Criptomoedas</h2>
+  <p>Invista em mineração segura e acompanhe seus lucros diariamente.</p>
 
-  <section id="mining" class="tab">
-    <h2>Planos de Mineração</h2>
-    <p>Faça login para visualizar e comprar planos de mineração.</p>
-  </section>
-
-  <section id="deposit" class="tab" style="display:none">
-    <h2>Depósitos</h2>
-    <p>Os endereços de depósito ficam disponíveis após o login.</p>
-  </section>
-
-  <section id="contact" class="tab" style="display:none">
-    <h2>Contato</h2>
-    <p>Email: suporte@macavemining.com</p>
-  </section>
-
-  <section id="login" class="tab" style="display:none">
-    <h2>Entrar</h2>
-    <input id="loginEmail" placeholder="Email"><br>
-    <input id="loginPassword" type="password" placeholder="Senha"><br>
-    <button onclick="login()">Login</button>
-
-    <h3>Registrar</h3>
-    <input id="regEmail" placeholder="Email"><br>
-    <input id="regPassword" type="password" placeholder="Senha"><br>
-    <button onclick="register()">Registrar</button>
-  </section>
-
-</div>
-
-<!-- ÁREA PRIVADA -->
-<div id="privateArea" style="display:none">
-
-  <h2>Bem-vindo ao Dashboard</h2>
-  <p>Saldo: <strong id="balance">0</strong> 💎</p>
-
-  <h3>Planos Disponíveis</h3>
-
-  <div class="plan">
-    <h4>Plano Standard</h4>
-    <p>Preço: 50 USD</p>
-    <p>Lucro: 1% ao dia</p>
-    <button>Comprar</button>
+  <div class="ads">
+    <p>🚀 Retornos diários</p>
+    <p>🔒 Plataforma segura</p>
+    <p>⚡ Saques rápidos</p>
   </div>
 
-  <div class="plan">
-    <h4>Plano Pro</h4>
-    <p>Preço: 100 USD</p>
-    <p>Lucro: 1.5% ao dia</p>
-    <button>Comprar</button>
-  </div>
+  <h3>Entrar</h3>
+  <input id="loginEmail" placeholder="Email">
+  <input id="loginPassword" type="password" placeholder="Senha">
+  <button onclick="login()">Login</button>
 
-  <div class="plan">
-    <h4>Plano Premium</h4>
-    <p>Preço: 200 USD</p>
-    <p>Lucro: 2% ao dia</p>
-    <button>Comprar</button>
-  </div>
+  <h3>Registrar</h3>
+  <input id="regEmail" placeholder="Email">
+  <input id="regPassword" type="password" placeholder="Senha">
+  <button onclick="register()">Registrar</button>
+</section>
 
-  <h3>Depósitos</h3>
-  <ul>
-    <li>USDT (TRC20): <code>TX123</code></li>
-    <li>USDT (BEP20): <code>0xBEP123</code></li>
-    <li>Bitcoin (BTC): <code>1BTC123</code></li>
-    <li>Ethereum (ERC20): <code>0xERC123</code></li>
-  </ul>
-
-  <button onclick="logout()">Logout</button>
-
-</div>
-
-<script src="js/dashboard.js"></script>
+<script src="js/auth.js"></script>
 </body>
 </html>
