@@ -2,17 +2,22 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Macave Mining | Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Macave Mining - Admin</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+  <h2>Painel Admin</h2>
 
-<h2>🔐 Painel do Administrador</h2>
+  <div id="pendingPlans">
+    <h3>Planos Pendentes</h3>
+    <p>Nenhum plano pendente.</p>
+  </div>
 
-<button onclick="logout()">Logout</button>
+  <div>
+    <button onclick="approveAll()">Aprovar Todos</button>
+  </div>
 
-<h3>Saques Pendentes</h3>
-<div id="withdrawList">Carregando...</div>
-
-<script src="js/admin.js"></script>
+  <script src="js/admin.js"></script>
 </body>
 </html>
