@@ -1,47 +1,37 @@
-console.log("✅ admin.js carregado");
+const API_URL="/api";
 
-function loadPendingPlans() {
-  const div = document.getElementById("pendingPlans");
-  div.innerHTML = "<h3>Planos Pendentes</h3>";
+async function loadUsers(){
+  const res=await fetch(`${API_URL}/auth/users`);
+  const users=await res.json();
+  const container=document.getElementById("usersList");
+  container.innerHTML="";
+  users.forEach((user)=>{
+    const userDiv=document.createElement("div");
+    userDiv.className="plan-card";
+    userDiv.innerHTML=`<strong>${user.username}</strong><br>Saldo: ${user.balance.toFixed(2)} $<h4>Planos Ativos:</h4><div id="plans-${user._id}"></div>`;
+    container.appendChild(userDiv);
 
-  if (!window.users) window.users = {};
-
-  let hasPending = false;
-
-  for (let userId in window.users) {
-    const user = window.users[userId];
-    user.activePlans.forEach((plan, index) => {
-      if (plan.status === "pending") {
-        hasPending = true;
-        const el = document.createElement("div");
-        el.innerHTML = `
-          <strong>${plan.name}</strong> - Usuário: ${userId}<br>
-          Método: ${plan.method}<br>
-          <button onclick="approvePlan('${userId}', ${index})">Aprovar</button>
-        `;
-        div.appendChild(el);
+    const plansDiv=document.getElementById(`plans-${user._id}`);
+    if(!user.activePlans || user.activePlans.length===0){plansDiv.innerHTML="<p>Nenhum plano.</p>";return;}
+    user.activePlans.forEach((p,index)=>{
+      const pDiv=document.createElement("div");
+      pDiv.innerHTML=`${p.name} - Status: ${p.status} - Ganho Atual: ${p.earned?.toFixed(2)||0} $`;
+      if(p.status==="pending"){
+        const btn=document.createElement("button");
+        btn.textContent="Aprovar";
+        btn.onclick=()=>approvePlan(user._id,index);
+        pDiv.appendChild(btn);
       }
+      plansDiv.appendChild(pDiv);
     });
-  }
-
-  if (!hasPending) div.innerHTML += "<p>Nenhum plano pendente.</p>";
+  });
 }
 
-function approvePlan(userId, index) {
-  window.users[userId].activePlans[index].status = "active";
-  alert("Plano aprovado!");
-  loadPendingPlans();
+async function approvePlan(userId,index){
+  const res=await fetch(`${API_URL}/plans/approve`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({userId,index})});
+  const data=await res.json();
+  if(res.ok){alert(data.message);loadUsers();}else alert(data.error);
 }
 
-function approveAll() {
-  for (let userId in window.users) {
-    const user = window.users[userId];
-    user.activePlans.forEach(plan => {
-      if (plan.status === "pending") plan.status = "active";
-    });
-  }
-  alert("Todos os planos pendentes foram aprovados!");
-  loadPendingPlans();
-}
-
-loadPendingPlans();
+loadUsers();
+setInterval(loadUsers,5000);
