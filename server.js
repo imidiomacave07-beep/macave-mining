@@ -7,17 +7,18 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// Servir a pasta public (HTML, CSS, JS)
+// Servir HTML/CSS/JS
 app.use(express.static(path.join(__dirname, "public")));
 
-// Rotas da API
+// Importar planos e compra
 const plans = require("./backend/plans");
 const purchasePlan = require("./backend/purchase");
 
+// Rotas
 app.get("/api/plans", (req, res) => res.json(plans));
 app.post("/api/plans/buy", purchasePlan);
 
-// Porta do Render ou local
+// Porta
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log("🚀 Macave Mining API rodando na porta", PORT);
