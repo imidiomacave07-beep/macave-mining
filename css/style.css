@@ -1,18 +1,22 @@
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
-body{background-color:#f0f4f8;color:#0d1b2a;line-height:1.5;padding:20px;}
-h1,h2,h3,h4{color:#0d1b2a;}
-button{background-color:#0077b6;color:#fff;border:none;padding:10px 15px;border-radius:10px;cursor:pointer;transition:.3s;margin-top:5px;}
-button:hover{background-color:#023e8a;}
-input,select{padding:10px;border-radius:10px;border:1px solid #ccc;margin:5px 0;width:100%;}
-.landing-buttons button{margin:5px;}
-.landing-tab{display:none;margin-top:20px;padding:15px;background-color:#e0f7fa;border-radius:15px;box-shadow:0 4px 6px rgba(0,0,0,0.1);}
-#plans,#activePlans,#pendingPlans,#withdrawHistory{display:flex;flex-wrap:wrap;gap:15px;margin-top:10px;}
-.plan-card{background-color:#caf0f8;border-radius:15px;padding:15px;width:200px;box-shadow:0 4px 6px rgba(0,0,0,0.1);}
-.plan-card button{width:100%;}
-#dashboardPage{margin-top:20px;}
-.wallet{font-weight:bold;color:#023e8a;}
-ul{list-style:none;}
-h1{text-align:center;margin-bottom:20px;color:#0077b6;}
-h2{margin-bottom:15px;}
-h3{margin-top:20px;}
-.alert{padding:10px;margin:10px 0;border-radius:10px;background-color:#ffd60a;color:#000;}
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Macave Mining</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<h1>Bem-vindo ao Dashboard</h1>
+
+<nav>
+  <a href="#">⛏️ Mineração</a>
+  <a href="#">💰 Depósito</a>
+  <a href="#">💸 Saque</a>
+  <a href="#">📞 Contato</a>
+</nav>
+
+<p>Saldo: 0 💎</p>
+
+</body>
+</html>
