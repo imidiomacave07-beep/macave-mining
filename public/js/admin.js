@@ -1,6 +1,5 @@
 console.log("✅ admin.js carregado");
 
-// Função para atualizar planos pendentes
 function loadPendingPlans() {
   const div = document.getElementById("pendingPlans");
   div.innerHTML = "<h3>Planos Pendentes</h3>";
@@ -28,14 +27,12 @@ function loadPendingPlans() {
   if (!hasPending) div.innerHTML += "<p>Nenhum plano pendente.</p>";
 }
 
-// Aprovar plano específico
 function approvePlan(userId, index) {
   window.users[userId].activePlans[index].status = "active";
   alert("Plano aprovado!");
   loadPendingPlans();
 }
 
-// Aprovar todos de uma vez
 function approveAll() {
   for (let userId in window.users) {
     const user = window.users[userId];
@@ -47,5 +44,4 @@ function approveAll() {
   loadPendingPlans();
 }
 
-// Inicializa
 loadPendingPlans();
