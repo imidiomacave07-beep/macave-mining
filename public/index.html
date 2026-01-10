@@ -1,167 +1,90 @@
-// public/js/dashboard.js
-console.log("✅ dashboard.js carregado");
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Macave Mining</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
 
-// Carteiras fixas
-const DEPOSIT_WALLETS = {
-  TRC20: "TXxxxxxxxxxxxxxxxx",
-  BTC: "1Bxxxxxxxxxxxxxxxx",
-  BEP20: "0xBEP20xxxxxxxxxxx",
-  ERC20: "0xERC20xxxxxxxxxxx"
-};
+  <!-- LOGIN -->
+  <div id="loginPage">
+    <h2>Macave Mining</h2>
+    <input type="text" id="usernameInput" placeholder="Digite seu nome">
+    <button onclick="login()">Entrar</button>
+  </div>
 
-// Variáveis globais
-let userId = null;
-let balance = 0;
-let activePlans = [];
+  <!-- DASHBOARD -->
+  <div id="dashboardPage" style="display:none">
+    <h2>Bem-vindo, <span id="usernameDisplay"></span>!</h2>
+    <p>Saldo: <span id="balance">0</span> 💎</p>
 
-// LOGIN
-function login() {
-  const input = document.getElementById("usernameInput");
-  const username = input.value.trim();
-  if (!username) return alert("Digite seu nome");
+    <!-- MENU EM ABAS -->
+    <nav class="main-menu">
+      <button onclick="showTab('mining')">⛏️ Mineração</button>
+      <button onclick="showTab('deposit')">💰 Depósito</button>
+      <button onclick="showTab('contact')">📞 Contacto</button>
+      <button onclick="logout()">Logout</button>
+    </nav>
 
-  userId = username.toLowerCase().replace(/\s+/g, "_");
+    <!-- CONTEÚDO DAS ABAS -->
+    <!-- MINERAÇÃO -->
+    <section id="mining" class="tab">
+      <h3>Planos Disponíveis</h3>
+      <div id="plans"></div>
 
-  document.getElementById("loginPage").style.display = "none";
-  document.getElementById("dashboardPage").style.display = "block";
-  document.getElementById("usernameDisplay").textContent = username;
-
-  loadPlans();
-  updateBalanceDisplay();
-  loadActivePlans();
-}
-
-// LOGOUT
-function logout() {
-  location.reload();
-}
-
-// ATUALIZA SALDO
-function updateBalanceDisplay() {
-  document.getElementById("balance").textContent = balance.toFixed(2);
-}
-
-// CARREGA PLANOS
-async function loadPlans() {
-  try {
-    const res = await fetch("/api/plans");
-    const plans = await res.json();
-    const div = document.getElementById("plans");
-    div.innerHTML = "";
-
-    plans.forEach(p => {
-      const el = document.createElement("div");
-      el.className = "plan-card";
-      el.innerHTML = `
-        <h4>${p.name}</h4>
-        <p>Preço: ${p.price} USD</p>
-        <p>Lucro: ${p.daily}% / dia</p>
-        <button onclick="buyPlan(${p.id}, ${p.price})">Comprar</button>
-      `;
-      div.appendChild(el);
-    });
-  } catch (e) {
-    console.error(e);
-    alert("Erro ao carregar planos");
-  }
-}
-
-// COMPRAR PLANO – COM ESCOLHA DE CARTEIRA
-async function buyPlan(planId, price) {
-  if (!userId) return alert("Faça login primeiro");
-
-  const method = prompt(
-    "Escolha o método de depósito:\nTRC20\nBTC\nBEP20\nERC20"
-  );
-
-  if (!DEPOSIT_WALLETS[method]) return alert("Método inválido");
-
-  alert(
-    `Envie ${price}$ para:\n\n` +
-    `${method}\n${DEPOSIT_WALLETS[method]}\n\n` +
-    "Depois aguarde confirmação."
-  );
-
-  try {
-    const res = await fetch("/api/plans/buy", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        userId,
-        planId,
-        method,
-        status: "pending"
-      })
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) return alert(data.error || "Erro ao comprar plano");
-
-    // Adiciona ao frontend
-    activePlans.push({
-      ...data.plan,
-      method,
-      status: "pending",
-      startDate: Date.now(),
-      earned: 0
-    });
-
-    balance += data.plan.price;
-    updateBalanceDisplay();
-    loadActivePlans();
-
-  } catch (err) {
-    console.error(err);
-    alert("Erro de conexão com o servidor");
-  }
-}
-
-// CARREGA PLANOS ATIVOS
-function loadActivePlans() {
-  const el = document.getElementById("activePlans");
-  el.innerHTML = "";
-
-  if (activePlans.length === 0) {
-    el.innerHTML = "<p>Nenhum plano comprado ainda.</p>";
-    return;
-  }
-
-  activePlans.forEach(p => {
-    el.innerHTML += `
-      <div class="plan">
-        <strong>${p.name}</strong><br>
-        Lucro diário: ${p.daily}%<br>
-        Total ganho: ${p.earned.toFixed(2)} $<br>
-        Método: ${p.method}<br>
-        Status: ${p.status}
+      <h3>Planos Ativos</h3>
+      <div id="activePlans">
+        <p>Nenhum plano comprado ainda.</p>
       </div>
-    `;
-  });
-}
 
-// CALCULO AUTOMÁTICO DE LUCRO DIÁRIO
-function calculateDailyEarnings() {
-  const now = Date.now();
-  let total = 0;
+      <h3>Saque</h3>
+      <div>
+        <button>USDT (TRC20)</button>
+        <button>USDT (BEP20)</button>
+        <button>Bitcoin (BTC)</button>
+        <button>Ethereum (ERC20)</button>
+        <button>Solicitar Saque</button>
+      </div>
 
-  activePlans.forEach(plan => {
-    const daysPassed = Math.floor(
-      (now - plan.startDate) / (1000 * 60 * 60 * 24)
-    );
+      <h3>Histórico de Saques</h3>
+      <p>Nenhum saque ainda.</p>
+    </section>
 
-    if (daysPassed <= plan.days) {
-      const dailyProfit = (plan.price * plan.daily) / 100;
-      plan.earned = dailyProfit * daysPassed;
-      total += plan.earned;
+    <!-- DEPÓSITO -->
+    <section id="deposit" class="tab" style="display:none">
+      <h3>Depósito</h3>
+      <p>Escolha sua carteira e envie fundos para começar a minerar:</p>
+      <ul>
+        <li>USDT (TRC20): TXxxxxxxxxxxxxxxxx</li>
+        <li>USDT (BEP20): 0xBEP20xxxxxxxxxxx</li>
+        <li>Bitcoin (BTC): 1Bxxxxxxxxxxxxxxxx</li>
+        <li>Ethereum (ERC20): 0xERC20xxxxxxxxxxx</li>
+      </ul>
+      <p>Depois de enviar, aguarde confirmação do admin.</p>
+    </section>
+
+    <!-- CONTACTO -->
+    <section id="contact" class="tab" style="display:none">
+      <h3>Contacto</h3>
+      <p>Email: suporte@macavemining.com</p>
+      <p>WhatsApp: +258 xxx xxx xxx</p>
+    </section>
+
+  </div>
+
+  <script src="js/dashboard.js"></script>
+
+  <script>
+    // FUNÇÃO PARA NAVEGAR ENTRE ABAS
+    function showTab(tabId) {
+      document.querySelectorAll(".tab").forEach(tab => {
+        tab.style.display = "none";
+      });
+      document.getElementById(tabId).style.display = "block";
     }
-  });
+  </script>
 
-  balance = total;
-  updateBalanceDisplay();
-  loadActivePlans();
-}
-
-// ATUALIZA AUTOMATICAMENTE A CADA MINUTO
-setInterval(calculateDailyEarnings, 60000);
-calculateDailyEarnings();
+</body>
+</html>
