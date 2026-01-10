@@ -5,4 +5,3 @@ module.exports = [
   { id: 3, name: "Plano Pro", price: 100, daily: 2.5, days: 40 },
   { id: 4, name: "Plano Premium", price: 200, daily: 3, days: 45 }
 ];
-{ id: 5, name: "plano macave", price: 300, daily: 6, days: 60}
