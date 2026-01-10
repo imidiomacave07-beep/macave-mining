@@ -2,8 +2,9 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 
-// IMPORTA AS ROTAS CORRETAMENTE
-const authRoutes = require("./backend/auth.routes"); // Caminho relativo correto
+// IMPORTAÇÃO CORRETA DAS ROTAS
+// Caminho relativo seguro assumindo que backend está em /src/backend
+const authRoutes = require("./backend/auth.routes");
 
 const app = express();
 
