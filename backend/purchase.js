@@ -1,13 +1,14 @@
+// backend/purchase.js
 const plans = require("./plans");
 
 module.exports = (req, res) => {
-  const { userId, planId } = req.body;
+  const { userId, planId, method, status } = req.body;
 
   if (!userId || !planId) {
     return res.status(400).json({ error: "Dados inválidos" });
   }
 
-  const plan = plans.find(p => p.id === planId);
+  const plan = plans.find(p => p.id === planId || p.id == planId);
   if (!plan) {
     return res.status(400).json({ error: "Plano não encontrado" });
   }
@@ -21,7 +22,14 @@ module.exports = (req, res) => {
     };
   }
 
-  global.users[userId].activePlans.push(plan);
+  global.users[userId].activePlans.push({
+    ...plan,
+    method: method || "TRC20",
+    status: status || "pending",
+    startDate: Date.now(),
+    earned: 0
+  });
+
   global.users[userId].balance += plan.price;
 
   res.json({
