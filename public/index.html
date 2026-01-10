@@ -7,105 +7,78 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<div id="landingPage">
+  <h1># Macave Mining</h1>
+  <p>Escolha uma opção:</p>
 
-  <!-- HEADER / LANDING -->
-  <header style="text-align:center; margin-bottom:20px;">
-    <h1>Macave Mining</h1>
-    <nav class="main-menu">
-      <button onclick="showTab('mining')">⛏️ Mineração</button>
-      <button onclick="showTab('deposit')">💰 Depósito</button>
-      <button onclick="showTab('contact')">📞 Contato</button>
-      <button onclick="showTab('login')">🔑 Login</button>
-    </nav>
-  </header>
+  <div class="landing-buttons">
+    <button onclick="showLandingTab('mining')">⛏️ Mineração</button>
+    <button onclick="showLandingTab('deposit')">💰 Depósito</button>
+    <button onclick="showLandingTab('contact')">📞 Contato</button>
+    <button onclick="showLogin()">🔑 Login / Registrar</button>
+  </div>
 
-  <!-- PUBLIC TABS -->
-  <main>
+  <div id="mining" class="landing-tab">
+    <h2>Planos de Mineração</h2>
+    <div id="plans"></div>
+  </div>
 
-    <!-- LOGIN / REGISTRO -->
-    <section id="login" class="tab" style="display:none; text-align:center;">
-      <h2>Login</h2>
-      <input type="text" id="usernameInput" placeholder="Digite seu nome">
-      <button onclick="login()">Entrar</button>
-    </section>
+  <div id="deposit" class="landing-tab">
+    <h2>Depósitos</h2>
+    <ul>
+      <li>USDT (TRC20): <span data-wallet="TX123" class="wallet">TX123</span> <button onclick="copyWallet(this.previousElementSibling)">Copiar</button></li>
+      <li>USDT (BEP20): <span data-wallet="0xBEP123" class="wallet">0xBEP123</span> <button onclick="copyWallet(this.previousElementSibling)">Copiar</button></li>
+      <li>Bitcoin (BTC): <span data-wallet="1BTC123" class="wallet">1BTC123</span> <button onclick="copyWallet(this.previousElementSibling)">Copiar</button></li>
+      <li>Ethereum (ERC20): <span data-wallet="0xERC123" class="wallet">0xERC123</span> <button onclick="copyWallet(this.previousElementSibling)">Copiar</button></li>
+    </ul>
+  </div>
 
-    <!-- MINERAÇÃO -->
-    <section id="mining" class="tab">
-      <h2>Planos de Mineração</h2>
-      <div id="plans"></div>
-    </section>
+  <div id="contact" class="landing-tab">
+    <h2>Contato</h2>
+    <p>Email: suporte@macavemining.com</p>
+  </div>
 
-    <!-- DEPÓSITO -->
-    <section id="deposit" class="tab" style="display:none">
-      <h2>Depósito</h2>
-      <p>Escolha a carteira para enviar fundos e começar a minerar:</p>
-      <ul>
-        <li>USDT (TRC20): TXxxxxxxxxxxxxxxxx</li>
-        <li>USDT (BEP20): 0xBEP20xxxxxxxxxxx</li>
-        <li>Bitcoin (BTC): 1Bxxxxxxxxxxxxxxxx</li>
-        <li>Ethereum (ERC20): 0xERC20xxxxxxxxxxx</li>
-      </ul>
-      <p>Após enviar, faça login para comprar planos e aguarde aprovação do admin.</p>
-    </section>
+  <div id="loginPage" class="landing-tab">
+    <h2>Login / Registrar</h2>
+    <input type="text" id="username" placeholder="Usuário">
+    <input type="password" id="password" placeholder="Senha">
+    <button onclick="register()">Registrar</button>
+    <button onclick="login()">Login</button>
+  </div>
+</div>
 
-    <!-- CONTATO / PUBLICIDADE -->
-    <section id="contact" class="tab" style="display:none">
-      <h2>Contato & Novidades</h2>
-      <p>Email: suporte@macavemining.com</p>
-      <p>WhatsApp: +258 xxx xxx xxx</p>
-      <div style="margin-top:15px; background:#e6f0ff; padding:10px; border-radius:8px;">
-        <h4>📢 Promoções e Publicidade</h4>
-        <p>Aqui você pode colocar banners, anúncios e novidades da plataforma.</p>
-      </div>
-    </section>
+<div id="dashboardPage" style="display:none;">
+  <h2>Bem-vindo, <span id="usernameDisplay"></span>!</h2>
+  <p>Saldo: <span id="balance">0</span> 💎</p>
 
-  </main>
+  <h3>Planos Ativos</h3>
+  <div id="activePlans"></div>
 
-  <!-- SCRIPTS -->
-  <script src="js/dashboard.js"></script>
+  <h3>Solicitar Saque</h3>
+  <input type="number" id="withdrawAmount" placeholder="Valor">
+  <select id="walletType">
+    <option value="TRC20">USDT (TRC20)</option>
+    <option value="BEP20">USDT (BEP20)</option>
+    <option value="BTC">Bitcoin (BTC)</option>
+    <option value="ERC20">Ethereum (ERC20)</option>
+  </select>
+  <input type="text" id="walletAddress" placeholder="Endereço da carteira">
+  <button onclick="requestWithdraw()">Solicitar Saque</button>
 
-  <script>
-    function showTab(tabId) {
-      document.querySelectorAll(".tab").forEach(tab => {
-        tab.style.display = "none";
-      });
-      document.getElementById(tabId).style.display = "block";
-    }
+  <h3>Histórico de Saques</h3>
+  <div id="withdrawHistory"></div>
+</div>
 
-    // CARREGAR PLANOS (EXEMPLO)
-    const plansData = [
-      { id: 1, name: "Plano Básico", price: 20, daily: 1.5, days: 30 },
-      { id: 2, name: "Plano Standard", price: 50, daily: 2, days: 30 },
-      { id: 3, name: "Plano Pro", price: 100, daily: 2.5, days: 40 },
-      { id: 4, name: "Plano Premium", price: 200, daily: 3, days: 45 }
-    ];
-
-    function loadPlans(plans) {
-      const container = document.getElementById("plans");
-      container.innerHTML = "";
-
-      plans.forEach(plan => {
-        const planDiv = document.createElement("div");
-        planDiv.className = "plan-card";
-
-        planDiv.innerHTML = `
-          <h4>${plan.name}</h4>
-          <p>Preço: ${plan.price} USD</p>
-          <p>Lucro diário: ${plan.daily}% por ${plan.days} dias</p>
-          <button onclick="buyPlan(${plan.id})">Comprar</button>
-        `;
-
-        container.appendChild(planDiv);
-      });
-    }
-
-    function buyPlan(planId) {
-      alert("Simulação de compra: Plano " + planId + " selecionado!");
-      // Aqui você conecta com /api/plans/buy para comprar realmente
-    }
-
-    loadPlans(plansData);
-  </script>
-
+<script src="js/dashboard.js"></script>
+<script>
+function showLandingTab(tabId){
+  document.querySelectorAll(".landing-tab").forEach(t=>t.style.display="none");
+  document.getElementById(tabId).style.display="block";
+}
+function showLogin(){showLandingTab('loginPage');}
+function copyWallet(el){
+  navigator.clipboard.writeText(el.getAttribute("data-wallet")).then(()=>alert("Copiado: "+el.textContent));
+}
+</script>
 </body>
 </html>
