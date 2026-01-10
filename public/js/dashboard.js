@@ -1,72 +1,72 @@
-let user;
+console.log("✅ dashboard.js carregado");
 
-async function login(email, password) {
-  const res = await fetch("/api/auth/login", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ email, password })
-  });
+let userId = null;
+let balance = 0;
+let activePlans = [];
+let activeWithdraws = [];
 
-  user = await res.json();
-  render();
-}
+function login() {
+  console.log("🔐 login() clicado");
 
-async function requestWithdraw() {
-  const amount = Number(withdrawAmount.value);
-  const method = walletType.value;
-  const destination = walletAddress.value;
-
-  const res = await fetch("/api/withdraw/request", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      userId: user._id,
-      amount,
-      method,
-      destination
-    })
-  });
-
-  const data = await res.json();
-  alert(res.ok ? "Saque solicitado" : data.error);
-}
-
-async function loadAdminWithdraws() {
-  const res = await fetch("/api/admin/withdraws");
-  const list = await res.json();
-
-  adminWithdraws.innerHTML = list.map((w, i) => `
-    <div>
-      ${w.email} | ${w.amount} | ${w.method}
-      <button onclick="approve('${w.userId}',${w.index})">Aprovar</button>
-      <button onclick="reject('${w.userId}',${w.index})">Rejeitar</button>
-    </div>
-  `).join("");
-}
-
-async function approve(userId, index) {
-  await fetch("/api/admin/withdraw/action", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, index, action: "pago" })
-  });
-  loadAdminWithdraws();
-}
-
-async function reject(userId, index) {
-  await fetch("/api/admin/withdraw/action", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, index, action: "rejeitado" })
-  });
-  loadAdminWithdraws();
-}
-
-function render() {
-  if (user.isAdmin) {
-    adminPanel.style.display = "block";
-    loadAdminWithdraws();
-  } else {
-    dashboard.style.display = "block";
+  const input = document.getElementById("usernameInput");
+  if (!input) {
+    alert("Campo de login não encontrado");
+    return;
   }
+
+  const username = input.value.trim();
+  if (!username) {
+    alert("Digite seu nome");
+    return;
+  }
+
+  userId = username.toLowerCase().replace(/\s+/g, "_");
+
+  document.getElementById("loginPage").style.display = "none";
+  document.getElementById("dashboardPage").style.display = "block";
+  document.getElementById("usernameDisplay").textContent = username;
+
+  loadPlans();
+  updateBalance();
+}
+
+function logout() {
+  location.reload();
+}
+
+function updateBalance() {
+  document.getElementById("balance").textContent = balance.toFixed(2);
+}
+
+async function loadPlans() {
+  console.log("📦 carregando planos...");
+  try {
+    const res = await fetch("/api/plans");
+    const plans = await res.json();
+
+    const div = document.getElementById("plans");
+    div.innerHTML = "";
+
+    plans.forEach(p => {
+      const el = document.createElement("div");
+      el.className = "plan-card";
+      el.innerHTML = `
+        <h4>${p.name}</h4>
+        <p>Preço: ${p.price} USD</p>
+        <p>Lucro: ${p.dailyMin}% – ${p.dailyMax}% / dia</p>
+        <button onclick="buyPlan('${p.id}')">Comprar</button>
+      `;
+      div.appendChild(el);
+    });
+
+  } catch (e) {
+    console.error(e);
+    alert("Erro ao carregar planos");
+  }
+}
+
+function buyPlan(id) {
+  alert("Plano comprado (simulado): " + id);
+  balance += 10;
+  updateBalance();
 }
