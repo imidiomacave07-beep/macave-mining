@@ -1,54 +1,55 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Macave Mining</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <title>Macave Mining</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
+<!-- LOGIN -->
 <div id="loginPage">
   <h1>Macave Mining</h1>
   <input type="text" id="usernameInput" placeholder="Digite seu nome">
+  <br><br>
   <button onclick="login()">Entrar</button>
 </div>
 
+<!-- DASHBOARD -->
 <div id="dashboardPage" style="display:none;">
   <header>
-    <h1>Macave Mining</h1>
-    <p>Bem-vindo, <span id="usernameDisplay"></span> | Saldo: <span id="balance">0</span> 💎</p>
+    <h2>Macave Mining</h2>
+    <p>Bem-vindo, <span id="usernameDisplay"></span></p>
+    <p>Saldo: <strong><span id="balance">0</span> USD</strong></p>
     <button onclick="logout()">Logout</button>
   </header>
 
-  <main>
-    <h2>Planos Disponíveis</h2>
-    <div id="plans"></div>
+  <hr>
 
-    <h2>Planos Ativos</h2>
-    <div id="activePlans">Nenhum plano comprado ainda.</div>
+  <h3>Planos Disponíveis</h3>
+  <div id="plans"></div>
 
-    <h2>Saque</h2>
-    <div class="plan-card">
-      <label>Valor:</label>
-      <input type="number" id="withdrawAmount" placeholder="Ex: 10" min="1">
-      <label>Tipo de carteira:</label>
-      <select id="walletType">
-        <option value="TRC20">USDT (TRC20)</option>
-        <option value="BEP20">USDT (BEP20)</option>
-        <option value="BTC">Bitcoin (BTC)</option>
-        <option value="ERC20">Ethereum (ERC20)</option>
-      </select>
-      <label>Endereço da carteira:</label>
-      <input type="text" id="walletAddress" placeholder="Cole seu endereço">
-      <button onclick="requestWithdraw()">Solicitar Saque</button>
-    </div>
+  <h3>Planos Ativos</h3>
+  <div id="activePlans">Nenhum plano comprado ainda.</div>
 
-    <h2>Histórico de Saques</h2>
-    <div id="withdrawHistory" class="plan-card">Nenhum saque ainda.</div>
-  </main>
+  <h3>Saque</h3>
+  <input type="number" id="withdrawAmount" placeholder="Valor">
+  <select id="walletType">
+    <option value="TRC20">USDT (TRC20)</option>
+    <option value="BEP20">USDT (BEP20)</option>
+    <option value="BTC">Bitcoin (BTC)</option>
+    <option value="ERC20">Ethereum (ERC20)</option>
+  </select>
+  <input type="text" id="walletAddress" placeholder="Endereço da carteira">
+  <button onclick="requestWithdraw()">Solicitar Saque</button>
+
+  <h3>Histórico de Saques</h3>
+  <div id="withdrawHistory">Nenhum saque ainda.</div>
 </div>
 
+<!-- JS NO FINAL (MUITO IMPORTANTE) -->
 <script src="js/dashboard.js"></script>
+
 </body>
 </html>
