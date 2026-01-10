@@ -1,6 +1,7 @@
 {
   "name": "macave-mining",
   "version": "1.0.0",
+  "description": "Plataforma de mineração Macave Mining",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -11,6 +12,7 @@
     "mongoose": "^7.6.0",
     "dotenv": "^16.3.1",
     "bcrypt": "^5.1.1",
-    "body-parser": "^1.20.2"
+    "body-parser": "^1.20.2",
+    "jsonwebtoken": "^9.0.2"
   }
 }
