@@ -17,11 +17,17 @@
 
   <!-- DASHBOARD -->
   <div id="dashboardPage" style="display:none">
+
+    <!-- ESPAÇO PARA PUBLICIDADE / BANNERS -->
+    <div id="bannerArea" style="background:#dff0ff; padding:10px; margin-bottom:10px; text-align:center;">
+      <p>🔥 Promoção: Minere e ganhe até 3% ao dia! 🔥</p>
+    </div>
+
     <h2>Bem-vindo, <span id="usernameDisplay"></span>!</h2>
     <p>Saldo: <span id="balance">0</span> 💎</p>
 
-    <!-- MENU EM ABAS -->
-    <nav class="main-menu">
+    <!-- MENU EM ABAS FIXO -->
+    <nav class="main-menu" style="margin-bottom:15px;">
       <button onclick="showTab('mining')">⛏️ Mineração</button>
       <button onclick="showTab('deposit')">💰 Depósito</button>
       <button onclick="showTab('contact')">📞 Contacto</button>
@@ -55,21 +61,26 @@
     <!-- DEPÓSITO -->
     <section id="deposit" class="tab" style="display:none">
       <h3>Depósito</h3>
-      <p>Escolha sua carteira e envie fundos para começar a minerar:</p>
+      <p>Envie fundos para começar a minerar:</p>
       <ul>
         <li>USDT (TRC20): TXxxxxxxxxxxxxxxxx</li>
         <li>USDT (BEP20): 0xBEP20xxxxxxxxxxx</li>
         <li>Bitcoin (BTC): 1Bxxxxxxxxxxxxxxxx</li>
         <li>Ethereum (ERC20): 0xERC20xxxxxxxxxxx</li>
       </ul>
-      <p>Depois de enviar, aguarde confirmação do admin.</p>
+      <p>Após enviar, aguarde aprovação do admin para ativar o plano.</p>
     </section>
 
-    <!-- CONTACTO -->
+    <!-- CONTACTO / PUBLICIDADE -->
     <section id="contact" class="tab" style="display:none">
-      <h3>Contacto</h3>
+      <h3>Contacto / Anúncios</h3>
       <p>Email: suporte@macavemining.com</p>
       <p>WhatsApp: +258 xxx xxx xxx</p>
+
+      <div style="margin-top:15px; background:#f0f8ff; padding:10px;">
+        <h4>📢 Novidades & Publicidade</h4>
+        <p>Aqui você pode colocar banners, promoções ou anúncios da plataforma.</p>
+      </div>
     </section>
 
   </div>
