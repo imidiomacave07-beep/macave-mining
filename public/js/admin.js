@@ -1,39 +1,51 @@
-const adminUser = JSON.parse(localStorage.getItem("user"));
+console.log("✅ admin.js carregado");
 
-if (!adminUser || !adminUser.isAdmin) {
-  alert("Acesso negado");
-  location.href = "/";
+// Função para atualizar planos pendentes
+function loadPendingPlans() {
+  const div = document.getElementById("pendingPlans");
+  div.innerHTML = "<h3>Planos Pendentes</h3>";
+
+  if (!window.users) window.users = {};
+
+  let hasPending = false;
+
+  for (let userId in window.users) {
+    const user = window.users[userId];
+    user.activePlans.forEach((plan, index) => {
+      if (plan.status === "pending") {
+        hasPending = true;
+        const el = document.createElement("div");
+        el.innerHTML = `
+          <strong>${plan.name}</strong> - Usuário: ${userId}<br>
+          Método: ${plan.method}<br>
+          <button onclick="approvePlan('${userId}', ${index})">Aprovar</button>
+        `;
+        div.appendChild(el);
+      }
+    });
+  }
+
+  if (!hasPending) div.innerHTML += "<p>Nenhum plano pendente.</p>";
 }
 
-async function loadWithdraws() {
-  const res = await fetch("/api/admin/withdraws");
-  const withdraws = await res.json();
-
-  withdrawList.innerHTML = withdraws.map((w, i) => `
-    <div style="border:1px solid #ccc;padding:10px;margin:5px">
-      <b>${w.email}</b><br>
-      Valor: ${w.amount}<br>
-      Rede: ${w.method}<br>
-      Carteira: ${w.destination}<br>
-      Data: ${w.date}<br>
-      <button onclick="action('${w.userId}',${w.index},'pago')">Aprovar</button>
-      <button onclick="action('${w.userId}',${w.index},'rejeitado')">Rejeitar</button>
-    </div>
-  `).join("");
+// Aprovar plano específico
+function approvePlan(userId, index) {
+  window.users[userId].activePlans[index].status = "active";
+  alert("Plano aprovado!");
+  loadPendingPlans();
 }
 
-async function action(userId, index, action) {
-  await fetch("/api/admin/withdraw/action", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ userId, index, action })
-  });
-  loadWithdraws();
+// Aprovar todos de uma vez
+function approveAll() {
+  for (let userId in window.users) {
+    const user = window.users[userId];
+    user.activePlans.forEach(plan => {
+      if (plan.status === "pending") plan.status = "active";
+    });
+  }
+  alert("Todos os planos pendentes foram aprovados!");
+  loadPendingPlans();
 }
 
-function logout() {
-  localStorage.removeItem("user");
-  location.href = "/";
-}
-
-loadWithdraws();
+// Inicializa
+loadPendingPlans();
