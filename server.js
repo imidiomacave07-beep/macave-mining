@@ -1,14 +1,14 @@
 const plans = require("./backend/plans");
 
-// rota para listar planos
+let userPlans = {};
+let userBalance = {};
+
+// listar planos
 app.get("/api/plans", (req, res) => {
   res.json(plans);
 });
 
-// rota para comprar plano (simples – MVP)
-let userPlans = {};
-let userBalance = {};
-
+// comprar plano
 app.post("/api/plans/buy", (req, res) => {
   const { userId, planId } = req.body;
 
