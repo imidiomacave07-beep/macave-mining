@@ -2,8 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const path = require("path");
 
-const planRoutes = require("./backend/plan.routes");
-
+const plansRoutes = require("./backend/plans.routes");
+app.use("/api/plans", plansRoutes);
 const app = express();
 app.use(cors());
 app.use(express.json());
