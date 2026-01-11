@@ -1,40 +1,46 @@
 const express = require("express");
 const router = express.Router();
-const plans = require("./plans");
 
-// simulação simples de banco (MVP)
-let userPlans = {};
-let userBalance = {};
-
-router.post("/buy", (req, res) => {
-  const { userId, planId } = req.body;
-
-  const plan = plans.find(p => p.id === planId);
-  if (!plan) {
-    return res.status(400).json({ error: "Plano não encontrado" });
+/**
+ * PLANOS REAIS (FIXOS)
+ * Pode mudar valores depois, mas assim já funciona
+ */
+const plans = [
+  {
+    id: 1,
+    name: "Starter",
+    price: 20,
+    dailyMin: 1.2,
+    dailyMax: 1.8
+  },
+  {
+    id: 2,
+    name: "Basic",
+    price: 50,
+    dailyMin: 1.5,
+    dailyMax: 2.2
+  },
+  {
+    id: 3,
+    name: "Pro",
+    price: 100,
+    dailyMin: 2.0,
+    dailyMax: 2.8
+  },
+  {
+    id: 4,
+    name: "Advanced",
+    price: 200,
+    dailyMin: 2.5,
+    dailyMax: 3.5
   }
+];
 
-  // saldo inicial padrão
-  if (!userBalance[userId]) userBalance[userId] = 0;
-  if (!userPlans[userId]) userPlans[userId] = [];
-
-  if (userBalance[userId] < plan.price) {
-    return res.status(400).json({ error: "Saldo insuficiente" });
-  }
-
-  userBalance[userId] -= plan.price;
-
-  userPlans[userId].push({
-    ...plan,
-    startDate: new Date(),
-    active: true
-  });
-
-  res.json({
-    message: "Plano comprado com sucesso",
-    balance: userBalance[userId],
-    plans: userPlans[userId]
-  });
+/**
+ * GET /api/plans
+ */
+router.get("/", (req, res) => {
+  res.json(plans);
 });
 
 module.exports = router;
