@@ -1,19 +1,40 @@
-const express = require("express");
-const cors = require("cors");
-const path = require("path");
+const plans = require("./backend/plans");
 
-const plansRoutes = require("./backend/plans.routes");
-app.use("/api/plans", plansRoutes);
-const app = express();
-app.use(cors());
-app.use(express.json());
+// rota para listar planos
+app.get("/api/plans", (req, res) => {
+  res.json(plans);
+});
 
-app.use("/api/plans", planRoutes);
+// rota para comprar plano (simples – MVP)
+let userPlans = {};
+let userBalance = {};
 
-// arquivos públicos
-app.use(express.static(path.join(__dirname, "public")));
+app.post("/api/plans/buy", (req, res) => {
+  const { userId, planId } = req.body;
 
-const PORT = process.env.PORT || 10000;
-app.listen(PORT, () =>
-  console.log("🚀 Macave Mining API rodando na porta " + PORT)
-);
+  const plan = plans.find(p => p.id === planId);
+  if (!plan) {
+    return res.status(400).json({ error: "Plano não encontrado" });
+  }
+
+  if (!userBalance[userId]) userBalance[userId] = 0;
+  if (!userPlans[userId]) userPlans[userId] = [];
+
+  if (userBalance[userId] < plan.price) {
+    return res.status(400).json({ error: "Saldo insuficiente" });
+  }
+
+  userBalance[userId] -= plan.price;
+
+  userPlans[userId].push({
+    ...plan,
+    startDate: new Date(),
+    active: true
+  });
+
+  res.json({
+    message: "Plano comprado com sucesso",
+    balance: userBalance[userId],
+    plans: userPlans[userId]
+  });
+});
