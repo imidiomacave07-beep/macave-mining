@@ -2,81 +2,158 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Macave Mining – Dashboard</title>
+  <title>Macave Mining - Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
   <style>
-    body { font-family: Arial; background: #0f172a; color: #fff; }
-    .tabs button { margin: 5px; padding: 10px; cursor: pointer; }
-    .section { display: none; padding: 20px; }
-    .plan { background: #1e293b; margin: 10px 0; padding: 15px; border-radius: 6px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #0b0f1a;
+      color: #fff;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      background: #11162a;
+      padding: 15px;
+      text-align: center;
+    }
+
+    nav {
+      display: flex;
+      justify-content: space-around;
+      background: #161b33;
+      padding: 12px 0;
+    }
+
+    nav button {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    nav button:hover {
+      color: #00ffd5;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .plan {
+      background: #161b33;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+    }
+
+    .plan button {
+      background: #00ffd5;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      font-weight: bold;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    .plan button:hover {
+      background: #00c9aa;
+    }
   </style>
 </head>
-<body>
 
-<h2>🚀 Macave Mining</h2>
+<body onload="loadPlans()">
 
-<!-- ANÚNCIO (fica sempre em cima) -->
-<div style="background:#020617;padding:15px;margin-bottom:10px;">
-  💡 Invista em mineração real e receba lucros diários
-</div>
+<header>
+  <h2>⛏️ Macave Mining</h2>
+  <p>Bem-vindo ao seu painel</p>
+</header>
 
-<!-- ABAS -->
-<div class="tabs">
-  <button onclick="showTab('mining')">⛏️ Mineração</button>
-  <button onclick="showTab('deposit')">💰 Depósito</button>
-  <button onclick="showTab('withdraw')">💸 Saque</button>
-  <button onclick="showTab('contact')">📞 Contato</button>
-</div>
+<nav>
+  <button onclick="showSection('mining')">⛏️ Mineração</button>
+  <button onclick="showSection('deposit')">💰 Depósito</button>
+  <button onclick="showSection('withdraw')">💸 Saque</button>
+  <button onclick="showSection('contact')">📞 Contato</button>
+</nav>
 
-<!-- MINERAÇÃO -->
-<div id="mining" class="section">
-  <h3>⛏️ Planos de Mineração</h3>
-  <div id="plans"></div>
-</div>
+<div class="container">
 
-<!-- DEPÓSITO -->
-<div id="deposit" class="section">
-  <h3>💰 Depósito</h3>
-  <p>USDT (TRC20): <b>TX123</b></p>
-  <p>USDT (BEP20): <b>0xBEP123</b></p>
-</div>
+  <!-- MINERAÇÃO -->
+  <div id="mining">
+    <h3>⛏️ Planos de Mineração</h3>
+    <div id="plans"></div>
+  </div>
 
-<!-- SAQUE -->
-<div id="withdraw" class="section">
-  <h3>💸 Saque</h3>
-  <p>Solicite saques manualmente (fase de teste)</p>
-</div>
+  <!-- DEPÓSITO -->
+  <div id="deposit" class="hidden">
+    <h3>💰 Depósito</h3>
+    <p>Envie fundos para um dos endereços abaixo:</p>
+    <ul>
+      <li>USDT (TRC20): <b>TX123</b></li>
+      <li>USDT (BEP20): <b>0xBEP123</b></li>
+      <li>Bitcoin (BTC): <b>1BTC123</b></li>
+      <li>Ethereum (ERC20): <b>0xERC123</b></li>
+    </ul>
+  </div>
 
-<!-- CONTATO -->
-<div id="contact" class="section">
-  <h3>📞 Contato</h3>
-  <p>Email: suporte@macavemining.com</p>
+  <!-- SAQUE -->
+  <div id="withdraw" class="hidden">
+    <h3>💸 Saque</h3>
+    <p>Solicite o saque dos seus lucros no painel.</p>
+  </div>
+
+  <!-- CONTATO -->
+  <div id="contact" class="hidden">
+    <h3>📞 Contato</h3>
+    <p>Email: suporte@macavemining.com</p>
+  </div>
+
 </div>
 
 <script>
-function showTab(tab) {
-  document.querySelectorAll(".section").forEach(s => s.style.display = "none");
-  document.getElementById(tab).style.display = "block";
+function showSection(section) {
+  document.getElementById("mining").classList.add("hidden");
+  document.getElementById("deposit").classList.add("hidden");
+  document.getElementById("withdraw").classList.add("hidden");
+  document.getElementById("contact").classList.add("hidden");
 
-  if (tab === "mining") loadPlans();
+  document.getElementById(section).classList.remove("hidden");
 }
 
 async function loadPlans() {
-  const res = await fetch("/api/plans");
-  const plans = await res.json();
+  try {
+    const res = await fetch("/api/plans");
+    const plans = await res.json();
 
-  const div = document.getElementById("plans");
-  div.innerHTML = "";
+    const div = document.getElementById("plans");
+    div.innerHTML = "";
 
-  plans.forEach(p => {
-    div.innerHTML += `
-      <div class="plan">
-        <h4>${p.name}</h4>
-        <p>Preço: ${p.price} USD</p>
-        <p>Lucro: ${p.dailyMin}% – ${p.dailyMax}% / dia</p>
-        <button>Comprar</button>
-      </div>
-    `;
-  });
+    plans.forEach(p => {
+      div.innerHTML += `
+        <div class="plan">
+          <h4>${p.name}</h4>
+          <p>Preço: ${p.price} USD</p>
+          <p>Lucro: ${p.dailyMin}% – ${p.dailyMax}% / dia</p>
+          <button onclick="buyPlan(${p.id})">Comprar</button>
+        </div>
+      `;
+    });
+  } catch (e) {
+    document.getElementById("plans").innerHTML = "Erro ao carregar planos.";
+  }
+}
+
+function buyPlan(id) {
+  alert("Plano " + id + " selecionado (simulação)");
 }
 </script>
 
