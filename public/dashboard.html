@@ -2,31 +2,83 @@
 <html lang="pt">
 <head>
   <meta charset="UTF-8">
-  <title>Dashboard | Macave Mining</title>
-  <link rel="stylesheet" href="css/style.css">
+  <title>Macave Mining – Dashboard</title>
+  <style>
+    body { font-family: Arial; background: #0f172a; color: #fff; }
+    .tabs button { margin: 5px; padding: 10px; cursor: pointer; }
+    .section { display: none; padding: 20px; }
+    .plan { background: #1e293b; margin: 10px 0; padding: 15px; border-radius: 6px; }
+  </style>
 </head>
 <body>
 
-<!-- ANÚNCIO -->
-<div class="ad-box">
-  🚀 Macave Mining — Plataforma de mineração com lucros diários
+<h2>🚀 Macave Mining</h2>
+
+<!-- ANÚNCIO (fica sempre em cima) -->
+<div style="background:#020617;padding:15px;margin-bottom:10px;">
+  💡 Invista em mineração real e receba lucros diários
 </div>
 
-<!-- CONTEÚDO (OBRIGATÓRIO) -->
-<div id="content">
-  <h2>👋 Bem-vindo</h2>
-  <p>Clique numa aba abaixo para continuar.</p>
+<!-- ABAS -->
+<div class="tabs">
+  <button onclick="showTab('mining')">⛏️ Mineração</button>
+  <button onclick="showTab('deposit')">💰 Depósito</button>
+  <button onclick="showTab('withdraw')">💸 Saque</button>
+  <button onclick="showTab('contact')">📞 Contato</button>
 </div>
 
-<!-- MENU EM BAIXO -->
-<div class="bottom-nav">
-  <button id="btn-mining">⛏️ Mineração</button>
-  <button id="btn-deposit">💰 Depósito</button>
-  <button id="btn-withdraw">💸 Saque</button>
-  <button id="btn-contact">📞 Contato</button>
+<!-- MINERAÇÃO -->
+<div id="mining" class="section">
+  <h3>⛏️ Planos de Mineração</h3>
+  <div id="plans"></div>
 </div>
 
-<!-- JS NO FINAL (MUITO IMPORTANTE) -->
-<script src="js/dashboard.js"></script>
+<!-- DEPÓSITO -->
+<div id="deposit" class="section">
+  <h3>💰 Depósito</h3>
+  <p>USDT (TRC20): <b>TX123</b></p>
+  <p>USDT (BEP20): <b>0xBEP123</b></p>
+</div>
+
+<!-- SAQUE -->
+<div id="withdraw" class="section">
+  <h3>💸 Saque</h3>
+  <p>Solicite saques manualmente (fase de teste)</p>
+</div>
+
+<!-- CONTATO -->
+<div id="contact" class="section">
+  <h3>📞 Contato</h3>
+  <p>Email: suporte@macavemining.com</p>
+</div>
+
+<script>
+function showTab(tab) {
+  document.querySelectorAll(".section").forEach(s => s.style.display = "none");
+  document.getElementById(tab).style.display = "block";
+
+  if (tab === "mining") loadPlans();
+}
+
+async function loadPlans() {
+  const res = await fetch("/api/plans");
+  const plans = await res.json();
+
+  const div = document.getElementById("plans");
+  div.innerHTML = "";
+
+  plans.forEach(p => {
+    div.innerHTML += `
+      <div class="plan">
+        <h4>${p.name}</h4>
+        <p>Preço: ${p.price} USD</p>
+        <p>Lucro: ${p.dailyMin}% – ${p.dailyMax}% / dia</p>
+        <button>Comprar</button>
+      </div>
+    `;
+  });
+}
+</script>
+
 </body>
 </html>
