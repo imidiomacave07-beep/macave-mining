@@ -1,10 +1,13 @@
 const express = require("express");
 const router = express.Router();
-const plans = require("./plans");
 
-// listar planos
-router.get("/", (req, res) => {
-  res.json(plans);
+// Para teste inicial
+router.post("/register", (req, res) => {
+  res.json({ success: true, message: "Usuário registrado (simulação)" });
+});
+
+router.post("/login", (req, res) => {
+  res.json({ success: true, message: "Login realizado (simulação)" });
 });
 
 module.exports = router;
