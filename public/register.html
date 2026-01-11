@@ -1,41 +1,29 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <title>Registrar - Macave Mining</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
-<h2>Registrar</h2>
-
 <form id="registerForm">
-  <input type="email" placeholder="Email" required />
-  <input type="password" placeholder="Senha" required />
-  <button type="submit">Criar conta</button>
+  <input type="email" id="email" placeholder="Email" required />
+  <input type="password" id="password" placeholder="Senha" required />
+  <button type="submit">Registrar</button>
 </form>
 
 <script>
-document.getElementById("registerForm").addEventListener("submit", async (e) => {
+document.getElementById("registerForm").addEventListener("submit", async e => {
   e.preventDefault();
 
-  const email = e.target[0].value;
-  const password = e.target[1].value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  const res = await fetch("/api/auth/register", {
+  const res = await fetch("/api/register", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
   });
 
-  if (res.ok) {
-    alert("Registro feito com sucesso!");
-    window.location.href = "login.html";
+  const data = await res.json();
+
+  if (data.success) {
+    alert("Registro feito com sucesso");
+    window.location.href = "/login.html";
   } else {
-    alert("Erro no registro");
+    alert(data.error);
   }
 });
 </script>
-
-</body>
-</html>
