@@ -1,40 +1,28 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-  <meta charset="UTF-8">
-  <title>Login - Macave Mining</title>
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-
-<h2>Login</h2>
-
 <form id="loginForm">
-  <input type="email" placeholder="Email" required />
-  <input type="password" placeholder="Senha" required />
+  <input type="email" id="email" placeholder="Email" required />
+  <input type="password" id="password" placeholder="Senha" required />
   <button type="submit">Entrar</button>
 </form>
 
 <script>
-document.getElementById("loginForm").addEventListener("submit", async (e) => {
+document.getElementById("loginForm").addEventListener("submit", async e => {
   e.preventDefault();
 
-  const email = e.target[0].value;
-  const password = e.target[1].value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
-  const res = await fetch("/api/auth/login", {
+  const res = await fetch("/api/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
   });
 
-  if (res.ok) {
-    window.location.href = "dashboard.html";
+  const data = await res.json();
+
+  if (data.success) {
+    window.location.href = "/dashboard";
   } else {
-    alert("Erro no login");
+    alert(data.error);
   }
 });
 </script>
-
-</body>
-</html>
