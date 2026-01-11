@@ -1,13 +1,21 @@
 const express = require("express");
 const router = express.Router();
 
-// Para teste inicial
+let users = [];
+
 router.post("/register", (req, res) => {
-  res.json({ success: true, message: "Usuário registrado (simulação)" });
+  const { email, password } = req.body;
+  if(users.find(u => u.email === email)) return res.status(400).json({ error: "Email já registrado" });
+  const user = { id: users.length+1, email, password, balance: 0, plans: [] };
+  users.push(user);
+  res.json({ message: "Registrado com sucesso", user });
 });
 
 router.post("/login", (req, res) => {
-  res.json({ success: true, message: "Login realizado (simulação)" });
+  const { email, password } = req.body;
+  const user = users.find(u => u.email === email && u.password === password);
+  if(!user) return res.status(400).json({ error: "Email ou senha inválidos" });
+  res.json({ message: "Login bem-sucedido", user });
 });
 
 module.exports = router;
