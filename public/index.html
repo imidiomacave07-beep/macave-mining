@@ -1,20 +1,69 @@
 <!DOCTYPE html>
 <html lang="pt">
 <head>
-<meta charset="UTF-8">
-<title>Macave Mining</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <title>Macave Mining</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<h1>Macave Mining</h1>
-<nav>
-  <a href="dashboard.html">Dashboard</a>
-  <a href="#login">Login</a>
-  <a href="#register">Registrar</a>
-</nav>
-<section>
-  <h2>Mineração de Criptomoedas</h2>
-  <p>Invista com segurança e acompanhe seus lucros diariamente.</p>
-</section>
+  <header>
+    <h1>Macave Mining</h1>
+    <nav>
+      <button onclick="showTab('mining')">⛏️ Mineração</button>
+      <button onclick="showTab('deposit')">💰 Depósito</button>
+      <button onclick="showTab('withdraw')">💸 Saque</button>
+      <button onclick="showTab('contact')">📞 Contato</button>
+      <button onclick="showTab('login')">🔑 Login / Registrar</button>
+    </nav>
+  </header>
+
+  <div id="ads">🚀 Invista em mineração segura e acompanhe seus lucros!</div>
+
+  <main>
+    <div id="login" class="tab">
+      <h2>Login</h2>
+      <input id="email" placeholder="Email">
+      <input id="password" placeholder="Senha" type="password">
+      <button onclick="login()">Entrar</button>
+
+      <h2>Registrar</h2>
+      <input id="regEmail" placeholder="Email">
+      <input id="regPassword" placeholder="Senha" type="password">
+      <button onclick="register()">Registrar</button>
+    </div>
+
+    <div id="mining" class="tab" style="display:none;">
+      <h2>⛏️ Planos de Mineração</h2>
+      <div id="plans"></div>
+    </div>
+
+    <div id="deposit" class="tab" style="display:none;">
+      <h2>💰 Depósitos</h2>
+      <p>USDT (TRC20): TX123 <button onclick="copy('TX123')">Copiar</button></p>
+      <p>USDT (BEP20): 0xBEP123 <button onclick="copy('0xBEP123')">Copiar</button></p>
+      <p>Bitcoin (BTC): 1BTC123 <button onclick="copy('1BTC123')">Copiar</button></p>
+      <p>Ethereum (ERC20): 0xERC123 <button onclick="copy('0xERC123')">Copiar</button></p>
+    </div>
+
+    <div id="withdraw" class="tab" style="display:none;">
+      <h2>💸 Saque</h2>
+      <input id="withdrawAmount" placeholder="Valor">
+      <input id="walletAddress" placeholder="Endereço da carteira">
+      <select id="walletType">
+        <option value="TRC20">USDT (TRC20)</option>
+        <option value="BEP20">USDT (BEP20)</option>
+        <option value="BTC">Bitcoin (BTC)</option>
+        <option value="ETH">Ethereum (ERC20)</option>
+      </select>
+      <button onclick="requestWithdraw()">Solicitar Saque</button>
+    </div>
+
+    <div id="contact" class="tab" style="display:none;">
+      <h2>📞 Contato</h2>
+      <p>Email: suporte@macavemining.com</p>
+    </div>
+  </main>
+
+  <script src="js/dashboard.js"></script>
 </body>
 </html>
