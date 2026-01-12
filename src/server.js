@@ -1,21 +1,22 @@
 const express = require("express");
-const mongoose = require("mongoose");
-require("dotenv").config();
-
+const cors = require("cors");
 const app = express();
+
+app.use(cors());
 app.use(express.json());
 
-// rotas
-app.use("/api/auth", require("./routes/authRoutes"));
-app.use("/api/payment", require("./routes/paymentRoutes"));
+// Rotas
+const authRoutes = require("./backend/auth.routes");
+const plansRoutes = require("./backend/plans.routes");
+const withdrawRoutes = require("./backend/withdraw.routes");
 
-// MongoDB connection
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log("MongoDB conectado!"))
-.catch(err => console.error("Erro ao conectar MongoDB:", err));
+app.use("/api/auth", authRoutes);
+app.use("/api/plans", plansRoutes);
+app.use("/api/withdraw", withdrawRoutes);
 
+// Test route
+app.get("/", (req, res) => res.send("🚀 Macave Mining API rodando"));
+
+// Start server
 const PORT = process.env.PORT || 10000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+app.listen(PORT, () => console.log(`🚀 Macave Mining API rodando na porta ${PORT}`));
