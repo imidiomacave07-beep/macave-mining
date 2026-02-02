@@ -11,26 +11,18 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-const PORT = process.env.PORT || 10000;
+const PORT = process.env.PORT || 3000;
 const dbPath = path.resolve("./database/db.json");
 
 app.get("/healthz", (req, res) => res.send("OK"));
 
 app.get("/data", (req, res) => {
-  try {
-    if (!fs.existsSync(dbPath)) {
-      fs.writeFileSync(
-        dbPath,
-        JSON.stringify({ usuarios: [], planos: [] }, null, 2)
-      );
-    }
-    const data = JSON.parse(fs.readFileSync(dbPath, "utf-8"));
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: "Erro ao ler db.json" });
+  if (!fs.existsSync(dbPath)) {
+    fs.writeFileSync(dbPath, JSON.stringify({ users: [] }, null, 2));
   }
+  res.json(JSON.parse(fs.readFileSync(dbPath)));
 });
 
 app.listen(PORT, () => {
-  console.log("Servidor rodando na porta " + PORT);
+  console.log("Servidor online na porta", PORT);
 });
