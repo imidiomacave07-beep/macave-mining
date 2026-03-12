@@ -3,12 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <title>Macave Mining</title>
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <header>
-    <h1>Macave Mining</h1>
-    <nav>
+    <div id="ads">🚀 Plataforma Segura e Retorno Diário!</div>
+    <nav id="menu">
       <button onclick="showTab('mining')">⛏️ Mineração</button>
       <button onclick="showTab('deposit')">💰 Depósito</button>
       <button onclick="showTab('withdraw')">💸 Saque</button>
@@ -17,19 +17,21 @@
     </nav>
   </header>
 
-  <div id="ads">🚀 Invista em mineração segura e acompanhe seus lucros!</div>
-
-  <main>
+  <main id="content">
     <div id="login" class="tab">
       <h2>Login</h2>
-      <input id="email" placeholder="Email">
-      <input id="password" placeholder="Senha" type="password">
+      <input type="email" id="email" placeholder="Email">
+      <input type="password" id="password" placeholder="Senha">
       <button onclick="login()">Entrar</button>
+      <button onclick="showTab('register')">Registrar</button>
+    </div>
 
+    <div id="register" class="tab" style="display:none;">
       <h2>Registrar</h2>
-      <input id="regEmail" placeholder="Email">
-      <input id="regPassword" placeholder="Senha" type="password">
+      <input type="email" id="reg-email" placeholder="Email">
+      <input type="password" id="reg-password" placeholder="Senha">
       <button onclick="register()">Registrar</button>
+      <button onclick="showTab('login')">Voltar</button>
     </div>
 
     <div id="mining" class="tab" style="display:none;">
@@ -39,23 +41,17 @@
 
     <div id="deposit" class="tab" style="display:none;">
       <h2>💰 Depósitos</h2>
-      <p>USDT (TRC20): TX123 <button onclick="copy('TX123')">Copiar</button></p>
-      <p>USDT (BEP20): 0xBEP123 <button onclick="copy('0xBEP123')">Copiar</button></p>
-      <p>Bitcoin (BTC): 1BTC123 <button onclick="copy('1BTC123')">Copiar</button></p>
-      <p>Ethereum (ERC20): 0xERC123 <button onclick="copy('0xERC123')">Copiar</button></p>
+      <ul>
+        <li>USDT (TRC20): TX123 <button>Copiar</button></li>
+        <li>USDT (BEP20): 0xBEP123 <button>Copiar</button></li>
+        <li>Bitcoin (BTC): 1BTC123 <button>Copiar</button></li>
+        <li>Ethereum (ERC20): 0xERC123 <button>Copiar</button></li>
+      </ul>
     </div>
 
     <div id="withdraw" class="tab" style="display:none;">
-      <h2>💸 Saque</h2>
-      <input id="withdrawAmount" placeholder="Valor">
-      <input id="walletAddress" placeholder="Endereço da carteira">
-      <select id="walletType">
-        <option value="TRC20">USDT (TRC20)</option>
-        <option value="BEP20">USDT (BEP20)</option>
-        <option value="BTC">Bitcoin (BTC)</option>
-        <option value="ETH">Ethereum (ERC20)</option>
-      </select>
-      <button onclick="requestWithdraw()">Solicitar Saque</button>
+      <h2>💸 Saques</h2>
+      <p>Formulário de saque aqui</p>
     </div>
 
     <div id="contact" class="tab" style="display:none;">
@@ -64,6 +60,6 @@
     </div>
   </main>
 
-  <script src="js/dashboard.js"></script>
+  <script src="dashboard.js"></script>
 </body>
 </html>
