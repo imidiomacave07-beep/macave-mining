@@ -1,28 +1,24 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
-import fs from "fs";
-import path from "path";
-
-dotenv.config();
-
+const express = require("express");
+const cors = require("cors");
 const app = express();
+const port = process.env.PORT || 10000;
+
+// Middlewares
 app.use(cors());
 app.use(express.json());
 app.use(express.static("public"));
 
-const PORT = process.env.PORT || 3000;
-const dbPath = path.resolve("./database/db.json");
+// Rotas
+const authRoutes = require("./backend/auth.routes");
+const plansRoutes = require("./backend/plans.routes");
+app.use("/api/auth", authRoutes);
+app.use("/api/plans", plansRoutes);
 
-app.get("/healthz", (req, res) => res.send("OK"));
-
-app.get("/data", (req, res) => {
-  if (!fs.existsSync(dbPath)) {
-    fs.writeFileSync(dbPath, JSON.stringify({ users: [] }, null, 2));
-  }
-  res.json(JSON.parse(fs.readFileSync(dbPath)));
+// Rota teste
+app.get("/", (req, res) => {
+  res.sendFile(__dirname + "/public/index.html");
 });
 
-app.listen(PORT, () => {
-  console.log("Servidor online na porta", PORT);
+app.listen(port, () => {
+  console.log(`🚀 Macave Mining API rodando na porta ${port}`);
 });
