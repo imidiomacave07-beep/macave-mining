@@ -1,77 +1,60 @@
-const API_URL = "http://localhost:10000/api";
+let currentTab = 'login';
 
 function showTab(tab) {
-  document.querySelectorAll(".tab").forEach(t => t.style.display = "none");
-  document.getElementById(tab).style.display = "block";
+  document.querySelectorAll('.tab').forEach(div => div.style.display = 'none');
+  document.getElementById(tab).style.display = 'block';
+  currentTab = tab;
+
+  if(tab === 'mining') loadPlans();
 }
 
-// Register
-function register() {
-  const email = document.getElementById("regEmail").value;
-  const password = document.getElementById("regPassword").value;
-  fetch(`${API_URL}/auth/register`, {
-    method: "POST",
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ email, password })
-  })
-  .then(res => res.json())
-  .then(data => alert(data.message || data.error));
+async function loadPlans() {
+  const res = await fetch("/api/plans");
+  const plans = await res.json();
+
+  const container = document.getElementById("plans");
+  container.innerHTML = '';
+  plans.forEach(plan => {
+    const daily = (plan.price * plan.dailyPercent / 100).toFixed(2);
+    const total = (daily * plan.days).toFixed(2);
+    container.innerHTML += `
+      <div class="plan">
+        <h4>${plan.name}</h4>
+        <p>Preço: ${plan.price} USD</p>
+        <p>Lucro diário: ${daily} USD</p>
+        <p>Duração: ${plan.days} dias</p>
+        <p>Retorno total: ${total} USD</p>
+        <button onclick="buyPlan('${plan.name}')">Comprar</button>
+      </div>
+    `;
+  });
 }
 
-// Login
-function login() {
+function buyPlan(planName) {
+  alert(`Plano ${planName} comprado!`);
+  // Aqui você chamaria API para registrar compra real
+}
+
+async function login() {
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
-  fetch(`${API_URL}/auth/login`, {
+  const res = await fetch("/api/auth/login", {
     method: "POST",
-    headers: {"Content-Type": "application/json"},
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ email, password })
-  })
-  .then(res => res.json())
-  .then(data => alert(data.message || data.error));
+  });
+  const data = await res.json();
+  alert(data.message || data.error);
 }
 
-// Load mining plans
-function loadPlans() {
-  fetch(`${API_URL}/plans`)
-    .then(res => res.json())
-    .then(plans => {
-      const container = document.getElementById("plans");
-      container.innerHTML = "";
-      plans.forEach(p => {
-        container.innerHTML += `
-          <div>
-            <h3>${p.name}</h3>
-            <p>Preço: ${p.price} USD</p>
-            <p>Lucro: ${p.dailyMin}% - ${p.dailyMax}% / dia</p>
-            <button>Comprar</button>
-          </div>
-        `;
-      });
-    });
-}
-
-// Request withdraw
-async function requestWithdraw() {
-  const amount = parseFloat(document.getElementById("withdrawAmount").value);
-  const walletType = document.getElementById("walletType").value;
-  const walletAddress = document.getElementById("walletAddress").value;
-
-  if(!walletAddress || walletAddress.length < 10) return alert("Endereço inválido");
-  if(!amount || amount <= 0) return alert("Valor inválido");
-
-  try {
-    const res = await fetch(`${API_URL}/withdraw/request`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ userId: 1, amount, method: walletType, destination: walletAddress })
-    });
-    const data = await res.json();
-    alert(data.message || data.error);
-  } catch {
-    alert("Erro de conexão");
-  }
-}
-
-// Initialize
-loadPlans();
+async function register() {
+  const email = document.getElementById("reg-email").value;
+  const password = document.getElementById("reg-password").value;
+  const res = await fetch("/api/auth/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password })
+  });
+  const data = await res.json();
+  alert(data.message || data.error);
+    }
