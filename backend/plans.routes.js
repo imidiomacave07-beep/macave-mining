@@ -1,14 +1,15 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
 
+// Planos de mineração
 const plans = [
-  { name: "Starter", price: 5, profit: "0.5% – 1% / dia" },
-  { name: "Basic", price: 20, profit: "1% – 2% / dia" },
-  { name: "Pro", price: 50, profit: "2% – 3% / dia" },
-  { name: "Advanced", price: 100, profit: "3% – 5% / dia" }
+  { name: 'Starter', price: 5, minProfit: 0.5, maxProfit: 1 },
+  { name: 'Basic', price: 20, minProfit: 1, maxProfit: 2 },
+  { name: 'Pro', price: 50, minProfit: 2, maxProfit: 3 },
+  { name: 'Advanced', price: 100, minProfit: 3, maxProfit: 5 }
 ];
 
-router.get("/", (req, res) => {
+router.get('/', (req, res) => {
   res.json(plans);
 });
 
