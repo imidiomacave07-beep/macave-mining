@@ -1,18 +1,16 @@
 const express = require("express");
 const router = express.Router();
 
-let withdraws = [];
+let withdrawals = [];
 
-router.post("/request", (req, res) => {
-  const { userId, amount, method, destination } = req.body;
-  if(!amount || !destination) return res.status(400).json({ error: "Dados inválidos" });
-
-  withdraws.push({ userId, amount, method, destination, date: new Date().toLocaleString() });
-  res.json({ message: "Saque solicitado com sucesso", withdraws });
+router.post("/", (req, res) => {
+  const { username, amount } = req.body;
+  withdrawals.push({ username, amount, status: "pendente" });
+  res.json({ message: "Solicitação de saque enviada" });
 });
 
 router.get("/", (req, res) => {
-  res.json(withdraws);
+  res.json(withdrawals);
 });
 
 module.exports = router;
