@@ -1,28 +1,20 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
-<title>Dashboard Macave Mining</title>
-</head>
-<body>
-<h1>Dashboard</h1>
+<h2>⛏️ Planos de Mineração</h2>
+<div id="plans"></div>
 
-<div class="tabs">
-  <button id="mining-tab">⛏️ Mineração</button>
-  <button id="deposit-tab">💰 Depósito</button>
-  <button id="withdraw-tab">💸 Saque</button>
-  <button id="contact-tab">📞 Contato</button>
-</div>
-
-<div id="tab-content">
-  <div id="plans"></div>
-  <div id="deposit"></div>
-  <div id="withdraw"></div>
-  <div id="contact"></div>
-</div>
-
-<script src="dashboard.js"></script>
-</body>
-</html>
+<script>
+  fetch('/api/plans')
+    .then(res => res.json())
+    .then(plans => {
+      const container = document.getElementById('plans');
+      plans.forEach(plan => {
+        container.innerHTML += `
+          <div class="plan">
+            <h3>${plan.name}</h3>
+            <p>Preço: $${plan.price}</p>
+            <p>Lucro: ${plan.minProfit}% – ${plan.maxProfit}% / dia</p>
+            <button>Comprar</button>
+          </div>
+        `;
+      });
+    });
+                    </script>
