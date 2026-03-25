@@ -2,39 +2,27 @@
 <html lang="pt">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard - Macave Mining</title>
-<link rel="stylesheet" href="css/style.css">
-<script defer src="js/dashboard.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<title>Dashboard Macave Mining</title>
 </head>
 <body>
 <h1>Dashboard</h1>
-<nav>
-  <button onclick="showTab('mining')">⛏️ Mineração</button>
-  <button onclick="showTab('deposit')">💰 Depósito</button>
-  <button onclick="showTab('withdraw')">💸 Saque</button>
-  <button onclick="showTab('contact')">📞 Contato</button>
-</nav>
 
-<div id="mining" class="tab">
-  <h2>Planos de Mineração</h2>
+<div class="tabs">
+  <button id="mining-tab">⛏️ Mineração</button>
+  <button id="deposit-tab">💰 Depósito</button>
+  <button id="withdraw-tab">💸 Saque</button>
+  <button id="contact-tab">📞 Contato</button>
+</div>
+
+<div id="tab-content">
   <div id="plans"></div>
+  <div id="deposit"></div>
+  <div id="withdraw"></div>
+  <div id="contact"></div>
 </div>
 
-<div id="deposit" class="tab" style="display:none;">
-  <h2>Depósitos</h2>
-  <p>USDT (TRC20): TX123 Copiar</p>
-  <p>USDT (BEP20): 0xBEP123 Copiar</p>
-  <p>Bitcoin (BTC): 1BTC123 Copiar</p>
-  <p>Ethereum (ERC20): 0xERC123 Copiar</p>
-</div>
-
-<div id="withdraw" class="tab" style="display:none;">
-  <h2>Saque</h2>
-</div>
-
-<div id="contact" class="tab" style="display:none;">
-  <h2>Contato</h2>
-  <p>Email: suporte@macavemining.com</p>
-</div>
+<script src="dashboard.js"></script>
 </body>
 </html>
