@@ -1,12 +1,11 @@
 const express = require('express');
 const router = express.Router();
 
-// Planos de mineração
 const plans = [
-  { name: 'Starter', price: 5, minProfit: 0.5, maxProfit: 1 },
-  { name: 'Basic', price: 20, minProfit: 1, maxProfit: 2 },
-  { name: 'Pro', price: 50, minProfit: 2, maxProfit: 3 },
-  { name: 'Advanced', price: 100, minProfit: 3, maxProfit: 5 }
+  { name: 'Starter', price: 20, profit: '1-2%' },
+  { name: 'Basic', price: 50, profit: '3-4%' },
+  { name: 'Pro', price: 100, profit: '5-6%' },
+  { name: 'Advanced', price: 200, profit: '7-8%' }
 ];
 
 router.get('/', (req, res) => {
