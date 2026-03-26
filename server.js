@@ -1,24 +1,33 @@
 const express = require('express');
-const cors = require('cors');
 const bodyParser = require('body-parser');
+const cors = require('cors');
+const path = require('path');
 
 const app = express();
+const port = process.env.PORT || 5000;
+
+// Middlewares
 app.use(cors());
 app.use(bodyParser.json());
-
-// Importar rotas
-const plansRoutes = require('./backend/plans.routes');
-const authRoutes = require('./backend/auth.routes'); // se já existir
-const withdrawRoutes = require('./backend/withdraw.routes'); // se já existir
-
-app.use('/api/plans', plansRoutes);
-app.use('/api/auth', authRoutes);
-app.use('/api/withdraw', withdrawRoutes);
-
-// Servir frontend
 app.use(express.static('public'));
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+// Rotas
+const plansRoutes = require('./backend/plans.routes');
+app.use('/api/plans', plansRoutes);
+
+const authRoutes = require('./backend/auth.routes');
+app.use('/api/auth', authRoutes);
+
+// Página inicial
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Dashboard
+app.get('/dashboard', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server running on port ${port}`);
 });
