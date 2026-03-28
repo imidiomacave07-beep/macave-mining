@@ -1,3 +1,40 @@
-body { font-family: Arial, sans-serif; padding: 20px; }
-nav button { margin-right: 10px; }
-div { margin-bottom: 15px; padding: 10px; border: 1px solid #ccc; border-radius: 5px; }
+body {
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 350px;
+  margin-top: 30px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.card {
+  background: #1e293b;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 6px;
+  border: none;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: #22c55e;
+  border: none;
+  color: white;
+  border-radius: 6px;
+}
