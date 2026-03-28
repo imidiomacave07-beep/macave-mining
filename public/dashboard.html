@@ -1,36 +1,22 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-<meta charset="UTF-8">
-<title>Dashboard - Macave Mining</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<h1>Dashboard</h1>
-<nav>
-  <button onclick="showSection('mining')">⛏️ Mineração</button>
-  <button onclick="showSection('deposit')">💰 Depósito</button>
-  <button onclick="showSection('withdraw')">💸 Saque</button>
-  <button onclick="showSection('contact')">📞 Contato</button>
-</nav>
+<script>
+if(!localStorage.getItem('user')){
+location='/'
+}
+</script>
 
-<section id="mining">
-  <h2>Planos de Mineração</h2>
-  <div id="plans"></div>
-</section>
-<section id="deposit" style="display:none">
-  <h2>Depósito</h2>
-  <p>Aqui vai depositar</p>
-</section>
-<section id="withdraw" style="display:none">
-  <h2>Saque</h2>
-  <p>Aqui vai sacar</p>
-</section>
-<section id="contact" style="display:none">
-  <h2>Contato</h2>
-  <p>Informações de contato</p>
-</section>
+<h1>Dashboard</h1>
+
+<p>Saldo: $<span id="balance">0</span></p>
+
+<h2>Planos</h2>
+<div id="plans"></div>
+
+<h2>Depositar</h2>
+<input id="dep">
+<button onclick="deposit()">Depositar</button>
+
+<h2>Sacar</h2>
+<input id="wit">
+<button onclick="withdraw()">Sacar</button>
 
 <script src="dashboard.js"></script>
-</body>
-</html>
