@@ -2,10 +2,9 @@ const express = require('express');
 const router = express.Router();
 
 const plans = [
-  { name: 'Starter', price: 20, profit: '1-2%' },
-  { name: 'Basic', price: 50, profit: '3-4%' },
-  { name: 'Pro', price: 100, profit: '5-6%' },
-  { name: 'Advanced', price: 200, profit: '7-8%' }
+  { name: 'Starter', price: 5, min: 0.5, max: 1 },
+  { name: 'Basic', price: 20, min: 1, max: 2 },
+  { name: 'Pro', price: 50, min: 2, max: 3 }
 ];
 
 router.get('/', (req, res) => {
