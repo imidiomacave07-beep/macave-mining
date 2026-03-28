@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-let users = [];
+const { users } = require('./database');
 
 router.post('/deposit', (req, res) => {
   const { username, amount } = req.body;
