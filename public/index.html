@@ -1,14 +1,29 @@
-<h1>Macave Mining</h1>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Macave Mining</title>
+<link rel="stylesheet" href="style.css">
+</head>
 
-<h2>Login</h2>
-<input id="username">
-<input id="password" type="password">
-<button onclick="login()">Entrar</button>
+<body>
 
-<h2>Registrar</h2>
-<input id="newUser">
-<input id="newPass" type="password">
-<button onclick="register()">Criar</button>
+<div class="container">
+  <h1>Macave Mining</h1>
+
+  <div class="card">
+    <h2>Login</h2>
+    <input id="username" placeholder="Usuário">
+    <input id="password" type="password" placeholder="Senha">
+    <button onclick="login()">Entrar</button>
+  </div>
+
+  <div class="card">
+    <h2>Registrar</h2>
+    <input id="newUser" placeholder="Usuário">
+    <input id="newPass" type="password" placeholder="Senha">
+    <button onclick="register()">Criar Conta</button>
+  </div>
+</div>
 
 <script>
 function login(){
@@ -22,7 +37,7 @@ password:password.value
 })
 .then(r=>r.json())
 .then(d=>{
-if(d.message==='Login sucesso'){
+if(d.message.includes('sucesso')){
 localStorage.setItem('user',username.value)
 window.location='/dashboard'
 }else alert(d.message)
@@ -42,3 +57,6 @@ password:newPass.value
 .then(d=>alert(d.message))
 }
 </script>
+
+</body>
+  </html>
