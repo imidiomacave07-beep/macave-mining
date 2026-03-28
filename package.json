@@ -1,7 +1,6 @@
 {
   "name": "macave-mining",
   "version": "1.0.0",
-  "description": "Plataforma de mineração MVP",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
