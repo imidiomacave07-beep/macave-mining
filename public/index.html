@@ -1,12 +1,44 @@
-<!DOCTYPE html>
-<html lang="pt">
-<head>
-<meta charset="UTF-8">
-<title>Macave Mining</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<h1>Bem-vindo à Macave Mining</h1>
-<a href="/dashboard">Ir para Dashboard</a>
-</body>
-</html>
+<h1>Macave Mining</h1>
+
+<h2>Login</h2>
+<input id="username">
+<input id="password" type="password">
+<button onclick="login()">Entrar</button>
+
+<h2>Registrar</h2>
+<input id="newUser">
+<input id="newPass" type="password">
+<button onclick="register()">Criar</button>
+
+<script>
+function login(){
+fetch('/api/auth/login',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+username:username.value,
+password:password.value
+})
+})
+.then(r=>r.json())
+.then(d=>{
+if(d.message==='Login sucesso'){
+localStorage.setItem('user',username.value)
+window.location='/dashboard'
+}else alert(d.message)
+})
+}
+
+function register(){
+fetch('/api/auth/register',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+username:newUser.value,
+password:newPass.value
+})
+})
+.then(r=>r.json())
+.then(d=>alert(d.message))
+}
+</script>
