@@ -1,34 +1,52 @@
-function showSection(section) {
-  const sections = ['mining','deposit','withdraw','contact'];
-  sections.forEach(sec => {
-    document.getElementById(sec).style.display = sec === section ? 'block' : 'none';
-  });
+const user = localStorage.getItem('user')
+
+// Planos
+fetch('/api/plans')
+.then(r=>r.json())
+.then(plans=>{
+plans.forEach(p=>{
+const lucroMin=(p.price*p.min)/100
+const lucroMax=(p.price*p.max)/100
+
+document.getElementById('plans').innerHTML+=`
+<div>
+<h3>${p.name}</h3>
+<p>Preço $${p.price}</p>
+<p>Lucro ${p.min}% - ${p.max}%</p>
+<p>Ganho diário $${lucroMin.toFixed(2)} - $${lucroMax.toFixed(2)}</p>
+<button onclick="buy('${p.name}')">Comprar</button>
+</div>`
+})
+})
+
+function deposit(){
+fetch('/api/wallet/deposit',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+username:user,
+amount:dep.value
+})
+})
+.then(r=>r.json())
+.then(d=>{
+balance.innerText=d.balance
+alert(d.message)
+})
 }
 
-// Pegar planos do backend
-fetch('/api/plans')
-  .then(res => res.json())
-  .then(plans => {
-    const container = document.getElementById('plans');
-    plans.forEach(plan => {
-      const div = document.createElement('div');
-      div.innerHTML = `
-        <h3>${plan.name}</h3>
-        <p>Preço: $${plan.price}</p>
-        <p>Lucro: ${plan.profit} / dia</p>
-        <button onclick="buyPlan('${plan.name}')">Comprar</button>
-      `;
-      container.appendChild(div);
-    });
-  });
-
-function buyPlan(planName) {
-  fetch('/api/plans/buy', {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify({ planName })
-  })
-  .then(res => res.json())
-  .then(data => alert(data.message))
-  .catch(err => alert('Erro ao comprar plano'));
-    }
+function withdraw(){
+fetch('/api/wallet/withdraw',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+username:user,
+amount:wit.value
+})
+})
+.then(r=>r.json())
+.then(d=>{
+balance.innerText=d.balance
+alert(d.message)
+})
+  }
