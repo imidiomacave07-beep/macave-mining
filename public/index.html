@@ -1,62 +1,17 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt">
 <head>
+<meta charset="UTF-8">
 <title>Macave Mining</title>
-<link rel="stylesheet" href="/style.css">
+<style>
+body { font-family: Arial; padding: 20px; background: #f2f2f2; }
+.plan-card { border: 1px solid #ccc; padding: 15px; margin: 10px 0; background: #fff; }
+</style>
 </head>
-
 <body>
+<h1>Macave Mining</h1>
+<div id="plans-container"></div>
 
-<div class="container">
-  <h1>Macave Mining</h1>
-
-  <div class="card">
-    <h2>Login</h2>
-    <input id="username" placeholder="Usuário">
-    <input id="password" type="password" placeholder="Senha">
-    <button onclick="login()">Entrar</button>
-  </div>
-
-  <div class="card">
-    <h2>Registrar</h2>
-    <input id="newUser" placeholder="Usuário">
-    <input id="newPass" type="password" placeholder="Senha">
-    <button onclick="register()">Criar Conta</button>
-  </div>
-</div>
-
-<script>
-function login(){
-fetch('/api/auth/login',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-username:username.value,
-password:password.value
-})
-})
-.then(r=>r.json())
-.then(d=>{
-if(d.message.includes('sucesso')){
-localStorage.setItem('user',username.value)
-window.location='/dashboard'
-}else alert(d.message)
-})
-}
-
-function register(){
-fetch('/api/auth/register',{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-username:newUser.value,
-password:newPass.value
-})
-})
-.then(r=>r.json())
-.then(d=>alert(d.message))
-}
-</script>
-
+<script src="main.js"></script>
 </body>
 </html>
