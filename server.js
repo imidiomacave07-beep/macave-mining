@@ -12,7 +12,7 @@ app.use(express.static('public'));
 app.use('/api/auth', require('./backend/auth.routes'));
 app.use('/api/plans', require('./backend/plans.routes'));
 app.use('/api/wallet', require('./backend/wallet.routes'));
-
+app.use(express.static(require('path').join(__dirname, 'public')));
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/index.html'));
 });
