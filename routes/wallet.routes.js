@@ -1,52 +1,67 @@
-const express = require('express');
-const router = express.Router();
-const jwt = require('jsonwebtoken');
-const JWT_SECRET = process.env.JWT_SECRET || 'uma_chave_secreta_segura';
-const users = require('./users.routes').users;
-const planos = require('./plans.routes').planos || [];
+const express = require("express")
+const jwt = require("jsonwebtoken")
+
+const router = express.Router()
+const users = require("./users.routes").users
+const planos = require("./plans.routes").planos
+
+// Carteira da plataforma para comissão do dono
+const platformWallet = { balance: 0 }
 
 function auth(req, res, next) {
-  const token = req.headers['authorization']?.split(' ')[1];
-  if (!token) return res.status(401).json({ message: "Token necessário" });
-  try {
-    const payload = jwt.verify(token, JWT_SECRET);
-    req.user = users.find(u => u.username === payload.username);
-    if (!req.user) return res.status(404).json({ message: "Usuário não encontrado" });
-    next();
-  } catch { res.status(401).json({ message: "Token inválido" }); }
+  const token = req.headers.authorization
+  if (!token) return res.status(401).send("Unauthorized")
+  const data = jwt.verify(token, "secret")
+  req.user = users.find(u => u.username === data.username)
+  next()
 }
 
-router.get('/', auth, (req, res) => res.json(req.user.wallet));
+// Depósito + comissão da plataforma e do referral
+router.post("/deposit", auth, (req, res) => {
+  const { amount } = req.body
+  const fee = amount * 0.05 // 5% para plataforma
+  const userAmount = amount - fee
+  req.user.wallet.balance += userAmount
+  platformWallet.balance += fee
 
-router.post('/deposit', auth, (req, res) => {
-  const { amount } = req.body;
-  if (!amount || amount <= 0) return res.status(400).json({ message: "Valor inválido" });
-  req.user.wallet.balance += amount;
-  res.json({ message: `Depósito de $${amount} realizado`, balance: req.user.wallet.balance });
-});
+  // Comissão para referral
+  const refUser = users.find(u => u.username === req.user.referral)
+  if (refUser) {
+    const bonus = amount * 0.05
+    refUser.wallet.balance += bonus
+  }
 
-router.post('/buy-plan', auth, (req, res) => {
-  const { planId, amount } = req.body;
-  const plan = planos.find(p => p.id === planId);
-  if (!plan) return res.status(404).json({ message: "Plano não encontrado" });
-  if (amount < plan.minDeposit || amount > plan.maxDeposit) return res.status(400).json({ message: "Valor fora do permitido" });
-  if (req.user.wallet.balance < amount) return res.status(400).json({ message: "Saldo insuficiente" });
+  res.json({
+    balance: req.user.wallet.balance,
+    platformProfit: platformWallet.balance
+  })
+})
 
-  req.user.wallet.balance -= amount;
-  const startDate = new Date();
-  const endDate = new Date();
-  endDate.setDate(startDate.getDate() + plan.term);
-
-  req.user.wallet.activePlans.push({
+// Comprar planos
+router.post("/buy-plan", auth, (req, res) => {
+  const { planId, amount } = req.body
+  const plan = planos.find(p => p.id === planId)
+  if (!plan) return res.json({ message: "plan not found" })
+  if (req.user.wallet.balance < amount) return res.json({ message: "no balance" })
+  req.user.wallet.balance -= amount
+  req.user.wallet.plans.push({
     planId,
     amount,
-    startDate,
-    endDate,
-    dailyROI: plan.dailyROI,
-    accruedProfit: 0
-  });
+    start: new Date(),
+    roi: plan.roi
+  })
+  // 2% da compra para plataforma
+  platformWallet.balance += amount * 0.02
+  res.json({ message: "plan purchased", platformProfit: platformWallet.balance })
+})
 
-  res.json({ message: `Plano ${plan.nome} comprado com sucesso!`, balance: req.user.wallet.balance });
-});
+// Ver carteira + lucro diário
+router.get("/", auth, (req, res) => {
+  req.user.wallet.plans.forEach(plan => {
+    const days = Math.floor((new Date() - new Date(plan.start)) / 86400000)
+    plan.profit = days * (plan.amount * (plan.roi / 100))
+  })
+  res.json(req.user.wallet)
+})
 
-module.exports = router;
+module.exports = router
