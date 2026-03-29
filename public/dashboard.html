@@ -1,45 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>Dashboard</title>
-<link rel="stylesheet" href="/style.css">
-<body>
+<h1>Macave Mining Dashboard</h1>
 
-<script>
-if(!localStorage.getItem('user')){
-location='/'
-}
-</script>
+<div id="balance"></div>
+<div id="plans"></div>
 
-<div class="container">
+<h3>Your referral link:</h3>
+<input id="refLink" readonly>
 
-<h1>Dashboard</h1>
-
-<div class="card">
-  <h2>Saldo</h2>
-  <p>$<span id="balance">0</span></p>
-</div>
-
-<div class="card">
-  <h2>Depositar</h2>
-  <input id="dep" placeholder="Valor">
-  <button onclick="deposit()">Depositar</button>
-</div>
-
-<div class="card">
-  <h2>Sacar</h2>
-  <input id="wit" placeholder="Valor">
-  <button onclick="withdraw()">Sacar</button>
-</div>
-
-<div class="card">
-  <h2>Planos</h2>
-  <div id="plans"></div>
-</div>
-
-</div>
-
-<script src="dashboard.js"></script>
-
-</body>
-</html>
+<script src="main.js"></script>
