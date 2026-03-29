@@ -1,0 +1,12 @@
+const express = require("express");
+const app = express();
+
+// Serve arquivos da pasta public
+app.use(express.static("public"));
+
+app.get("/", (req, res) => {
+  res.send("Macave Mining está online 🚀");
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
