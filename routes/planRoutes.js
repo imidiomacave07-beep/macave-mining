@@ -1,35 +1,17 @@
-const express = require("express");
-const Plan = require("../models/Plan");
-const Purchase = require("../models/Purchase");
-
+const express = require('express');
 const router = express.Router();
 
-/* CRIAR PLANOS (executa 1 vez) */
-router.get("/seed", async (req, res) => {
-  await Plan.deleteMany();
+const planos = [
+  { id: 1, nome: "Plano Básico", dailyROI: 1.5, term: 30, minDeposit: 50, maxDeposit: 499 },
+  { id: 2, nome: "Plano Premium", dailyROI: 2, term: 60, minDeposit: 500, maxDeposit: 4999 }
+];
 
-  await Plan.insertMany([
-    { name: "Plano Bronze", price: 10, dailyProfit: 2, duration: 7 },
-    { name: "Plano Prata", price: 25, dailyProfit: 3, duration: 15 },
-    { name: "Plano Ouro", price: 50, dailyProfit: 5, duration: 30 }
-  ]);
-
-  res.json({ message: "Planos criados" });
-});
-
-/* LISTAR PLANOS */
-router.get("/", async (req, res) => {
-  const plans = await Plan.find();
-  res.json(plans);
-});
-
-/* COMPRAR PLANO */
-router.post("/buy", async (req, res) => {
-  const { userId, planId } = req.body;
-
-  await Purchase.create({ userId, planId });
-
-  res.json({ message: "Plano comprado com sucesso" });
+router.get('/', (req, res) => res.json(planos));
+router.get('/:id', (req, res) => {
+  const plano = planos.find(p => p.id === parseInt(req.params.id));
+  if (!plano) return res.status(404).json({ message: "Plano não encontrado" });
+  res.json(plano);
 });
 
 module.exports = router;
+module.exports.planos = planos;
