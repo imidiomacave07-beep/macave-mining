@@ -1,27 +1,20 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const path = require('path');
-const app = express();
+const express = require("express")
+const app = express()
+const path = require("path")
 
-dotenv.config();
-const PORT = process.env.PORT || 5000;
+app.use(express.json())
 
-app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+// Serve arquivos estáticos da pasta public
+app.use(express.static(path.join(__dirname, "public")))
 
-// Rotas
-const plansRoutes = require('./routes/plans.routes');
-const usersRoutes = require('./routes/users.routes');
-const walletRoutes = require('./routes/wallet.routes');
+// Rotas API
+app.use("/api/users", require("./routes/users.routes"))
+app.use("/api/plans", require("./routes/plans.routes"))
+app.use("/api/wallet", require("./routes/wallet.routes"))
 
-app.use('/api/plans', plansRoutes);
-app.use('/api/users', usersRoutes);
-app.use('/api/wallet', walletRoutes);
+// Rota para qualquer outro caminho ir para index.html (single page)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "public/index.html"))
+})
 
-// Ping para manter ativo
-app.get('/ping', (req, res) => res.send('Pong 🟢'));
-
-// Raiz
-app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'public/index.html')));
-
-app.listen(PORT, '0.0.0.0', () => console.log(`Macave Mining rodando na porta ${PORT}`));
+app.listen(5000, () => console.log("Macave Mining API running on port 5000"))
