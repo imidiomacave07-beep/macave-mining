@@ -1,8 +1,40 @@
-body { font-family: Arial, sans-serif; background:#f0f2f5; margin:0; padding:0; }
-header { background:#0047AB; color:#fff; padding:10px; display:flex; justify-content:space-between; align-items:center; }
-nav button { margin:0 5px; padding:5px 10px; background:#fff; border:none; cursor:pointer; border-radius:4px; }
-nav button:hover { background:#ddd; }
-#ads { text-align:center; padding:10px; background:#ffe066; }
-main { padding:20px; }
-.tab { display:none; }
-input, select, button { display:block; margin:5px 0; padding:5px; }
+body {
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 350px;
+  margin-top: 30px;
+}
+
+h1 {
+  text-align: center;
+}
+
+.card {
+  background: #1e293b;
+  padding: 15px;
+  margin: 10px 0;
+  border-radius: 10px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0;
+  border-radius: 6px;
+  border: none;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  background: #22c55e;
+  border: none;
+  color: white;
+  border-radius: 6px;
+}
