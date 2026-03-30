@@ -1,18 +1,27 @@
-const express = require('express');
-const app = express();
-const port = 5000;
+const express = require("express")
+const app = express()
+require("dotenv").config()
+const mongoose = require("mongoose")
 
-app.use(express.json());
-app.use(express.static('public'));
+app.use(express.json())
 
-const plansRoutes = require('./routes/plans.routes');
-const referralRoutes = require('./routes/referral.routes');
+mongoose.connect(process.env.MONGO_URI || "mongodb://127.0.0.1/macave", {
+  useNewUrlParser:true,
+  useUnifiedTopology:true
+}).then(()=>console.log("MongoDB conectado"))
+  .catch(err=>console.log("Erro MongoDB:", err))
 
-app.use('/api/plans', plansRoutes);
-app.use('/api/referral', referralRoutes);
+// Middleware auth
+const auth = require("./middleware/auth")
 
-require('./cron');
+// Rotas
+app.use("/api/auth", require("./routes/auth.routes"))
+app.use("/api/user", require("./routes/user.routes"))
+app.use("/api/wallet", require("./routes/wallet.routes"))
+app.use("/api/plans", require("./routes/plans.routes"))
 
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Macave Mining API rodando na porta ${port}`);
-});
+// Cron de mineração simulada
+require("./cron/mining")
+
+const PORT = process.env.PORT || 5000
+app.listen(PORT, ()=>console.log("Macave Mining rodando na porta", PORT))
