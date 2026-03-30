@@ -3,15 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <title>Macave Mining</title>
-<style>
-body { font-family: Arial; padding: 20px; background: #f2f2f2; }
-.plan-card { border: 1px solid #ccc; padding: 15px; margin: 10px 0; background: #fff; }
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<h1>Macave Mining</h1>
-<div id="plans-container"></div>
+  <h1>Macave Mining</h1>
 
-<script src="main.js"></script>
+  <div id="user-info">
+    <p>Usuário: <span id="user-name">demoUser</span></p>
+    <p>Saldo acumulado: $<span id="user-balance">0.00</span></p>
+    <p>Link de convite: <span id="referral-link">https://macave.com/?ref=demoUser</span></p>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-button active" onclick="showTab('Básico')">Básico</button>
+    <button class="tab-button" onclick="showTab('Intermediário')">Intermediário</button>
+    <button class="tab-button" onclick="showTab('Avançado')">Avançado</button>
+  </div>
+
+  <div id="plans-container"></div>
+
+  <script src="main.js"></script>
 </body>
 </html>
