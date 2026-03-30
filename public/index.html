@@ -6,22 +6,12 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Macave Mining</h1>
-
-  <div id="user-info">
-    <p>Usuário: <span id="user-name">demoUser</span></p>
-    <p>Saldo acumulado: $<span id="user-balance">0.00</span></p>
-    <p>Link de convite: <span id="referral-link">https://macave.com/?ref=demoUser</span></p>
-  </div>
-
-  <div class="tabs">
-    <button class="tab-button active" onclick="showTab('Básico')">Básico</button>
-    <button class="tab-button" onclick="showTab('Intermediário')">Intermediário</button>
-    <button class="tab-button" onclick="showTab('Avançado')">Avançado</button>
-  </div>
-
-  <div id="plans-container"></div>
-
-  <script src="main.js"></script>
+<h1>Macave Mining</h1>
+<div>
+<label>Seu link de convite:</label>
+<input type="text" id="referral-link" readonly>
+<button onclick="copyReferral()">Copiar</button>
+</div>
+<script src="main.js"></script>
 </body>
 </html>
