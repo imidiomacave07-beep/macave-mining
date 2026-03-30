@@ -1,10 +1,11 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const PlanSchema = new mongoose.Schema({
-  name: String,
-  price: Number,
-  dailyProfit: Number,
-  duration: Number
-});
+  name:String,
+  dailyROI:Number,
+  term:Number,
+  minDeposit:Number,
+  maxDeposit:Number
+})
 
-module.exports = mongoose.model("Plan", PlanSchema);
+module.exports = mongoose.model("Plan", PlanSchema)
