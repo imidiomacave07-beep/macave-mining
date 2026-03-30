@@ -1,20 +1,18 @@
-const express = require("express")
-const app = express()
-const path = require("path")
+const express = require('express');
+const app = express();
+const port = 5000;
 
-app.use(express.json())
+app.use(express.json());
+app.use(express.static('public'));
 
-// Serve arquivos estáticos da pasta public
-app.use(express.static(path.join(__dirname, "public")))
+const plansRoutes = require('./routes/plans.routes');
+const referralRoutes = require('./routes/referral.routes');
 
-// Rotas API
-app.use("/api/users", require("./routes/users.routes"))
-app.use("/api/plans", require("./routes/plans.routes"))
-app.use("/api/wallet", require("./routes/wallet.routes"))
+app.use('/api/plans', plansRoutes);
+app.use('/api/referral', referralRoutes);
 
-// Rota para qualquer outro caminho ir para index.html (single page)
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "public/index.html"))
-})
+require('./cron');
 
-app.listen(5000, () => console.log("Macave Mining API running on port 5000"))
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Macave Mining API rodando na porta ${port}`);
+});
