@@ -13,7 +13,6 @@ export default function AdminDashboardAnalytics() {
         const res = await axios.get("/admin/users/full");
         setUsers(res.data);
 
-        // Preparar dados para gráficos
         const profitsData = res.data.map(user => ({
           username: user.username,
           dailyProfit: user.dailyProfit || 0,
@@ -25,7 +24,6 @@ export default function AdminDashboardAnalytics() {
           hashRate: user.hashRate || 0,
         }));
         setHashRates(hashData);
-
       } catch (err) {
         console.error("Erro ao buscar dados:", err);
       }
