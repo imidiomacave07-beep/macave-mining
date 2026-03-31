@@ -1,0 +1,44 @@
+<!-- Banner Ultra-Agressivo + Contador de Urgência -->
+<div id="ad-banner-extreme" style="width:100%; max-width:100%; height:auto; background:#ff0000; color:#fff; font-family:Arial, sans-serif; text-align:center; padding:15px; border-radius:12px; box-shadow:0 6px 12px rgba(0,0,0,0.3); animation: flash 1s infinite;">
+  <h1 id="ad-title" style="margin:5px 0; font-size:6vw; font-weight:bold;">🔥 GANHE DINHEIRO TODO DIA! 🔥</h1>
+  <p style="margin:5px 0; font-size:4vw;">Invista <strong>$10</strong> e receba lucro diário de mineração real de criptomoedas!</p>
+  <div style="margin:10px 0; font-size:5vw; font-weight:bold; color:#fff;" id="countdown">⏰ Tempo restante: 10s</div>
+  <a href="/register" style="display:inline-block; margin-top:10px; padding:12px 30px; background:#fff; color:#ff0000; font-weight:bold; font-size:4vw; border-radius:8px; text-decoration:none; box-shadow:0 4px 6px rgba(0,0,0,0.2); transition:0.3s;" 
+     onmouseover="this.style.transform='scale(1.1)'" 
+     onmouseout="this.style.transform='scale(1)'">
+     INVISTA AGORA 🚀
+  </a>
+</div>
+
+<style>
+/* Flash background agressivo */
+@keyframes flash {
+  0% { background: #ff0000; }
+  25% { background: #ff5500; }
+  50% { background: #ff0000; }
+  75% { background: #ff5500; }
+  100% { background: #ff0000; }
+}
+
+/* Responsividade para telas pequenas */
+@media (max-width: 600px) {
+  #ad-banner-extreme h1 { font-size:8vw; }
+  #ad-banner-extreme p { font-size:5vw; }
+  #ad-banner-extreme a { font-size:5vw; padding:10px 20px; }
+  #countdown { font-size:6vw; }
+}
+</style>
+
+<script>
+// Contador regressivo de 10 segundos
+let timeLeft = 10;
+const countdownEl = document.getElementById('countdown');
+const countdownInterval = setInterval(() => {
+  countdownEl.innerText = `⏰ Tempo restante: ${timeLeft}s`;
+  timeLeft--;
+  if (timeLeft < 0) {
+    clearInterval(countdownInterval);
+    countdownEl.innerText = "⏰ Vagas Limitadas! Invista agora!";
+  }
+}, 1000);
+</script>
