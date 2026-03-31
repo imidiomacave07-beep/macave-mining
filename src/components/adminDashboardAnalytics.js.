@@ -1,0 +1,10 @@
+import AdminDashboardAnalytics from './components/adminDashboardAnalytics';
+
+function AdminPanel() {
+  return (
+    <div>
+      <h1>Painel Admin Analítico</h1>
+      <AdminDashboardAnalytics />
+    </div>
+  );
+}
