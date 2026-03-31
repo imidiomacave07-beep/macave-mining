@@ -1,30 +1,15 @@
-const express = require("express")
-const router = express.Router()
-const User = require("../models/User")
-const auth = require("../middleware/auth")
+const express = require("express");
+const router = express.Router();
+const miningService = require("../services/mining.service");
+const plans = require("../plans");
 
-const REF_COMMISSION = 0.05
+router.post("/buy/:planName", async (req, res) => {
+  const plan = plans.find(p => p.name === req.params.planName);
+  if (!plan) return res.status(404).send("Plano não encontrado");
 
-router.post("/buy", auth, async (req,res)=>{
-  const { planName, amount } = req.body
-  const user = await User.findById(req.userId)
-  if(user.balance < amount) return res.status(400).json({message:"Saldo insuficiente"})
+  await miningService.startMining(plan.hashrate);
 
-  user.balance -= amount
-  user.invested += amount
-  await user.save()
+  res.send({ message: `Plano ${plan.name} comprado com ${plan.hashrate} TH/s` });
+});
 
-  if(user.referral){
-    const refUser = await User.findOne({ referralCode:user.referral })
-    if(refUser){
-      const commission = amount * REF_COMMISSION
-      refUser.balance += commission
-      refUser.referralCommission += commission
-      await refUser.save()
-    }
-  }
-
-  res.json({ balance:user.balance })
-})
-
-module.exports = router
+module.exports = router;
