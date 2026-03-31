@@ -1,27 +1,42 @@
-const express = require("express")
-const app = express()
-require("dotenv").config()
-const mongoose = require("mongoose")
+const express = require("express");
+const app = express();
 
-app.use(express.json())
+// Middleware básico
+app.use(express.json());
 
-mongoose.connect(process.env.MONGO_URI || "mongodb://127.0.0.1/macave", {
-  useNewUrlParser:true,
-  useUnifiedTopology:true
-}).then(()=>console.log("MongoDB conectado"))
-  .catch(err=>console.log("Erro MongoDB:", err))
+// 🔥 ROTA PRINCIPAL
+app.get("/", (req, res) => {
+  res.send("Macave Mining está online 🚀");
+});
 
-// Middleware auth
-const auth = require("./middleware/auth")
+// 🔥 ROTA DE STATUS (IMPORTANTE)
+app.get("/status", (req, res) => {
+  res.json({
+    status: "online",
+    platform: "Macave Mining",
+    message: "Servidor funcionando 🚀",
+    time: new Date()
+  });
+});
 
-// Rotas
-app.use("/api/auth", require("./routes/auth.routes"))
-app.use("/api/user", require("./routes/user.routes"))
-app.use("/api/wallet", require("./routes/wallet.routes"))
-app.use("/api/plans", require("./routes/plans.routes"))
+// 🔥 EXEMPLO DE ROTA DE USUÁRIOS (para testes)
+app.get("/admin/users", (req, res) => {
+  res.json([
+    {
+      username: "TesteUser",
+      email: "teste@email.com",
+      plan: null,
+      invested: 0,
+      dailyProfit: 0,
+      hashRate: 0
+    }
+  ]);
+});
 
-// Cron de mineração simulada
-require("./cron/mining")
+// 🔥 PORTA DO SERVIDOR
+const PORT = process.env.PORT || 5000;
 
-const PORT = process.env.PORT || 5000
-app.listen(PORT, ()=>console.log("Macave Mining rodando na porta", PORT))
+// 🔥 INICIAR SERVIDOR
+app.listen(PORT, () => {
+  console.log(`Macave Mining server running on port ${PORT}`);
+});
