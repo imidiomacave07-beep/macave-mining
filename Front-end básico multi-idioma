@@ -1,0 +1,18 @@
+<button onclick="changeLanguage('en')">EN</button>
+<button onclick="changeLanguage('pt')">PT</button>
+
+<h1 data-translate="dashboard">Dashboard</h1>
+<button data-translate="invest_now">Invest Now</button>
+
+<script>
+function changeLanguage(lang) {
+  fetch(`/locales/${lang}.json`)
+    .then(res => res.json())
+    .then(translations => {
+      document.querySelectorAll("[data-translate]").forEach(el => {
+        const key = el.getAttribute("data-translate");
+        if(translations[key]) el.innerText = translations[key];
+      });
+    });
+}
+</script>
