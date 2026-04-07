@@ -1,35 +1,25 @@
 const express = require("express");
 const rateLimit = require("express-rate-limit");
 const bcrypt = require("bcrypt");
+const adminStats = require("./src/routes/adminStats");
 
 const app = express();
-
 app.use(express.json());
 
-/* ===============================
-   PROTEÇÃO CONTRA MUITAS REQUISIÇÕES
-================================ */
-
+// Limite de requisições
 const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutos
+  windowMs: 15 * 60 * 1000,
   max: 100,
   message: "Too many requests, please try again later."
 });
-
 app.use(limiter);
 
-/* ===============================
-   ROTA PRINCIPAL
-================================ */
-
+// Rota principal
 app.get("/", (req, res) => {
   res.send("Macave Mining Platform Online 🚀");
 });
 
-/* ===============================
-   STATUS DO SERVIDOR
-================================ */
-
+// Rota de status
 app.get("/status", (req, res) => {
   res.json({
     platform: "Macave Mining",
@@ -38,35 +28,26 @@ app.get("/status", (req, res) => {
   });
 });
 
-/* ===============================
-   EXEMPLO DE CRIPTOGRAFIA DE SENHA
-================================ */
-
+// Criptografia de senha
 app.post("/encrypt-password", async (req, res) => {
   try {
     const { password } = req.body;
-
     const hashedPassword = await bcrypt.hash(password, 10);
-
-    res.json({
-      message: "Password encrypted successfully",
-      hash: hashedPassword
-    });
+    res.json({ message: "Password encrypted successfully", hash: hashedPassword });
   } catch (error) {
     res.status(500).json({ error: "Encryption error" });
   }
 });
 
-/* ===============================
-   EXEMPLO DE REGISTRO DE USUÁRIO
-================================ */
-
+// Usuários
 let users = [];
+let deposits = [];
+let withdrawals = [];
 
+// Registro de usuário
 app.post("/register", async (req, res) => {
   try {
     const { username, email, password } = req.body;
-
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = {
@@ -76,35 +57,28 @@ app.post("/register", async (req, res) => {
       password: hashedPassword,
       balance: 0,
       hashRate: 0,
-      dailyProfit: 0
+      dailyProfit: 0,
+      plan: null
     };
 
     users.push(newUser);
 
-    res.json({
-      message: "User registered successfully",
-      user: newUser
-    });
-
+    res.json({ message: "User registered successfully", user: newUser });
   } catch (error) {
     res.status(500).json({ error: "Registration error" });
   }
 });
 
-/* ===============================
-   LISTAR USUÁRIOS (ADMIN)
-================================ */
-
+// Listar usuários (Admin)
 app.get("/admin/users", (req, res) => {
   res.json(users);
 });
 
-/* ===============================
-   INICIAR SERVIDOR
-================================ */
+// Conectar rota de estatísticas
+app.use(adminStats);
 
+// Servidor
 const PORT = process.env.PORT || 5000;
-
 app.listen(PORT, () => {
   console.log("=================================");
   console.log("Macave Mining Server Started");
