@@ -1,31 +1,36 @@
 const express = require("express");
-const Withdraw = require("../models/Withdraw");
-const authMiddleware = require("../middleware/authMiddleware");
-
 const router = express.Router();
+const Withdrawal = require("../models/Withdrawal");
+const User = require("../models/User");
 
-// solicitar saque
-router.post("/withdraw", authMiddleware, async (req, res) => {
+// PEDIR SAQUE
+router.post("/", async (req, res) => {
   try {
-    const { amount, crypto, wallet } = req.body;
+    const { userId, amount, wallet } = req.body;
 
-    if (!amount || amount <= 0) {
-      return res.status(400).json({ error: "Valor inválido" });
+    const user = await User.findById(userId);
+
+    if (!user || user.balance < amount) {
+      return res.status(400).json({ error: "Saldo insuficiente" });
     }
 
-    const withdraw = await Withdraw.create({
-      userId: req.userId,
+    // desconta saldo
+    user.balance -= amount;
+    await user.save();
+
+    // cria pedido
+    const withdraw = new Withdrawal({
+      userId,
       amount,
-      crypto,
       wallet
     });
 
-    res.json({
-      message: "Pedido de saque enviado",
-      withdraw
-    });
+    await withdraw.save();
+
+    res.json({ success: true, message: "Pedido de saque enviado" });
+
   } catch (err) {
-    res.status(500).json({ error: "Erro no saque" });
+    res.status(500).json({ error: "Erro ao criar saque" });
   }
 });
 
