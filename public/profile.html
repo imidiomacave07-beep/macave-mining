@@ -1,0 +1,34 @@
+<h2>Perfil do Usuário</h2>
+
+<label>Histórico / Sobre Mim</label>
+
+<textarea
+id="bio"
+maxlength="500"
+placeholder="Escreva seu histórico ou informações sobre você..."
+style="width:100%; height:120px;"
+></textarea>
+
+<button onclick="saveProfile()">Salvar Perfil</button>
+
+<script>
+
+async function saveProfile(){
+
+const bio = document.getElementById("bio").value;
+
+await fetch("/update-profile",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body: JSON.stringify({
+bio: bio
+})
+});
+
+alert("Perfil atualizado com sucesso!");
+
+}
+
+</script>
