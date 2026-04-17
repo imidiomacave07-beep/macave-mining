@@ -1,21 +1,24 @@
 const express = require("express");
+const cors = require("cors");
+require("dotenv").config();
+
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
 /* =========================
-   HEALTH CHECK (PING)
+   HEALTH CHECK
 ========================= */
 app.get("/ping", (req, res) => {
   res.status(200).send("ok");
 });
 
 /* =========================
-   ROTAS (IMPORTAÇÕES)
+   ROUTES
 ========================= */
-// Exemplo (se tiveres routes)
-const plansRoutes = require("./routes/plans.routes");
-app.use("/plans", plansRoutes);
+const depositRoutes = require("./routes/deposit.routes");
+app.use("/deposit", depositRoutes);
 
 /* =========================
    SERVER START
@@ -23,5 +26,5 @@ app.use("/plans", plansRoutes);
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
+  console.log(`Server running on port ${PORT}`);
 });
