@@ -1,14 +1,27 @@
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 5000;
 
 app.use(express.json());
 
+/* =========================
+   HEALTH CHECK (PING)
+========================= */
+app.get("/ping", (req, res) => {
+  res.status(200).send("ok");
+});
+
+/* =========================
+   ROTAS (IMPORTAÇÕES)
+========================= */
+// Exemplo (se tiveres routes)
 const plansRoutes = require("./routes/plans.routes");
 app.use("/plans", plansRoutes);
 
-app.get("/", (req, res) => {
-  res.send("Bem-vindo à Macave Mining!");
-});
+/* =========================
+   SERVER START
+========================= */
+const PORT = process.env.PORT || 3000;
 
-app.listen(port, () => console.log(`Servidor rodando na porta ${port}`));
+app.listen(PORT, () => {
+  console.log("Server running on port " + PORT);
+});
