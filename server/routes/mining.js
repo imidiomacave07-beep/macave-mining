@@ -7,7 +7,7 @@ const { calculateEarnings } = require("../services/miningCalculator");
 const { logAudit } = require("../services/auditLogger");
 
 // ======================
-// ⚡ RECEBER HASHRATE
+// ⚡ MINERAÇÃO SEGURA
 // ======================
 router.post("/update", async (req, res) => {
   try {
@@ -19,18 +19,41 @@ router.post("/update", async (req, res) => {
       return res.status(404).json({ error: "Utilizador não encontrado" });
     }
 
-    // ⚡ calcular ganhos
+    // 🔐 VERIFICAR STATUS
+    if (user.miningStatus !== "ACTIVE") {
+      return res.status(403).json({
+        error: "Mineração não permitida"
+      });
+    }
+
+    // ⛔ PROTEÇÃO ANTI-SPAM (evita mineração duplicada)
+    const lastMining = await MiningData.findOne({ userId })
+      .sort({ createdAt: -1 });
+
+    if (lastMining) {
+      const diff =
+        Date.now() - new Date(lastMining.createdAt).getTime();
+
+      // bloqueia se tentar minerar em menos de 10 segundos
+      if (diff < 10000) {
+        return res.status(429).json({
+          error: "Too many mining requests"
+        });
+      }
+    }
+
+    // ⚡ cálculo seguro
     const earnings = calculateEarnings(hashrate);
 
-    // 💾 guardar histórico de mineração
+    // 💾 guardar histórico
     await MiningData.create({
       userId,
       hashrate,
       earnings
     });
 
-    // 💰 atualizar saldo do utilizador
-    user.balance += earnings;
+    // 💰 atualizar saldo de forma segura
+    user.balance = Number(user.balance) + Number(earnings);
     await user.save();
 
     // 🧾 auditoria
