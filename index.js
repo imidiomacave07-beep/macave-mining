@@ -21,7 +21,7 @@ app.get("/ping", (req, res) => {
    HOME ROUTE
 ========================= */
 app.get("/", (req, res) => {
-  res.send("Macave Mining API is running...");
+  res.send(" Cloud Usdt Mining API is running...");
 });
 
 /* =========================
