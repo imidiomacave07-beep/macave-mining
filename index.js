@@ -21,7 +21,7 @@ app.get("/ping", (req, res) => {
    HOME ROUTE
 ========================= */
 app.get("/", (req, res) => {
-  res.send(" Cloud Usdt Mining API is running...");
+  res.send("Cloud Usdt Mining API is running...");
 });
 
 /* =========================
@@ -30,6 +30,8 @@ app.get("/", (req, res) => {
 
 // Deposit Routes
 const depositRoutes = require("./routes/deposit.js");
+app.use("/deposit", depositRoutes);
+
 // Contact / Support Routes
 const contactRoutes = require("./routes/contact.routes");
 app.use("/contact", contactRoutes);
