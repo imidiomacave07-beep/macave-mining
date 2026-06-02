@@ -29,9 +29,7 @@ app.get("/", (req, res) => {
 ========================= */
 
 // Deposit Routes
-const depositRoutes = require("./routes/deposit.routes");
-app.use("/deposit", depositRoutes);
-
+const depositRoutes = require("./routes/deposit.js");
 // Contact / Support Routes
 const contactRoutes = require("./routes/contact.routes");
 app.use("/contact", contactRoutes);
