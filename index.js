@@ -10,6 +10,9 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+// Servir ficheiros da pasta public
+app.use(express.static("public"));
+
 /* =========================
    HEALTH CHECK (PING)
 ========================= */
@@ -21,7 +24,7 @@ app.get("/ping", (req, res) => {
    HOME ROUTE
 ========================= */
 app.get("/", (req, res) => {
-  res.send("Cloud Usdt Mining API is running...");
+  res.sendFile(__dirname + "/public/index.html");
 });
 
 /* =========================
